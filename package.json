@@ -11,10 +11,10 @@
     "test": "echo \"Error: no test specified\" && exit 1"
   },
   "pre-commit": [
-		"ts.check",
-		"build",
-		"add-build"
-	],
+    "ts.check",
+    "build",
+    "add-build"
+  ],
   "keywords": [],
   "author": "",
   "license": "ISC",
@@ -30,5 +30,4 @@
     "ts-node": "^10.9.2",
     "typescript": "^5.4.2"
   }
-
 }
