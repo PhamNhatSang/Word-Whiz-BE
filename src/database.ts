@@ -30,6 +30,7 @@ export async function createDatabase({
     dialectOptions: {
       ...clientOpts,
     },
+    
   });
   await database.authenticate();
   await database.sync({ force: true });
