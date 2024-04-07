@@ -18,28 +18,15 @@ const dotenv_1 = __importDefault(require("dotenv"));
 dotenv_1.default.config();
 const port = process.env.PORT || 8080;
 const database_1 = require("./database");
-const instanceConnectionName = process.env.CLOUD_INSTANCE || '';
-const username = process.env.DB_USERNAME || '';
-const databaseName = process.env.DB_NAME || '';
-function startServer() {
-    return __awaiter(this, void 0, void 0, function* () {
-        const database = yield (0, database_1.createDatabase)({ instanceConnectionName, username, databaseName });
-        console.log(database);
-        app.get('/', (_req, res) => {
-            console.log('Request received');
-            return res.send('Request received');
-        });
-        app.get('/ping', (_req, res) => {
-            return res.send('pong 🏓');
-        });
-        app.listen(port, () => {
-            return console.log(`Server is listening on ${port}`);
-        });
-    });
-}
-startServer().then(() => {
-    console.log('Server started');
-}).catch((err) => {
-    console.error('Error starting server', err);
+app.get('/', (_req, res) => {
+    console.log('Request received');
+    return res.send('Request received');
 });
+app.get('/ping', (_req, res) => {
+    return res.send('pong 🏓');
+});
+app.listen(port, () => __awaiter(void 0, void 0, void 0, function* () {
+    yield database_1.database.sync({ force: true });
+    return console.log(`Server is listening on ${port}`);
+}));
 //# sourceMappingURL=index.js.map
