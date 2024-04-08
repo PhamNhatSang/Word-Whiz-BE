@@ -1,1 +1,0 @@
-{"version":3,"file":"base.controller.js","sourceRoot":"","sources":["../../src/controllers/base.controller.ts"],"names":[],"mappings":";;;;;;;;;;;;AAEA,MAAsB,cAAc;IAGhC,YAAY,OAA4B;QACpC,IAAI,CAAC,OAAO,GAAG,OAAO,CAAC;IAC3B,CAAC;IAEK,MAAM;;YACR,OAAO,MAAM,IAAI,CAAC,OAAO,CAAC,MAAM,EAAE,CAAC;QACvC,CAAC;KAAA;CACJ;AAVD,wCAUC"}

@@ -4,7 +4,7 @@ import { Repository } from "sequelize-typescript";
 export abstract class BaseService<Entity extends BaseModel<Entity>> {
     private repository: Repository<Entity>;
 
-    constructor(entity:new () => Entity){
+    constructor(entity: new () => Entity){
         this.repository = database.getRepository(entity);
     }
     

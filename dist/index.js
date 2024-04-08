@@ -13,20 +13,18 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
 };
 Object.defineProperty(exports, "__esModule", { value: true });
 const express_1 = __importDefault(require("express"));
+const routing_controllers_1 = require("routing-controllers");
 const app = (0, express_1.default)();
 const dotenv_1 = __importDefault(require("dotenv"));
 dotenv_1.default.config();
 const port = process.env.PORT || 8080;
 const database_1 = require("./database");
-app.get('/', (_req, res) => {
-    console.log('Request received');
-    return res.send('Request received');
-});
-app.get('/ping', (_req, res) => {
-    return res.send('pong 🏓');
-});
-app.listen(port, () => __awaiter(void 0, void 0, void 0, function* () {
-    yield database_1.database.sync({ force: true });
+const user_controller_1 = __importDefault(require("./controllers/user.controller"));
+(0, routing_controllers_1.createExpressServer)({
+    routePrefix: '/api',
+    controllers: [user_controller_1.default],
+}).listen(port, () => __awaiter(void 0, void 0, void 0, function* () {
+    yield database_1.database.sync({ alter: true });
     return console.log(`Server is listening on ${port}`);
 }));
 //# sourceMappingURL=index.js.map
