@@ -1,4 +1,5 @@
 import express, { Request, Response } from 'express'
+import "reflect-metadata";
 import { createExpressServer } from 'routing-controllers';
 const app = express()
 import dotenv from 'dotenv';

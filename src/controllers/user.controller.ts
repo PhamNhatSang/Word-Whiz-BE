@@ -1,14 +1,14 @@
+import "reflect-metadata"
+
 import { Get, JsonController } from "routing-controllers";
 import User from "../models/user.model";
 import { BaseController } from "./base-controller";
 import UserService from "../services/user.service";
-import "reflect-metadata"
 
 @JsonController("/users")
 export default class UserController extends BaseController<User> {
   constructor() {
     super(new UserService());
-   
   }
 
   @Get()
