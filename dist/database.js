@@ -7,13 +7,6 @@ exports.database = void 0;
 require("reflect-metadata");
 const sequelize_typescript_1 = require("sequelize-typescript");
 const path_1 = __importDefault(require("path"));
-exports.database = new sequelize_typescript_1.Sequelize({ repositoryMode: true,
-    username: process.env.DB_USERNAME,
-    password: process.env.DB_PASSWORD,
-    database: process.env.DB_NAME,
-    host: process.env.DB_HOST,
-    dialect: 'postgres',
-    dialectOptions: {
-        ssl: {},
-    }, models: [path_1.default.join(__dirname + '/models/*.model.ts')] });
+const db_config_1 = require("./config/db.config");
+exports.database = new sequelize_typescript_1.Sequelize(Object.assign(Object.assign({}, db_config_1.dbConfig), { models: [path_1.default.join(__dirname + '/models/*.model.{js,ts}')] }));
 //# sourceMappingURL=database.js.map
