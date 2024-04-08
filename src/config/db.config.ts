@@ -1,3 +1,4 @@
+import "reflect-metadata";
 import { SequelizeOptions } from "sequelize-typescript";
 
 export const dbConfig:SequelizeOptions={

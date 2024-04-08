@@ -1,6 +1,7 @@
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.dbConfig = void 0;
+require("reflect-metadata");
 exports.dbConfig = {
     repositoryMode: true,
     username: process.env.DB_USERNAME,
