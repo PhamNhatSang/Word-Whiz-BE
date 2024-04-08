@@ -12,6 +12,7 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
     return (mod && mod.__esModule) ? mod : { "default": mod };
 };
 Object.defineProperty(exports, "__esModule", { value: true });
+require("reflect-metadata");
 const sequelize_typescript_1 = require("sequelize-typescript");
 const base_model_1 = require("./base-model");
 const node_lombok_1 = require("node-lombok");

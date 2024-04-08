@@ -1,3 +1,5 @@
+import "reflect-metadata";
+
 import { Sequelize } from "sequelize-typescript";
 import path from 'path';
 

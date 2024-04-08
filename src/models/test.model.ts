@@ -1,4 +1,4 @@
-import exp from "constants";
+import "reflect-metadata";
 import { BaseModel } from "./base-model";
 import { BelongsTo, Column, DataType, ForeignKey, HasMany, Table } from "sequelize-typescript";
 import Course from "./course.model";

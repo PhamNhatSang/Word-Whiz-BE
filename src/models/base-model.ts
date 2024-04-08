@@ -1,3 +1,5 @@
+import "reflect-metadata";
+
 import { Model ,IsEmail} from "sequelize-typescript";
 import {
   PrimaryKey,

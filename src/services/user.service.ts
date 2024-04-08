@@ -1,4 +1,4 @@
-import exp from "constants";
+import "reflect-metadata";
 import { BaseService } from "./base.service";
 import User from "../models/user.model";
 

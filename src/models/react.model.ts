@@ -1,3 +1,5 @@
+import "reflect-metadata";
+
 import { Column, DataType, ForeignKey, Table } from "sequelize-typescript";
 import { BaseModel } from "./base-model";
 import User from "./user.model";

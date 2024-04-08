@@ -1,3 +1,5 @@
+import "reflect-metadata";
+
 import { Table,Column, ForeignKey, BelongsTo ,BelongsToMany} from "sequelize-typescript";
 import { BaseModel } from "./base-model";
 import User from "./user.model";

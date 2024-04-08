@@ -1,3 +1,5 @@
+import "reflect-metadata";
+
 import { Service } from 'ts-node';
 import { BaseModel } from "../models/base-model";
 import { BaseService } from "../services/base.service";

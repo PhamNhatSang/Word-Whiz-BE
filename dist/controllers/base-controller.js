@@ -10,6 +10,7 @@ var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, ge
 };
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.BaseController = void 0;
+require("reflect-metadata");
 class BaseController {
     constructor(service) {
         this.service = service;

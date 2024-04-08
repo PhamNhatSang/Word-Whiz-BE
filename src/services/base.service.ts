@@ -1,3 +1,4 @@
+import "reflect-metadata";
 import { BaseModel } from "../models/base-model";
 import { database } from "../database";
 import { Repository } from "sequelize-typescript";

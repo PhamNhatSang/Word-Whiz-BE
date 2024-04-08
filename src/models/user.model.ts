@@ -1,3 +1,5 @@
+import "reflect-metadata";
+
 import { BaseModel } from "./base-model";
 import {
   Table,

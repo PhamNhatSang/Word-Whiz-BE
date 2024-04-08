@@ -10,6 +10,7 @@ var __metadata = (this && this.__metadata) || function (k, v) {
 };
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.BaseModel = void 0;
+require("reflect-metadata");
 const sequelize_typescript_1 = require("sequelize-typescript");
 const sequelize_typescript_2 = require("sequelize-typescript");
 class BaseModel extends sequelize_typescript_1.Model {
