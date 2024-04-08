@@ -6,7 +6,6 @@ dotenv.config();
 const port = process.env.PORT || 8080
 import { database } from './database'
 import UserController from './controllers/user.controller';
-import User from './models/user.model';
 createExpressServer({
   routePrefix: '/api',
   controllers: [UserController],

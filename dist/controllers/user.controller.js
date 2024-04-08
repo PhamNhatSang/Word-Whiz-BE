@@ -15,6 +15,7 @@ Object.defineProperty(exports, "__esModule", { value: true });
 const routing_controllers_1 = require("routing-controllers");
 const base_controller_1 = require("./base-controller");
 const user_service_1 = __importDefault(require("../services/user.service"));
+require("reflect-metadata");
 let UserController = class UserController extends base_controller_1.BaseController {
     constructor() {
         super(new user_service_1.default());
