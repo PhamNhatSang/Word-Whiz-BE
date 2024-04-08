@@ -35,7 +35,7 @@
     "node-lombok": "^1.1.1",
     "nodemon": "^3.1.0",
     "pg": "^8.11.3",
-    "reflect-metadata": "^0.2.1",
+    "reflect-metadata": "^0.2.2",
     "routing-controllers": "^0.10.4",
     "sequelize": "^6.37.1",
     "sequelize-typescript": "^2.1.6",

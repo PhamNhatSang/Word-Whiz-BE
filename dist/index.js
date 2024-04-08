@@ -12,8 +12,8 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
     return (mod && mod.__esModule) ? mod : { "default": mod };
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-const express_1 = __importDefault(require("express"));
 require("reflect-metadata");
+const express_1 = __importDefault(require("express"));
 const routing_controllers_1 = require("routing-controllers");
 const app = (0, express_1.default)();
 const dotenv_1 = __importDefault(require("dotenv"));
