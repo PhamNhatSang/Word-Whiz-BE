@@ -13,18 +13,23 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
 };
 Object.defineProperty(exports, "__esModule", { value: true });
 require("reflect-metadata");
-const express_1 = __importDefault(require("express"));
 const routing_controllers_1 = require("routing-controllers");
-const app = (0, express_1.default)();
+const body_parser_1 = __importDefault(require("body-parser"));
+const path_1 = __importDefault(require("path"));
 const dotenv_1 = __importDefault(require("dotenv"));
 dotenv_1.default.config();
 const port = process.env.PORT || 8080;
 const database_1 = require("./database");
-const user_controller_1 = __importDefault(require("./controllers/user.controller"));
-(0, routing_controllers_1.createExpressServer)({
+const express_1 = __importDefault(require("express"));
+const app = (0, express_1.default)();
+app.use(body_parser_1.default.json());
+app.use(body_parser_1.default.urlencoded({ extended: true }));
+(0, routing_controllers_1.useExpressServer)(app, {
     routePrefix: '/api',
-    controllers: [user_controller_1.default],
-}).listen(port, () => __awaiter(void 0, void 0, void 0, function* () {
+    controllers: [path_1.default.join(__dirname + '/controllers/*.controller.{js,ts}')],
+    middlewares: [path_1.default.join(__dirname + '/middlewares/*.middleware.{js,ts}')],
+});
+app.listen(port, () => __awaiter(void 0, void 0, void 0, function* () {
     yield database_1.database.sync({ alter: true });
     return console.log(`Server is listening on ${port}`);
 }));

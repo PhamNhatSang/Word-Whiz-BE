@@ -3,7 +3,7 @@ import { BaseModel } from "../models/base-model";
 import { database } from "../database";
 import { Repository } from "sequelize-typescript";
 export abstract class BaseService<Entity extends BaseModel<Entity>> {
-    private repository: Repository<Entity>;
+    protected repository: Repository<Entity>;
 
     constructor(entity: new () => Entity){
         this.repository = database.getRepository(entity);

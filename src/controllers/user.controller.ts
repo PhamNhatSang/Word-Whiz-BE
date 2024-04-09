@@ -6,15 +6,13 @@ import { BaseController } from "./base-controller";
 import UserService from "../services/user.service";
 
 @JsonController("/users")
-export default class UserController extends BaseController<User> {
+export default class UserController extends BaseController<User,UserService> {
   constructor() {
     super(new UserService());
   }
 
   @Get()
-  getAllOne() {
-    this.service.getAll();
-    const data = "get all one"
-    return this.service.getAll();
+  async getAllOne() {
+    return await this.service.getAll();
   }
 }

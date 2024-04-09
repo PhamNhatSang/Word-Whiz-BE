@@ -1,16 +1,22 @@
 import 'reflect-metadata';
-import express, { Request, Response } from 'express'
-import { createExpressServer } from 'routing-controllers';
-const app = express()
+import { useExpressServer } from 'routing-controllers';
+import bodyParser from 'body-parser';
+import path from 'path';
 import dotenv from 'dotenv';
 dotenv.config();
 const port = process.env.PORT || 8080
 import { database } from './database'
-import UserController from './controllers/user.controller';
-createExpressServer({
+import express from 'express';
+const app = express();
+app.use(bodyParser.json())
+app.use(bodyParser.urlencoded({ extended: true }))
+
+useExpressServer(app,{
   routePrefix: '/api',
-  controllers: [UserController],
-}).listen(port, async () => {
+  controllers: [path.join(__dirname + '/controllers/*.controller.{js,ts}')],
+  middlewares: [path.join(__dirname + '/middlewares/*.middleware.{js,ts}')],
+})
+app.listen(port, async () => {
   await database.sync({alter: true})
   return console.log(`Server is listening on ${port}`)
 })
