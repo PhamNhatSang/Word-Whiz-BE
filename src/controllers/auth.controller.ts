@@ -63,32 +63,34 @@ export default class Authcontroller extends BaseController<User, UserService> {
       role: user.role,
     } as Payload);
     user.refeshToken = refreshToken;
-    console.log(user);
     await this.service.update(user);
-    const testData = await this.service.getAllInfor("sang@gmail.com");
-    JSON.parse(JSON.stringify(testData));
-    console.log(JSON.parse(JSON.stringify(testData)));
-
     return res.send({ accessToken, refreshToken });
   }
 
   @Get("/refresh")
   async refresh(@Req() req: Request, @Res() res: Response) {
     const refreshToken = req.body.refreshToken;
-    console.log(refreshToken);
     if (!refreshToken) {
-      throw new UnauthorizedError("Invalid token");
+      throw new BadRequestError("Invalid refresh token");
     }
-    const payload = jwt.verify(
-      refreshToken,
-      process.env.REFRESH_SECRET_KEY
-    ) as Payload;
+    try {
+      const payload = jwt.verify(
+        refreshToken,
+        process.env.REFRESH_SECRET_KEY
+      ) as Payload;
+      const user = await this.service.getById(payload.id);
 
-    const token = await generateAccessToken({
-      id: payload.id,
-      role: payload.role,
-    } as Payload);
+      if (!user || user.refeshToken !== refreshToken) {
+        throw new BadRequestError("Invalid refresh token");
+      }
+      const token = await generateAccessToken({
+        id: payload.id,
+        role: payload.role,
+      } as Payload);
 
-    return res.send(token);
+      return res.send(token);
+    } catch (err) {
+      throw new BadRequestError("Invalid Expired Time");
+    }
   }
 }

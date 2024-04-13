@@ -71,27 +71,31 @@ let Authcontroller = class Authcontroller extends base_controller_1.BaseControll
                 role: user.role,
             });
             user.refeshToken = refreshToken;
-            console.log(user);
             yield this.service.update(user);
-            const testData = yield this.service.getAllInfor("sang@gmail.com");
-            JSON.parse(JSON.stringify(testData));
-            console.log(JSON.parse(JSON.stringify(testData)));
             return res.send({ accessToken, refreshToken });
         });
     }
     refresh(req, res) {
         return __awaiter(this, void 0, void 0, function* () {
             const refreshToken = req.body.refreshToken;
-            console.log(refreshToken);
             if (!refreshToken) {
-                throw new routing_controllers_1.UnauthorizedError("Invalid token");
+                throw new routing_controllers_1.BadRequestError("Invalid refresh token");
             }
-            const payload = jsonwebtoken_1.default.verify(refreshToken, process.env.REFRESH_SECRET_KEY);
-            const token = yield (0, generateTokens_1.generateAccessToken)({
-                id: payload.id,
-                role: payload.role,
-            });
-            return res.send(token);
+            try {
+                const payload = jsonwebtoken_1.default.verify(refreshToken, process.env.REFRESH_SECRET_KEY);
+                const user = yield this.service.getById(payload.id);
+                if (!user || user.refeshToken !== refreshToken) {
+                    throw new routing_controllers_1.BadRequestError("Invalid refresh token");
+                }
+                const token = yield (0, generateTokens_1.generateAccessToken)({
+                    id: payload.id,
+                    role: payload.role,
+                });
+                return res.send(token);
+            }
+            catch (err) {
+                throw new routing_controllers_1.BadRequestError("Invalid Expired Time");
+            }
         });
     }
 };
