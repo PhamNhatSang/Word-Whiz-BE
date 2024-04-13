@@ -1,25 +1,22 @@
 import "reflect-metadata";
 
-import { Column, DataType, ForeignKey, Table } from "sequelize-typescript";
 import { BaseModel } from "./base-model";
 import User from "./user.model";
 import Post from "./post.model";
 import { Emotion } from "../enum/Emotion";
-import { Data } from "node-lombok";
-@Table({modelName:'reacts'})
-@Data()
-export default class React extends BaseModel<React> {
+import { Entity, ManyToOne, Column } from "typeorm";
+@Entity({ name: "reacts" })
+export default class React extends BaseModel {
+  @ManyToOne(() => User, (user) => user.myReacts)
+  user: User;
 
-    @ForeignKey(() => User)
-    @Column
-    user_id: number
+  @ManyToOne(() => Post, (post) => post.postReacts)
+  post: Post;
 
-
-    @ForeignKey(() => Post)
-    @Column
-    post_id: number
-
-    @Column(DataType.ENUM('LIKE', 'HAHA', 'WOW', 'SAD', 'ANGRY'))
-    emotion: Emotion
-    
+  @Column({
+    type: "enum",
+    enum: ["LIKE", "SAD", "HAHA", "WOW", "LOVE", "ANGRY", "NONE"],
+    default: "NONE",
+  })
+  emotion: Emotion;
 }

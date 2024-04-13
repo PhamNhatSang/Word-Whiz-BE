@@ -17,7 +17,7 @@ useExpressServer(app,{
   middlewares: [path.join(__dirname + '/middlewares/*.middleware.{js,ts}')],
 })
 app.listen(port, async () => {
-  await database.sync({alter: true})
+  await database.initialize()
   return console.log(`Server is listening on ${port}`)
 })
 

@@ -14,36 +14,24 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
 Object.defineProperty(exports, "__esModule", { value: true });
 require("reflect-metadata");
 const base_model_1 = require("./base-model");
-const sequelize_typescript_1 = require("sequelize-typescript");
-const course_model_1 = __importDefault(require("./course.model"));
 const test_item_model_1 = __importDefault(require("./test-item.model"));
-const node_lombok_1 = require("node-lombok");
+const typeorm_1 = require("typeorm");
 let Test = class Test extends base_model_1.BaseModel {
 };
 __decorate([
-    (0, sequelize_typescript_1.ForeignKey)(() => course_model_1.default),
-    sequelize_typescript_1.Column,
-    __metadata("design:type", Number)
-], Test.prototype, "course_id", void 0);
-__decorate([
-    (0, sequelize_typescript_1.BelongsTo)(() => course_model_1.default),
-    __metadata("design:type", course_model_1.default)
-], Test.prototype, "course", void 0);
-__decorate([
-    (0, sequelize_typescript_1.HasMany)(() => test_item_model_1.default),
-    __metadata("design:type", Array)
-], Test.prototype, "test_items", void 0);
-__decorate([
-    sequelize_typescript_1.Column,
+    (0, typeorm_1.Column)(),
     __metadata("design:type", Number)
 ], Test.prototype, "score", void 0);
 __decorate([
-    (0, sequelize_typescript_1.Column)(sequelize_typescript_1.DataType.BOOLEAN),
+    (0, typeorm_1.Column)({ type: "boolean", default: false }),
     __metadata("design:type", Boolean)
 ], Test.prototype, "is_first_done", void 0);
+__decorate([
+    (0, typeorm_1.OneToMany)(() => test_item_model_1.default, (testItem) => testItem.test, { nullable: true }),
+    __metadata("design:type", Array)
+], Test.prototype, "testItems", void 0);
 Test = __decorate([
-    (0, sequelize_typescript_1.Table)({ modelName: 'tests' }),
-    (0, node_lombok_1.Data)()
+    (0, typeorm_1.Entity)({ name: "tests" })
 ], Test);
 exports.default = Test;
 //# sourceMappingURL=test.model.js.map

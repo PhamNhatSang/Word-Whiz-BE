@@ -15,60 +15,53 @@ Object.defineProperty(exports, "__esModule", { value: true });
 require("reflect-metadata");
 const Accessiblity_1 = require("../enum/Accessiblity");
 const base_model_1 = require("./base-model");
-const sequelize_typescript_1 = require("sequelize-typescript");
-const group_model_1 = __importDefault(require("./group.model"));
 const group_detail_model_1 = __importDefault(require("./group-detail.model"));
 const user_model_1 = __importDefault(require("./user.model"));
 const word_model_1 = __importDefault(require("./word.model"));
 const test_model_1 = __importDefault(require("./test.model"));
-const node_lombok_1 = require("node-lombok");
 const course_rate_model_1 = __importDefault(require("./course-rate.model"));
+const typeorm_1 = require("typeorm");
 let Course = class Course extends base_model_1.BaseModel {
 };
 __decorate([
-    (0, sequelize_typescript_1.ForeignKey)(() => user_model_1.default),
-    sequelize_typescript_1.Column,
-    __metadata("design:type", Number)
-], Course.prototype, "owner_id", void 0);
-__decorate([
-    (0, sequelize_typescript_1.BelongsTo)(() => user_model_1.default),
+    (0, typeorm_1.ManyToOne)(() => user_model_1.default, (user) => user.myCourses),
     __metadata("design:type", user_model_1.default)
 ], Course.prototype, "owner", void 0);
 __decorate([
-    sequelize_typescript_1.Column,
+    (0, typeorm_1.Column)(),
     __metadata("design:type", String)
 ], Course.prototype, "title", void 0);
 __decorate([
-    (0, sequelize_typescript_1.Column)(sequelize_typescript_1.DataType.TEXT),
+    (0, typeorm_1.Column)({ type: "text" }),
     __metadata("design:type", String)
 ], Course.prototype, "description", void 0);
 __decorate([
-    (0, sequelize_typescript_1.Column)(sequelize_typescript_1.DataType.ENUM("public", "private")),
+    (0, typeorm_1.Column)({ type: "enum", enum: ["PUBLIC", "PRIVATE"], default: "PUBLIC" }),
     __metadata("design:type", String)
 ], Course.prototype, "accessiblity", void 0);
 __decorate([
-    (0, sequelize_typescript_1.Column)(sequelize_typescript_1.DataType.BOOLEAN),
+    (0, typeorm_1.Column)({ type: "boolean" }),
     __metadata("design:type", Boolean)
 ], Course.prototype, "is_creadted", void 0);
 __decorate([
-    (0, sequelize_typescript_1.HasMany)(() => word_model_1.default),
+    (0, typeorm_1.OneToMany)(() => word_model_1.default, (word) => word.course, { nullable: true }),
     __metadata("design:type", Array)
 ], Course.prototype, "words", void 0);
 __decorate([
-    (0, sequelize_typescript_1.HasOne)(() => test_model_1.default),
+    (0, typeorm_1.OneToOne)(() => test_model_1.default),
+    (0, typeorm_1.JoinColumn)(),
     __metadata("design:type", test_model_1.default)
 ], Course.prototype, "test", void 0);
 __decorate([
-    (0, sequelize_typescript_1.BelongsToMany)(() => group_model_1.default, () => group_detail_model_1.default),
+    (0, typeorm_1.OneToMany)(() => group_detail_model_1.default, (groupDetail) => groupDetail.course),
     __metadata("design:type", Array)
-], Course.prototype, "groups", void 0);
+], Course.prototype, "groupDetails", void 0);
 __decorate([
-    (0, sequelize_typescript_1.BelongsToMany)(() => user_model_1.default, () => course_rate_model_1.default),
+    (0, typeorm_1.OneToMany)(() => course_rate_model_1.default, (courseRate) => courseRate.course),
     __metadata("design:type", Array)
-], Course.prototype, "userRates", void 0);
+], Course.prototype, "courseRate", void 0);
 Course = __decorate([
-    (0, sequelize_typescript_1.Table)({ modelName: "courses" }),
-    (0, node_lombok_1.Data)()
+    (0, typeorm_1.Entity)({ name: "courses" })
 ], Course);
 exports.default = Course;
 //# sourceMappingURL=course.model.js.map

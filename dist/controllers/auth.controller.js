@@ -25,6 +25,7 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
 };
 Object.defineProperty(exports, "__esModule", { value: true });
 const base_controller_1 = require("./base-controller");
+const generateTokens_1 = require("../utils/generateTokens");
 const routing_controllers_1 = require("routing-controllers");
 const user_service_1 = __importDefault(require("../services/user.service"));
 const jsonwebtoken_1 = __importDefault(require("jsonwebtoken"));
@@ -33,9 +34,25 @@ let Authcontroller = class Authcontroller extends base_controller_1.BaseControll
     constructor() {
         super(new user_service_1.default());
     }
+    register(req, res) {
+        return __awaiter(this, void 0, void 0, function* () {
+            const user = yield this.service.getByEmail(req.body.email);
+            if (user) {
+                throw new routing_controllers_1.BadRequestError("User already exists");
+            }
+            const hash = bcrypt_1.default.hashSync(req.body.password, 10);
+            const newUser = yield this.service.create({
+                name: req.body.name,
+                email: req.body.email,
+                password: hash,
+                role: req.body.role,
+            });
+            return res.send(newUser);
+        });
+    }
     login(req, res) {
         return __awaiter(this, void 0, void 0, function* () {
-            const user = (yield this.service.getByEmail(req.body.email)).dataValues;
+            const user = yield this.service.getByEmail(req.body.email);
             if (!user) {
                 throw new routing_controllers_1.UnauthorizedError("Invalid email or password");
             }
@@ -43,15 +60,49 @@ let Authcontroller = class Authcontroller extends base_controller_1.BaseControll
             if (!isValidPass) {
                 throw new routing_controllers_1.UnauthorizedError("Invalid email or password");
             }
-            const accessToken = jsonwebtoken_1.default.sign({ name: user.name, email: user.email, role: user.role }, process.env.SECRET_KEY, {
-                algorithm: "HS256",
-                allowInsecureKeySizes: true,
-                expiresIn: 60, // 24 hours
+            const accessToken = yield (0, generateTokens_1.generateAccessToken)({
+                id: user.id,
+                email: user.email,
+                role: user.role,
             });
-            return res.send({ accessToken });
+            const refreshToken = yield (0, generateTokens_1.generateRefreshToken)({
+                id: user.id,
+                email: user.email,
+                role: user.role,
+            });
+            user.refeshToken = refreshToken;
+            console.log(user);
+            yield this.service.update(user);
+            const testData = yield this.service.getAllInfor("sang@gmail.com");
+            JSON.parse(JSON.stringify(testData));
+            console.log(JSON.parse(JSON.stringify(testData)));
+            return res.send({ accessToken, refreshToken });
+        });
+    }
+    refresh(req, res) {
+        return __awaiter(this, void 0, void 0, function* () {
+            const refreshToken = req.body.refreshToken;
+            console.log(refreshToken);
+            if (!refreshToken) {
+                throw new routing_controllers_1.UnauthorizedError("Invalid token");
+            }
+            const payload = jsonwebtoken_1.default.verify(refreshToken, process.env.REFRESH_SECRET_KEY);
+            const token = yield (0, generateTokens_1.generateAccessToken)({
+                id: payload.id,
+                role: payload.role,
+            });
+            return res.send(token);
         });
     }
 };
+__decorate([
+    (0, routing_controllers_1.Post)("/register"),
+    __param(0, (0, routing_controllers_1.Req)()),
+    __param(1, (0, routing_controllers_1.Res)()),
+    __metadata("design:type", Function),
+    __metadata("design:paramtypes", [Object, Object]),
+    __metadata("design:returntype", Promise)
+], Authcontroller.prototype, "register", null);
 __decorate([
     (0, routing_controllers_1.Post)("/login"),
     __param(0, (0, routing_controllers_1.Req)()),
@@ -60,8 +111,16 @@ __decorate([
     __metadata("design:paramtypes", [Object, Object]),
     __metadata("design:returntype", Promise)
 ], Authcontroller.prototype, "login", null);
+__decorate([
+    (0, routing_controllers_1.Get)("/refresh"),
+    __param(0, (0, routing_controllers_1.Req)()),
+    __param(1, (0, routing_controllers_1.Res)()),
+    __metadata("design:type", Function),
+    __metadata("design:paramtypes", [Object, Object]),
+    __metadata("design:returntype", Promise)
+], Authcontroller.prototype, "refresh", null);
 Authcontroller = __decorate([
-    (0, routing_controllers_1.Controller)("/auth"),
+    (0, routing_controllers_1.JsonController)("/auth"),
     __metadata("design:paramtypes", [])
 ], Authcontroller);
 exports.default = Authcontroller;

@@ -13,42 +13,35 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
 };
 Object.defineProperty(exports, "__esModule", { value: true });
 require("reflect-metadata");
-const sequelize_typescript_1 = require("sequelize-typescript");
 const base_model_1 = require("./base-model");
-const node_lombok_1 = require("node-lombok");
 const user_model_1 = __importDefault(require("./user.model"));
 const comment_model_1 = __importDefault(require("./comment.model"));
 const react_model_1 = __importDefault(require("./react.model"));
+const typeorm_1 = require("typeorm");
 let Post = class Post extends base_model_1.BaseModel {
 };
 __decorate([
-    (0, sequelize_typescript_1.ForeignKey)(() => user_model_1.default),
-    sequelize_typescript_1.Column,
-    __metadata("design:type", Number)
-], Post.prototype, "owner_id", void 0);
-__decorate([
-    (0, sequelize_typescript_1.BelongsTo)(() => user_model_1.default),
+    (0, typeorm_1.ManyToOne)(() => user_model_1.default, (user) => user.myPosts),
     __metadata("design:type", user_model_1.default)
 ], Post.prototype, "owner", void 0);
 __decorate([
-    (0, sequelize_typescript_1.Column)(sequelize_typescript_1.DataType.TEXT),
+    (0, typeorm_1.Column)({ type: "text" }),
     __metadata("design:type", String)
 ], Post.prototype, "content", void 0);
 __decorate([
-    sequelize_typescript_1.Column,
+    (0, typeorm_1.Column)(),
     __metadata("design:type", String)
 ], Post.prototype, "image", void 0);
 __decorate([
-    (0, sequelize_typescript_1.BelongsToMany)(() => user_model_1.default, () => comment_model_1.default),
+    (0, typeorm_1.OneToMany)(() => comment_model_1.default, (comment) => comment.post, { nullable: true }),
     __metadata("design:type", Array)
-], Post.prototype, "userComment", void 0);
+], Post.prototype, "postComments", void 0);
 __decorate([
-    (0, sequelize_typescript_1.BelongsToMany)(() => user_model_1.default, () => react_model_1.default),
+    (0, typeorm_1.OneToMany)(() => react_model_1.default, (react) => react.post),
     __metadata("design:type", Array)
-], Post.prototype, "userReacts", void 0);
+], Post.prototype, "postReacts", void 0);
 Post = __decorate([
-    (0, sequelize_typescript_1.Table)({ modelName: "posts" }),
-    (0, node_lombok_1.Data)()
+    (0, typeorm_1.Entity)({ name: "posts" })
 ], Post);
 exports.default = Post;
 //# sourceMappingURL=post.model.js.map

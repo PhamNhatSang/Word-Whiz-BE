@@ -13,30 +13,26 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
 };
 Object.defineProperty(exports, "__esModule", { value: true });
 require("reflect-metadata");
-const sequelize_typescript_1 = require("sequelize-typescript");
 const base_model_1 = require("./base-model");
 const user_model_1 = __importDefault(require("./user.model"));
 const post_model_1 = __importDefault(require("./post.model"));
-const node_lombok_1 = require("node-lombok");
+const typeorm_1 = require("typeorm");
 let Comment = class Comment extends base_model_1.BaseModel {
 };
 __decorate([
-    (0, sequelize_typescript_1.ForeignKey)(() => user_model_1.default),
-    sequelize_typescript_1.Column,
-    __metadata("design:type", Number)
-], Comment.prototype, "user_id", void 0);
+    (0, typeorm_1.ManyToOne)(() => user_model_1.default, (user) => user.myComments),
+    __metadata("design:type", user_model_1.default)
+], Comment.prototype, "user", void 0);
 __decorate([
-    (0, sequelize_typescript_1.ForeignKey)(() => post_model_1.default),
-    sequelize_typescript_1.Column,
-    __metadata("design:type", Number)
-], Comment.prototype, "post_id", void 0);
+    (0, typeorm_1.ManyToOne)(() => post_model_1.default, (post) => post.postComments),
+    __metadata("design:type", post_model_1.default)
+], Comment.prototype, "post", void 0);
 __decorate([
-    sequelize_typescript_1.Column,
+    (0, typeorm_1.Column)(),
     __metadata("design:type", String)
 ], Comment.prototype, "content", void 0);
 Comment = __decorate([
-    (0, sequelize_typescript_1.Table)({ modelName: 'comments' }),
-    (0, node_lombok_1.Data)()
+    (0, typeorm_1.Entity)({ name: "comments" })
 ], Comment);
 exports.default = Comment;
 //# sourceMappingURL=comment.model.js.map

@@ -5,6 +5,7 @@ import {
   UnauthorizedError,
 } from "routing-controllers";
 import { Request, Response } from "express";
+import { Payload } from "../type/DefineType";
 
 @Middleware({ type: "before" })
 export default class AuthMiddleware implements ExpressMiddlewareInterface {
@@ -25,10 +26,12 @@ export default class AuthMiddleware implements ExpressMiddlewareInterface {
     if (!/^Bearer$/i.test(scheme)) {
       throw new UnauthorizedError("Token malformatted");
     }
-    jwt.verify(token, process.env.SECRET_KEY, (err, decoded) => {
+    jwt.verify(token, process.env.ACCESS_SECRET_KEY, (err, decoded :Payload) => {
       if (err) {
         throw new UnauthorizedError("Token invalid");
       }
+      request.body.currentUserData = decoded;
+      console.log(decoded);
        next();
     });
   }

@@ -1,36 +1,30 @@
 import "reflect-metadata";
 
-import { BelongsTo, Column, DataType, ForeignKey, Table } from "sequelize-typescript";
-import { BaseModel } from "./base-model";
 import Test from "./test.model";
-import { Data } from "node-lombok";
-@Table({modelName:'test_items'})
-@Data()
-export default class TestItem extends BaseModel<TestItem> {
-    @ForeignKey(() => Test)
-    @Column
-    test_id: number;
+import { Entity, Column, ManyToOne } from "typeorm";
+import { BaseModel } from "./base-model";
+@Entity({name:"test_items"})
+export default class TestItem extends BaseModel {
+  
+  @Column({ type: "text" })
+  question: string;
 
-    @BelongsTo(() => Test)
-    test: Test;
+  @Column({ type: "text" })
+  option_1: string;
 
-    @Column(DataType.TEXT)
-    question: string;
+  @Column({ type: "text" })
+  option_2: string;
 
-    @Column(DataType.TEXT)
-    option_1: string;
+  @Column({ type: "text" })
+  option_3: string;
 
-    @Column(DataType.TEXT)
-    option_2: string;
+  @Column({ type: "text" })
+  option_4: string;
 
-    @Column(DataType.TEXT)
-    option_3: string;
+  @Column({ type: "text" })
+  correct_answer: string;
 
-
-    @Column(DataType.TEXT)
-    option_4: string;
-
-    @Column(DataType.TEXT)
-    correct_answer: string;
+  @ManyToOne(() => Test, (test) => test.testItems)
+  test: Test;
 
 }

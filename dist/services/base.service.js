@@ -18,28 +18,27 @@ class BaseService {
     }
     getAll() {
         return __awaiter(this, void 0, void 0, function* () {
-            return yield this.repository.findAll();
+            return yield this.repository.find();
         });
     }
     getById(id) {
         return __awaiter(this, void 0, void 0, function* () {
-            return yield this.repository.findByPk(id);
+            return yield this.repository.findOneBy({ id: id });
         });
     }
     create(entity) {
         return __awaiter(this, void 0, void 0, function* () {
-            return yield this.repository.create(entity);
+            return yield this.repository.save(entity);
         });
     }
-    update(id, entity) {
+    update(entity) {
         return __awaiter(this, void 0, void 0, function* () {
-            yield this.repository.update(entity, { where: { id } });
-            return yield this.repository.findByPk(id);
+            return yield this.repository.save(entity);
         });
     }
     delete(id) {
         return __awaiter(this, void 0, void 0, function* () {
-            yield this.repository.destroy({ where: { id } });
+            yield this.repository.delete(id);
         });
     }
 }

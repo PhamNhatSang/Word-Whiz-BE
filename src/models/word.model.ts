@@ -1,32 +1,26 @@
 import "reflect-metadata";
 
-import { BelongsTo, Column, DataType, ForeignKey, Table } from "sequelize-typescript";
 import { BaseModel } from "./base-model";
 import Course from "./course.model";
-import { Data } from "node-lombok";
-@Table({ modelName: "words" })
-@Data()
-export default class Word extends BaseModel<Word> {
-
-  @ForeignKey(() => Course)
-  @Column
-  course_id: number;
-  
-  @BelongsTo(() => Course)
+import { Entity, Column, ManyToOne } from "typeorm";
+@Entity({ name: "words" })
+export default class Word extends BaseModel {
+  @ManyToOne(() => Course, (course) => course.words)
   course: Course;
 
-  @Column
+  @Column()
   term: string;
 
-  @Column(DataType.TEXT)
+
+  @Column({ type: "text" })
   definition: string;
 
-  @Column(DataType.TEXT)
+  @Column({ type: "text" ,nullable:true})
   example: string;
 
-  @Column(DataType.TEXT)
+  @Column({ type: "text",nullable:true })
   explanation: string;
 
-  @Column
+  @Column({nullable:true})
   image: string;
 }

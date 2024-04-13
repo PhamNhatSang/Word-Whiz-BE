@@ -1,29 +1,24 @@
 import "reflect-metadata";
 
-import { Model ,IsEmail} from "sequelize-typescript";
 import {
-  PrimaryKey,
+  Entity,
+  PrimaryGeneratedColumn,
   Column,
-  AutoIncrement,
-  DataType,
-  
-} from "sequelize-typescript";
-
-export abstract class BaseModel<T> extends Model<T>{
-  @AutoIncrement
-  @PrimaryKey
-  @Column(DataType.INTEGER)
+  CreateDateColumn,
+  UpdateDateColumn,
+} from "typeorm";
+@Entity()
+export abstract class BaseModel {
+  @PrimaryGeneratedColumn()
   id: number;
 
-  @Column(DataType.DATE)
+  @CreateDateColumn()
   createdAt: Date;
 
-  @Column(DataType.DATE)
+  @UpdateDateColumn()
   updatedAt: Date;
 
   
-  @Column(DataType.STRING)  
-  name:string
   set _createdAt(value: Date) {
     this.updatedAt = value;
   }
@@ -43,5 +38,4 @@ export abstract class BaseModel<T> extends Model<T>{
   get _id() {
     return this.id;
   }
-  
 }

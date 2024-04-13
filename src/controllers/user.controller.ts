@@ -1,18 +1,21 @@
-import "reflect-metadata"
+import "reflect-metadata";
 
-import { Get, JsonController } from "routing-controllers";
+import { Get, JsonController, Req, Res } from "routing-controllers";
 import User from "../models/user.model";
 import { BaseController } from "./base-controller";
 import UserService from "../services/user.service";
+import { Request, Response } from "express";
 
-@JsonController("/users")
-export default class UserController extends BaseController<User,UserService> {
+@JsonController()
+export default class UserController extends BaseController<User, UserService> {
   constructor() {
     super(new UserService());
   }
 
-  @Get()
-  async getAllOne() {
-    return await this.service.getAll();
+  @Get("/.me")
+  async getCurrentUser(@Req() req: Request, @Res() res: Response) {
+    const currentUserId = req.body.currentUserData.id;
+    const user = await this.service.getById(currentUserId);
+    return res.send(user);
   }
 }

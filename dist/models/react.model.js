@@ -13,31 +13,31 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
 };
 Object.defineProperty(exports, "__esModule", { value: true });
 require("reflect-metadata");
-const sequelize_typescript_1 = require("sequelize-typescript");
 const base_model_1 = require("./base-model");
 const user_model_1 = __importDefault(require("./user.model"));
 const post_model_1 = __importDefault(require("./post.model"));
 const Emotion_1 = require("../enum/Emotion");
-const node_lombok_1 = require("node-lombok");
+const typeorm_1 = require("typeorm");
 let React = class React extends base_model_1.BaseModel {
 };
 __decorate([
-    (0, sequelize_typescript_1.ForeignKey)(() => user_model_1.default),
-    sequelize_typescript_1.Column,
-    __metadata("design:type", Number)
-], React.prototype, "user_id", void 0);
+    (0, typeorm_1.ManyToOne)(() => user_model_1.default, (user) => user.myReacts),
+    __metadata("design:type", user_model_1.default)
+], React.prototype, "user", void 0);
 __decorate([
-    (0, sequelize_typescript_1.ForeignKey)(() => post_model_1.default),
-    sequelize_typescript_1.Column,
-    __metadata("design:type", Number)
-], React.prototype, "post_id", void 0);
+    (0, typeorm_1.ManyToOne)(() => post_model_1.default, (post) => post.postReacts),
+    __metadata("design:type", post_model_1.default)
+], React.prototype, "post", void 0);
 __decorate([
-    (0, sequelize_typescript_1.Column)(sequelize_typescript_1.DataType.ENUM('LIKE', 'HAHA', 'WOW', 'SAD', 'ANGRY')),
+    (0, typeorm_1.Column)({
+        type: "enum",
+        enum: ["LIKE", "SAD", "HAHA", "WOW", "LOVE", "ANGRY", "NONE"],
+        default: "NONE",
+    }),
     __metadata("design:type", String)
 ], React.prototype, "emotion", void 0);
 React = __decorate([
-    (0, sequelize_typescript_1.Table)({ modelName: 'reacts' }),
-    (0, node_lombok_1.Data)()
+    (0, typeorm_1.Entity)({ name: "reacts" })
 ], React);
 exports.default = React;
 //# sourceMappingURL=react.model.js.map

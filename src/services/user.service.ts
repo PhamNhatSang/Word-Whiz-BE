@@ -11,5 +11,11 @@ export default class UserService extends BaseService<User>{
     async getByEmail(email: string): Promise<User | null> {
         return await this.repository.findOne({ where: { email } });
     }
+    async getAllInfor(email:string): Promise<User | null> {
+        return await this.repository.findOne({ where: { email }, relations:{myGroups:true,groupDetails:true}});
+    }
+
+
+    
 
 }

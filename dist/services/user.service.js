@@ -24,6 +24,11 @@ class UserService extends base_service_1.BaseService {
             return yield this.repository.findOne({ where: { email } });
         });
     }
+    getAllInfor(email) {
+        return __awaiter(this, void 0, void 0, function* () {
+            return yield this.repository.findOne({ where: { email }, relations: { myGroups: true, groupDetails: true } });
+        });
+    }
 }
 exports.default = UserService;
 //# sourceMappingURL=user.service.js.map

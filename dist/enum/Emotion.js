@@ -9,5 +9,6 @@ var Emotion;
     Emotion["WOW"] = "WOW";
     Emotion["SAD"] = "SAD";
     Emotion["ANGRY"] = "ANGRY";
+    Emotion["NONE"] = "NONE";
 })(Emotion || (exports.Emotion = Emotion = {}));
 //# sourceMappingURL=Emotion.js.map

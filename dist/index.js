@@ -30,7 +30,7 @@ app.use(body_parser_1.default.urlencoded({ extended: true }));
     middlewares: [path_1.default.join(__dirname + '/middlewares/*.middleware.{js,ts}')],
 });
 app.listen(port, () => __awaiter(void 0, void 0, void 0, function* () {
-    yield database_1.database.sync({ alter: true });
+    yield database_1.database.initialize();
     return console.log(`Server is listening on ${port}`);
 }));
 //# sourceMappingURL=index.js.map

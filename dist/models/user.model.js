@@ -14,65 +14,74 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
 Object.defineProperty(exports, "__esModule", { value: true });
 require("reflect-metadata");
 const base_model_1 = require("./base-model");
-const sequelize_typescript_1 = require("sequelize-typescript");
 const Role_1 = require("../enum/Role");
 const group_model_1 = __importDefault(require("./group.model"));
 const group_detail_model_1 = __importDefault(require("./group-detail.model"));
 const course_model_1 = __importDefault(require("./course.model"));
-const node_lombok_1 = require("node-lombok");
 const post_model_1 = __importDefault(require("./post.model"));
 const comment_model_1 = __importDefault(require("./comment.model"));
 const course_rate_model_1 = __importDefault(require("./course-rate.model"));
+const typeorm_1 = require("typeorm");
+const typeorm_2 = require("typeorm");
 const react_model_1 = __importDefault(require("./react.model"));
+const class_validator_1 = require("class-validator");
 let User = class User extends base_model_1.BaseModel {
 };
 __decorate([
-    sequelize_typescript_1.Column,
+    (0, typeorm_2.Column)({ nullable: true }),
     __metadata("design:type", String)
 ], User.prototype, "name", void 0);
 __decorate([
-    sequelize_typescript_1.Column,
+    (0, typeorm_2.Column)(),
+    (0, class_validator_1.IsEmail)(),
     __metadata("design:type", String)
 ], User.prototype, "email", void 0);
 __decorate([
-    sequelize_typescript_1.Column,
+    (0, typeorm_2.Column)(),
     __metadata("design:type", String)
 ], User.prototype, "password", void 0);
 __decorate([
-    (0, sequelize_typescript_1.Column)(sequelize_typescript_1.DataType.ENUM("admin", "student", "teacher")),
+    (0, typeorm_2.Column)({ type: "enum", enum: ["ADMIN", "STUDENT", "TEACHER"], default: "STUDENT" }),
     __metadata("design:type", String)
 ], User.prototype, "role", void 0);
 __decorate([
-    (0, sequelize_typescript_1.HasMany)(() => group_model_1.default),
-    __metadata("design:type", Array)
-], User.prototype, "my_groups", void 0);
+    (0, typeorm_2.Column)({ nullable: true }),
+    __metadata("design:type", String)
+], User.prototype, "refeshToken", void 0);
 __decorate([
-    (0, sequelize_typescript_1.HasMany)(() => course_model_1.default),
-    __metadata("design:type", Array)
-], User.prototype, "my_courses", void 0);
+    (0, typeorm_2.Column)({ nullable: true }),
+    __metadata("design:type", String)
+], User.prototype, "avatar", void 0);
 __decorate([
-    (0, sequelize_typescript_1.HasMany)(() => post_model_1.default),
+    (0, typeorm_1.OneToMany)(() => group_model_1.default, (group) => group.owner, { nullable: true }),
     __metadata("design:type", Array)
-], User.prototype, "my_posts", void 0);
+], User.prototype, "myGroups", void 0);
 __decorate([
-    (0, sequelize_typescript_1.BelongsToMany)(() => group_model_1.default, () => group_detail_model_1.default),
+    (0, typeorm_1.OneToMany)(() => course_model_1.default, (course) => course.owner, { nullable: true }),
     __metadata("design:type", Array)
-], User.prototype, "groups", void 0);
+], User.prototype, "myCourses", void 0);
 __decorate([
-    (0, sequelize_typescript_1.BelongsToMany)(() => post_model_1.default, () => comment_model_1.default),
+    (0, typeorm_1.OneToMany)(() => post_model_1.default, (post) => post.owner, { nullable: true }),
     __metadata("design:type", Array)
-], User.prototype, "postComments", void 0);
+], User.prototype, "myPosts", void 0);
 __decorate([
-    (0, sequelize_typescript_1.BelongsToMany)(() => post_model_1.default, () => react_model_1.default),
+    (0, typeorm_1.OneToMany)(() => course_rate_model_1.default, (courseRate) => courseRate.user, { nullable: true }),
     __metadata("design:type", Array)
-], User.prototype, "postReacts", void 0);
+], User.prototype, "courseRate", void 0);
 __decorate([
-    (0, sequelize_typescript_1.BelongsToMany)(() => course_model_1.default, () => course_rate_model_1.default),
+    (0, typeorm_1.OneToMany)(() => group_detail_model_1.default, (groupDetail) => groupDetail.student, { nullable: true }),
     __metadata("design:type", Array)
-], User.prototype, "postRates", void 0);
+], User.prototype, "groupDetails", void 0);
+__decorate([
+    (0, typeorm_1.OneToMany)(() => comment_model_1.default, (comment) => comment.user, { nullable: true }),
+    __metadata("design:type", Array)
+], User.prototype, "myComments", void 0);
+__decorate([
+    (0, typeorm_1.OneToMany)(() => react_model_1.default, (react) => react.user, { nullable: true }),
+    __metadata("design:type", Array)
+], User.prototype, "myReacts", void 0);
 User = __decorate([
-    (0, sequelize_typescript_1.Table)({ modelName: "users" }),
-    (0, node_lombok_1.Data)()
+    (0, typeorm_1.Entity)({ name: "users" })
 ], User);
 exports.default = User;
 //# sourceMappingURL=user.model.js.map

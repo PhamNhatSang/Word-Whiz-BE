@@ -1,24 +1,18 @@
 import "reflect-metadata";
 
-import { Column, ForeignKey, Table } from "sequelize-typescript";
 import { BaseModel } from "./base-model";
 import Group from "./group.model";
 import User from "./user.model";
 import Course from "./course.model";
-import { Data } from "node-lombok";
-@Table({modelName:'group_details'})
-@Data()
-export default class GroupDetail extends BaseModel<GroupDetail> {
-    @ForeignKey(() => Group)
-    @Column
-    group_id: number
+import { Entity, ManyToOne } from "typeorm";
+@Entity({ name: "group_details" })
+export default class GroupDetail extends BaseModel {
+  @ManyToOne(() => Group, (group) => group.groupDetails)
+  group: Group;
 
-    @ForeignKey(() => User)
-    @Column
-    student_id: number
+  @ManyToOne(() => User, (user) => user.groupDetails,{nullable:true})
+  student: User;
 
-    @ForeignKey(() => Course)
-    @Column
-    course_id: number
-    
+  @ManyToOne(() => Course, (course) => course.groupDetails,{nullable:true})
+  course: Course;
 }

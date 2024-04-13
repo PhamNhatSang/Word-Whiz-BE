@@ -2,16 +2,7 @@ import "reflect-metadata";
 
 import { Accessiblity } from "../enum/Accessiblity";
 import { BaseModel } from "./base-model";
-import {
-  BelongsTo,
-  BelongsToMany,
-  Column,
-  DataType,
-  ForeignKey,
-  HasMany,
-  HasOne,
-  Table,
-} from "sequelize-typescript";
+
 import Group from "./group.model";
 import GroupDetail from "./group-detail.model";
 
@@ -20,41 +11,43 @@ import Word from "./word.model";
 import Test from "./test.model";
 import { Data } from "node-lombok";
 import CourseRate from "./course-rate.model";
+import {
+  Entity,
+  Column,
+  ManyToOne,
+  OneToMany,
+  OneToOne,
+  JoinColumn,
+  ManyToMany,
+} from "typeorm";
 
-@Table({ modelName: "courses" })
-@Data()
-
-export default class Course extends BaseModel<Course> {
-  @ForeignKey(() => User)
-  @Column
-  owner_id: number;
-
- 
-  @BelongsTo(() => User)
+@Entity({ name: "courses" })
+export default class Course extends BaseModel {
+  @ManyToOne(() => User, (user) => user.myCourses)
   owner: User;
-  
-  @Column
+
+  @Column()
   title: string;
 
-  @Column(DataType.TEXT)
+  @Column({ type: "text" })
   description: string;
 
-  @Column(DataType.ENUM("public", "private"))
+  @Column({ type: "enum", enum: ["PUBLIC", "PRIVATE"], default: "PUBLIC" })
   accessiblity: Accessiblity;
 
-
-  @Column(DataType.BOOLEAN)
+  @Column({ type: "boolean" })
   is_creadted: boolean;
 
-  @HasMany(() => Word)
+  @OneToMany(() => Word, (word) => word.course, { nullable: true })
   words: Word[];
 
-  @HasOne(() => Test)
+  @OneToOne(() => Test)
+  @JoinColumn()
   test: Test;
 
-  @BelongsToMany(() => Group, () => GroupDetail)
-  groups: Group[];
+  @OneToMany(() => GroupDetail, (groupDetail) => groupDetail.course)
+  groupDetails: GroupDetail[];
 
-  @BelongsToMany(() => User, () => CourseRate)
-  userRates: Array<User & { CourseRate: CourseRate }>;
+  @OneToMany(() => CourseRate, (courseRate) => courseRate.course)
+  courseRate: CourseRate[];
 }

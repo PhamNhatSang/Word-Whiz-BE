@@ -14,27 +14,25 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
 Object.defineProperty(exports, "__esModule", { value: true });
 require("reflect-metadata");
 const base_model_1 = require("./base-model");
-const sequelize_typescript_1 = require("sequelize-typescript");
 const user_model_1 = __importDefault(require("./user.model"));
 const course_model_1 = __importDefault(require("./course.model"));
+const typeorm_1 = require("typeorm");
 let CourseRate = class CourseRate extends base_model_1.BaseModel {
 };
 __decorate([
-    (0, sequelize_typescript_1.ForeignKey)(() => course_model_1.default),
-    sequelize_typescript_1.Column,
-    __metadata("design:type", Number)
-], CourseRate.prototype, "course_id", void 0);
+    (0, typeorm_1.ManyToOne)(() => course_model_1.default, (course) => course.courseRate),
+    __metadata("design:type", course_model_1.default)
+], CourseRate.prototype, "course", void 0);
 __decorate([
-    (0, sequelize_typescript_1.ForeignKey)(() => user_model_1.default),
-    sequelize_typescript_1.Column,
-    __metadata("design:type", Number)
-], CourseRate.prototype, "user_id", void 0);
+    (0, typeorm_1.ManyToOne)(() => user_model_1.default, (user) => user.courseRate),
+    __metadata("design:type", user_model_1.default)
+], CourseRate.prototype, "user", void 0);
 __decorate([
-    sequelize_typescript_1.Column,
+    (0, typeorm_1.Column)(),
     __metadata("design:type", Number)
 ], CourseRate.prototype, "rate", void 0);
 CourseRate = __decorate([
-    (0, sequelize_typescript_1.Table)({ modelName: "course_rates" })
+    (0, typeorm_1.Entity)({ name: "course_rates" })
 ], CourseRate);
 exports.default = CourseRate;
 //# sourceMappingURL=course-rate.model.js.map

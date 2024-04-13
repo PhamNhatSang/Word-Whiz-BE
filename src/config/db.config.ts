@@ -1,16 +1,16 @@
 import "reflect-metadata";
-import { SequelizeOptions } from "sequelize-typescript";
-
-export const dbConfig : SequelizeOptions={
-  repositoryMode: true,
+import { DataSourceOptions } from "typeorm";
+export const dbConfig :DataSourceOptions={
+  logging:true,
+  type: "postgres",
+  url: process.env.DATABASE_URL,
+  host: process.env.DB_HOST,
   username: process.env.DB_USERNAME,
   password: process.env.DB_PASSWORD,
   database: process.env.DB_NAME,
-  host: process.env.DB_HOST,
-  dialect: 'postgres',
-  dialectOptions: {
-    ssl: {},
-  }
+  entities: ["src/models/**/*.model.{ts,js}"],
+  migrations: ["src/migrations/**/*.{ts,js}"],
+  ssl:{}
 }
 
 

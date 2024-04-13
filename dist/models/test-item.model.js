@@ -13,48 +13,41 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
 };
 Object.defineProperty(exports, "__esModule", { value: true });
 require("reflect-metadata");
-const sequelize_typescript_1 = require("sequelize-typescript");
-const base_model_1 = require("./base-model");
 const test_model_1 = __importDefault(require("./test.model"));
-const node_lombok_1 = require("node-lombok");
+const typeorm_1 = require("typeorm");
+const base_model_1 = require("./base-model");
 let TestItem = class TestItem extends base_model_1.BaseModel {
 };
 __decorate([
-    (0, sequelize_typescript_1.ForeignKey)(() => test_model_1.default),
-    sequelize_typescript_1.Column,
-    __metadata("design:type", Number)
-], TestItem.prototype, "test_id", void 0);
-__decorate([
-    (0, sequelize_typescript_1.BelongsTo)(() => test_model_1.default),
-    __metadata("design:type", test_model_1.default)
-], TestItem.prototype, "test", void 0);
-__decorate([
-    (0, sequelize_typescript_1.Column)(sequelize_typescript_1.DataType.TEXT),
+    (0, typeorm_1.Column)({ type: "text" }),
     __metadata("design:type", String)
 ], TestItem.prototype, "question", void 0);
 __decorate([
-    (0, sequelize_typescript_1.Column)(sequelize_typescript_1.DataType.TEXT),
+    (0, typeorm_1.Column)({ type: "text" }),
     __metadata("design:type", String)
 ], TestItem.prototype, "option_1", void 0);
 __decorate([
-    (0, sequelize_typescript_1.Column)(sequelize_typescript_1.DataType.TEXT),
+    (0, typeorm_1.Column)({ type: "text" }),
     __metadata("design:type", String)
 ], TestItem.prototype, "option_2", void 0);
 __decorate([
-    (0, sequelize_typescript_1.Column)(sequelize_typescript_1.DataType.TEXT),
+    (0, typeorm_1.Column)({ type: "text" }),
     __metadata("design:type", String)
 ], TestItem.prototype, "option_3", void 0);
 __decorate([
-    (0, sequelize_typescript_1.Column)(sequelize_typescript_1.DataType.TEXT),
+    (0, typeorm_1.Column)({ type: "text" }),
     __metadata("design:type", String)
 ], TestItem.prototype, "option_4", void 0);
 __decorate([
-    (0, sequelize_typescript_1.Column)(sequelize_typescript_1.DataType.TEXT),
+    (0, typeorm_1.Column)({ type: "text" }),
     __metadata("design:type", String)
 ], TestItem.prototype, "correct_answer", void 0);
+__decorate([
+    (0, typeorm_1.ManyToOne)(() => test_model_1.default, (test) => test.testItems),
+    __metadata("design:type", test_model_1.default)
+], TestItem.prototype, "test", void 0);
 TestItem = __decorate([
-    (0, sequelize_typescript_1.Table)({ modelName: 'test_items' }),
-    (0, node_lombok_1.Data)()
+    (0, typeorm_1.Entity)({ name: "test_items" })
 ], TestItem);
 exports.default = TestItem;
 //# sourceMappingURL=test-item.model.js.map

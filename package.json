@@ -8,7 +8,11 @@
     "build": "rimraf dist && tsc",
     "ts.check": "tsc --project tsconfig.json",
     "add-build": "git add dist",
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "typeorm": "typeorm-ts-node-commonjs",
+    "migration:generate": "rm -rf src/migrations/* && npm run typeorm migration:generate -- -d src/database.ts",
+    "migration:run":"ts-node ./node_modules/typeorm/cli.js migration:run -d src/database.ts"
+     
   },
   "pre-commit": [
     "ts.check",
@@ -43,7 +47,8 @@
     "routing-controllers": "^0.10.4",
     "sequelize": "^6.37.1",
     "sequelize-typescript": "^2.1.6",
-    "ts-node": "^10.9.2"
+    "ts-node": "^10.9.2",
+    "typeorm": "^0.3.20"
   },
   "devDependencies": {
     "pre-commit": "^1.2.2",

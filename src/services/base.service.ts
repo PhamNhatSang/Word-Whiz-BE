@@ -1,8 +1,8 @@
 import "reflect-metadata";
 import { BaseModel } from "../models/base-model";
 import { database } from "../database";
-import { Repository } from "sequelize-typescript";
-export abstract class BaseService<Entity extends BaseModel<Entity>> {
+import { Repository } from "typeorm";
+export abstract class BaseService<Entity extends BaseModel> {
     protected repository: Repository<Entity>;
 
     constructor(entity: new () => Entity){
@@ -10,20 +10,20 @@ export abstract class BaseService<Entity extends BaseModel<Entity>> {
     }
     
     async  getAll(): Promise<Entity[]> {
-        return await this.repository.findAll();
+        return await this.repository.find()
     }
-    async getById(id: number): Promise<Entity | null> {
-        return await this.repository.findByPk(id);
+    async getById(id: any): Promise<Entity | null> {
+        return await this.repository.findOneBy({id:id})
     }
 
-    async create(entity: any): Promise<Entity> {
-        return await this.repository.create(entity);
+    async create(entity: Entity): Promise<Entity> {
+        return await this.repository.save(entity);
     }
-    async update(id :any ,entity: Entity): Promise<Entity | null> {
-        await this.repository.update(entity, { where: { id } });
-        return await this.repository.findByPk(id);
+    async update(entity: Entity): Promise<Entity | null> {
+        return await this.repository.save(entity)
+        
     }
     async delete(id: any): Promise<void> {
-        await this.repository.destroy({ where: { id } });
+        await this.repository.delete(id)
     }
 }

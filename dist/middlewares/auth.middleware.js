@@ -29,10 +29,12 @@ let AuthMiddleware = class AuthMiddleware {
         if (!/^Bearer$/i.test(scheme)) {
             throw new routing_controllers_1.UnauthorizedError("Token malformatted");
         }
-        jsonwebtoken_1.default.verify(token, process.env.SECRET_KEY, (err, decoded) => {
+        jsonwebtoken_1.default.verify(token, process.env.ACCESS_SECRET_KEY, (err, decoded) => {
             if (err) {
                 throw new routing_controllers_1.UnauthorizedError("Token invalid");
             }
+            request.body.currentUserData = decoded;
+            console.log(decoded);
             next();
         });
     }

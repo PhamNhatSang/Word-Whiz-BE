@@ -13,32 +13,27 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
 };
 Object.defineProperty(exports, "__esModule", { value: true });
 require("reflect-metadata");
-const sequelize_typescript_1 = require("sequelize-typescript");
 const base_model_1 = require("./base-model");
 const group_model_1 = __importDefault(require("./group.model"));
 const user_model_1 = __importDefault(require("./user.model"));
 const course_model_1 = __importDefault(require("./course.model"));
-const node_lombok_1 = require("node-lombok");
+const typeorm_1 = require("typeorm");
 let GroupDetail = class GroupDetail extends base_model_1.BaseModel {
 };
 __decorate([
-    (0, sequelize_typescript_1.ForeignKey)(() => group_model_1.default),
-    sequelize_typescript_1.Column,
-    __metadata("design:type", Number)
-], GroupDetail.prototype, "group_id", void 0);
+    (0, typeorm_1.ManyToOne)(() => group_model_1.default, (group) => group.groupDetails),
+    __metadata("design:type", group_model_1.default)
+], GroupDetail.prototype, "group", void 0);
 __decorate([
-    (0, sequelize_typescript_1.ForeignKey)(() => user_model_1.default),
-    sequelize_typescript_1.Column,
-    __metadata("design:type", Number)
-], GroupDetail.prototype, "student_id", void 0);
+    (0, typeorm_1.ManyToOne)(() => user_model_1.default, (user) => user.groupDetails, { nullable: true }),
+    __metadata("design:type", user_model_1.default)
+], GroupDetail.prototype, "student", void 0);
 __decorate([
-    (0, sequelize_typescript_1.ForeignKey)(() => course_model_1.default),
-    sequelize_typescript_1.Column,
-    __metadata("design:type", Number)
-], GroupDetail.prototype, "course_id", void 0);
+    (0, typeorm_1.ManyToOne)(() => course_model_1.default, (course) => course.groupDetails, { nullable: true }),
+    __metadata("design:type", course_model_1.default)
+], GroupDetail.prototype, "course", void 0);
 GroupDetail = __decorate([
-    (0, sequelize_typescript_1.Table)({ modelName: 'group_details' }),
-    (0, node_lombok_1.Data)()
+    (0, typeorm_1.Entity)({ name: "group_details" })
 ], GroupDetail);
 exports.default = GroupDetail;
 //# sourceMappingURL=group-detail.model.js.map

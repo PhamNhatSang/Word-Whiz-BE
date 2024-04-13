@@ -5,4 +5,5 @@ export enum Emotion {
     WOW = "WOW",
     SAD = "SAD",
     ANGRY = "ANGRY",
+    NONE="NONE"
 }

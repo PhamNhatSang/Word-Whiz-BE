@@ -1,13 +1,7 @@
 import "reflect-metadata";
 
 import { BaseModel } from "./base-model";
-import {
-  Table,
-  Column,
-  DataType,
-  BelongsToMany,
-  HasMany,
-} from "sequelize-typescript";
+
 import { Role } from "../enum/Role";
 import Group from "./group.model";
 import GroupDetail from "./group-detail.model";
@@ -16,40 +10,49 @@ import { Data } from "node-lombok";
 import Post from "./post.model";
 import Comment from "./comment.model";
 import CourseRate from "./course-rate.model";
+import { Entity, OneToMany } from "typeorm";
+import { Column,PrimaryGeneratedColumn, } from "typeorm";
 import React from "./react.model";
-@Table({ modelName: "users" })
-@Data()
-export default class User extends BaseModel<User> {
-  @Column
+import { IsEmail } from "class-validator";
+@Entity({name:"users"})
+export default class User extends BaseModel {
+  @Column({nullable:true})
   name: string;
 
-  @Column
-  email: string;
+  @Column()
+  @IsEmail()
+  email!: string;
 
-  @Column
+  @Column()
   password: string;
 
-  @Column(DataType.ENUM("admin", "student", "teacher"))
+  @Column({type:"enum",enum:["ADMIN","STUDENT","TEACHER"],default:"STUDENT"})
   role: Role;
 
-  @HasMany(() => Group)
-  my_groups: Group[];
+  @Column({nullable:true})
+  refeshToken: string;
+  @Column({nullable:true})
+  avatar: string;
+  @OneToMany(() => Group,(group)=>group.owner,{nullable:true})
+  myGroups: Group[];
 
-  @HasMany(() => Course)
-  my_courses: Course[];
+  @OneToMany(() => Course,(course)=>course.owner,{nullable:true})
+  myCourses: Course[];
+  
+  @OneToMany(() => Post,(post)=>post.owner,{nullable:true})
+  myPosts: Post[];
 
-  @HasMany(() => Post)
-  my_posts: Post[];
+  @OneToMany(()=>CourseRate,(courseRate)=>courseRate.user,{nullable:true})
+  courseRate:CourseRate[]
 
-  @BelongsToMany(() => Group, () => GroupDetail)
-  groups: Group[];
+  @OneToMany(()=> GroupDetail,(groupDetail)=>groupDetail.student,{nullable:true})
+  groupDetails:GroupDetail[]
 
-  @BelongsToMany(() => Post, () => Comment)
-  postComments: Array<Post & { Comment: Comment }>;
+  @OneToMany(()=>Comment,(comment)=>comment.user,{nullable:true})
+  myComments:Comment[]
 
-  @BelongsToMany(() => Post, () => React)
-  postReacts: Array<Post & { React: React }>;
+  @OneToMany(()=>React,(react)=>react.user,{nullable:true})
+  myReacts:React[]
 
-  @BelongsToMany(() => Course, () => CourseRate)
-  postRates: Array<Course & { CourseRate: CourseRate }>;
+  
 }

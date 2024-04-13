@@ -11,9 +11,8 @@ var __metadata = (this && this.__metadata) || function (k, v) {
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.BaseModel = void 0;
 require("reflect-metadata");
-const sequelize_typescript_1 = require("sequelize-typescript");
-const sequelize_typescript_2 = require("sequelize-typescript");
-class BaseModel extends sequelize_typescript_1.Model {
+const typeorm_1 = require("typeorm");
+let BaseModel = class BaseModel {
     set _createdAt(value) {
         this.updatedAt = value;
     }
@@ -29,24 +28,21 @@ class BaseModel extends sequelize_typescript_1.Model {
     get _id() {
         return this.id;
     }
-}
+};
 exports.BaseModel = BaseModel;
 __decorate([
-    sequelize_typescript_2.AutoIncrement,
-    sequelize_typescript_2.PrimaryKey,
-    (0, sequelize_typescript_2.Column)(sequelize_typescript_2.DataType.INTEGER),
+    (0, typeorm_1.PrimaryGeneratedColumn)(),
     __metadata("design:type", Number)
 ], BaseModel.prototype, "id", void 0);
 __decorate([
-    (0, sequelize_typescript_2.Column)(sequelize_typescript_2.DataType.DATE),
+    (0, typeorm_1.CreateDateColumn)(),
     __metadata("design:type", Date)
 ], BaseModel.prototype, "createdAt", void 0);
 __decorate([
-    (0, sequelize_typescript_2.Column)(sequelize_typescript_2.DataType.DATE),
+    (0, typeorm_1.UpdateDateColumn)(),
     __metadata("design:type", Date)
 ], BaseModel.prototype, "updatedAt", void 0);
-__decorate([
-    (0, sequelize_typescript_2.Column)(sequelize_typescript_2.DataType.STRING),
-    __metadata("design:type", String)
-], BaseModel.prototype, "name", void 0);
+exports.BaseModel = BaseModel = __decorate([
+    (0, typeorm_1.Entity)()
+], BaseModel);
 //# sourceMappingURL=base-model.js.map

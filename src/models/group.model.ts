@@ -1,31 +1,21 @@
 import "reflect-metadata";
 
-import { Table,Column, ForeignKey, BelongsTo ,BelongsToMany} from "sequelize-typescript";
 import { BaseModel } from "./base-model";
 import User from "./user.model";
 import GroupDetail from "./group-detail.model";
-import Course from "./course.model";
-import { Data } from "node-lombok";
+import { Entity, Column, ManyToOne, OneToMany } from "typeorm";
 
-@Table({modelName:'groups'})
-@Data()
-export default class Group extends BaseModel<Group> {
-    @Column
-    group_name:string
-    @Column
-    group_description:string
+@Entity({ name: "groups" })
+export default class Group extends BaseModel {
+  @Column({nullable: true})
+  group_name: string;
 
-    @ForeignKey(() => User)
-    @Column
-    owner_id: number
+  @Column({nullable: true})
+  group_description: string;
 
-    @BelongsTo(() => User)
-    owner: User
+  @ManyToOne(() => User, (user) => user.myGroups)
+  owner: User;
 
-    @BelongsToMany(() => User, () => GroupDetail)
-    students: User[]
-
-    @BelongsToMany(() => Course, () => GroupDetail)
-    courses: Course[]
-
+  @OneToMany(() => GroupDetail, (groupDetail) => groupDetail.group, { nullable: true })
+  groupDetails: GroupDetail[];
 }
