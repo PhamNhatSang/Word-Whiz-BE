@@ -5,10 +5,17 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.dbConfig = void 0;
 require("reflect-metadata");
-const path_1 = require("path");
-const isProduction = process.env.NODE_ENV === "production";
-const rootDir = isProduction ? process.cwd() : (0, path_1.join)(process.cwd(), "src");
 const user_model_1 = __importDefault(require("../models/user.model"));
+const group_model_1 = __importDefault(require("../models/group.model"));
+const course_model_1 = __importDefault(require("../models/course.model"));
+const post_model_1 = __importDefault(require("../models/post.model"));
+const comment_model_1 = __importDefault(require("../models/comment.model"));
+const courseRate_model_1 = __importDefault(require("../models/courseRate.model"));
+const react_model_1 = __importDefault(require("../models/react.model"));
+const test_model_1 = __importDefault(require("../models/test.model"));
+const word_model_1 = __importDefault(require("../models/word.model"));
+const testItem_model_1 = __importDefault(require("../models/testItem.model"));
+const entities = [user_model_1.default, group_model_1.default, course_model_1.default, post_model_1.default, comment_model_1.default, courseRate_model_1.default, react_model_1.default, test_model_1.default, word_model_1.default, testItem_model_1.default];
 exports.dbConfig = {
     logging: true,
     type: "postgres",
@@ -17,8 +24,8 @@ exports.dbConfig = {
     username: process.env.DB_USERNAME,
     password: process.env.DB_PASSWORD,
     database: process.env.DB_NAME,
-    entities: [user_model_1.default],
-    migrations: [(0, path_1.join)(rootDir, "migrations", "*.{js,ts}")],
+    entities: entities,
+    migrations: ["src/migrations/*{.ts,.js}"],
     ssl: {},
 };
 //# sourceMappingURL=db.config.js.map
