@@ -10,8 +10,8 @@ exports.dbConfig = {
     username: process.env.DB_USERNAME,
     password: process.env.DB_PASSWORD,
     database: process.env.DB_NAME,
-    entities: [__dirname + "/models/*.model.{js,ts}"],
-    migrations: [__dirname + "/migrations/*.{js,ts}"],
+    entities: ["/**/models/*.model.{js,ts}"],
+    migrations: ["/**/migrations/*.{js,ts}"],
     ssl: {},
 };
 //# sourceMappingURL=db.config.js.map
