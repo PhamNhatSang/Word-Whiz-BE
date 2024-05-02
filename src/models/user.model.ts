@@ -1,19 +1,19 @@
 import "reflect-metadata";
 
-import { BaseModel } from "./base-model";
+import { BaseModel } from "./baseModel";
 
 import { Role } from "../enum/Role";
 import Group from "./group.model";
-import GroupDetail from "./group-detail.model";
 import Course from "./course.model";
-import { Data } from "node-lombok";
 import Post from "./post.model";
 import Comment from "./comment.model";
-import CourseRate from "./course-rate.model";
-import { Entity, OneToMany } from "typeorm";
-import { Column,PrimaryGeneratedColumn, } from "typeorm";
+import CourseRate from "./courseRate.model";
+import { Entity, ManyToMany, OneToMany } from "typeorm";
+import { Column, } from "typeorm";
 import React from "./react.model";
 import { IsEmail } from "class-validator";
+import test from "node:test";
+import Test from "./test.model";
 @Entity({name:"users"})
 export default class User extends BaseModel {
   @Column({nullable:true})
@@ -45,14 +45,20 @@ export default class User extends BaseModel {
   @OneToMany(()=>CourseRate,(courseRate)=>courseRate.user,{nullable:true})
   courseRate:CourseRate[]
 
-  @OneToMany(()=> GroupDetail,(groupDetail)=>groupDetail.student,{nullable:true})
-  groupDetails:GroupDetail[]
-
   @OneToMany(()=>Comment,(comment)=>comment.user,{nullable:true})
   myComments:Comment[]
 
   @OneToMany(()=>React,(react)=>react.user,{nullable:true})
   myReacts:React[]
+
+  @OneToMany(()=>Test,(test)=>test.user,{nullable:true})
+  myTests:Test[]
+
+  @ManyToMany(()=>Course,(course)=>course.userImporteds,{nullable:true})
+  courseImports:Course[]
+
+  @ManyToMany(() => Group, (group) => group.students)
+  addedGroups: Group[];
 
   
 }

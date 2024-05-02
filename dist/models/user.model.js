@@ -13,19 +13,19 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
 };
 Object.defineProperty(exports, "__esModule", { value: true });
 require("reflect-metadata");
-const base_model_1 = require("./base-model");
+const baseModel_1 = require("./baseModel");
 const Role_1 = require("../enum/Role");
 const group_model_1 = __importDefault(require("./group.model"));
-const group_detail_model_1 = __importDefault(require("./group-detail.model"));
 const course_model_1 = __importDefault(require("./course.model"));
 const post_model_1 = __importDefault(require("./post.model"));
 const comment_model_1 = __importDefault(require("./comment.model"));
-const course_rate_model_1 = __importDefault(require("./course-rate.model"));
+const courseRate_model_1 = __importDefault(require("./courseRate.model"));
 const typeorm_1 = require("typeorm");
 const typeorm_2 = require("typeorm");
 const react_model_1 = __importDefault(require("./react.model"));
 const class_validator_1 = require("class-validator");
-let User = class User extends base_model_1.BaseModel {
+const test_model_1 = __importDefault(require("./test.model"));
+let User = class User extends baseModel_1.BaseModel {
 };
 __decorate([
     (0, typeorm_2.Column)({ nullable: true }),
@@ -65,13 +65,9 @@ __decorate([
     __metadata("design:type", Array)
 ], User.prototype, "myPosts", void 0);
 __decorate([
-    (0, typeorm_1.OneToMany)(() => course_rate_model_1.default, (courseRate) => courseRate.user, { nullable: true }),
+    (0, typeorm_1.OneToMany)(() => courseRate_model_1.default, (courseRate) => courseRate.user, { nullable: true }),
     __metadata("design:type", Array)
 ], User.prototype, "courseRate", void 0);
-__decorate([
-    (0, typeorm_1.OneToMany)(() => group_detail_model_1.default, (groupDetail) => groupDetail.student, { nullable: true }),
-    __metadata("design:type", Array)
-], User.prototype, "groupDetails", void 0);
 __decorate([
     (0, typeorm_1.OneToMany)(() => comment_model_1.default, (comment) => comment.user, { nullable: true }),
     __metadata("design:type", Array)
@@ -80,6 +76,18 @@ __decorate([
     (0, typeorm_1.OneToMany)(() => react_model_1.default, (react) => react.user, { nullable: true }),
     __metadata("design:type", Array)
 ], User.prototype, "myReacts", void 0);
+__decorate([
+    (0, typeorm_1.OneToMany)(() => test_model_1.default, (test) => test.user, { nullable: true }),
+    __metadata("design:type", Array)
+], User.prototype, "myTests", void 0);
+__decorate([
+    (0, typeorm_1.ManyToMany)(() => course_model_1.default, (course) => course.userImporteds, { nullable: true }),
+    __metadata("design:type", Array)
+], User.prototype, "courseImports", void 0);
+__decorate([
+    (0, typeorm_1.ManyToMany)(() => group_model_1.default, (group) => group.students),
+    __metadata("design:type", Array)
+], User.prototype, "addedGroups", void 0);
 User = __decorate([
     (0, typeorm_1.Entity)({ name: "users" })
 ], User);

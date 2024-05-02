@@ -2,8 +2,8 @@ import "reflect-metadata";
 
 import { Get, JsonController, Req, Res } from "routing-controllers";
 import User from "../models/user.model";
-import { BaseController } from "./base-controller";
-import UserService from "../services/user.service";
+import { BaseController } from "./baseController";
+import UserService from "../services/auth/auth.service";
 import { Request, Response } from "express";
 
 @JsonController()

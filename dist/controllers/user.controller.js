@@ -26,11 +26,11 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
 Object.defineProperty(exports, "__esModule", { value: true });
 require("reflect-metadata");
 const routing_controllers_1 = require("routing-controllers");
-const base_controller_1 = require("./base-controller");
-const user_service_1 = __importDefault(require("../services/user.service"));
-let UserController = class UserController extends base_controller_1.BaseController {
+const baseController_1 = require("./baseController");
+const auth_service_1 = __importDefault(require("../services/auth/auth.service"));
+let UserController = class UserController extends baseController_1.BaseController {
     constructor() {
-        super(new user_service_1.default());
+        super(new auth_service_1.default());
     }
     getCurrentUser(req, res) {
         return __awaiter(this, void 0, void 0, function* () {

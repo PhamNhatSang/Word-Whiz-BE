@@ -25,6 +25,7 @@ const app = (0, express_1.default)();
 app.use(body_parser_1.default.json());
 app.use(body_parser_1.default.urlencoded({ extended: true }));
 (0, routing_controllers_1.useExpressServer)(app, {
+    cors: true,
     routePrefix: '/api',
     controllers: [path_1.default.join(__dirname + '/controllers/*.controller.{js,ts}')],
     middlewares: [path_1.default.join(__dirname + '/middlewares/*.middleware.{js,ts}')],

@@ -1,6 +1,6 @@
 import "reflect-metadata";
 
-import { BaseModel } from "./base-model";
+import { BaseModel } from "./baseModel";
 import User from "./user.model";
 import Comment from "./comment.model";
 import React from "./react.model";

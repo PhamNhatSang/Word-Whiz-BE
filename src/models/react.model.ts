@@ -1,6 +1,6 @@
 import "reflect-metadata";
 
-import { BaseModel } from "./base-model";
+import { BaseModel } from "./baseModel";
 import User from "./user.model";
 import Post from "./post.model";
 import { Emotion } from "../enum/Emotion";

@@ -1,6 +1,6 @@
 import "reflect-metadata";
 
-import { BaseModel } from "./base-model";
+import { BaseModel } from "./baseModel";
 import Course from "./course.model";
 import { Entity, Column, ManyToOne } from "typeorm";
 @Entity({ name: "words" })

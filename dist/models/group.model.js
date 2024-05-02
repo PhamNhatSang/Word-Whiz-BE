@@ -13,11 +13,11 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
 };
 Object.defineProperty(exports, "__esModule", { value: true });
 require("reflect-metadata");
-const base_model_1 = require("./base-model");
+const baseModel_1 = require("./baseModel");
 const user_model_1 = __importDefault(require("./user.model"));
-const group_detail_model_1 = __importDefault(require("./group-detail.model"));
 const typeorm_1 = require("typeorm");
-let Group = class Group extends base_model_1.BaseModel {
+const course_model_1 = __importDefault(require("./course.model"));
+let Group = class Group extends baseModel_1.BaseModel {
 };
 __decorate([
     (0, typeorm_1.Column)({ nullable: true }),
@@ -32,9 +32,35 @@ __decorate([
     __metadata("design:type", user_model_1.default)
 ], Group.prototype, "owner", void 0);
 __decorate([
-    (0, typeorm_1.OneToMany)(() => group_detail_model_1.default, (groupDetail) => groupDetail.group, { nullable: true }),
+    (0, typeorm_1.ManyToMany)(() => user_model_1.default, (user) => user.addedGroups),
+    (0, typeorm_1.JoinTable)({
+        name: "group_students",
+        joinColumn: {
+            name: "group_id",
+            referencedColumnName: "id",
+        },
+        inverseJoinColumn: {
+            name: "user_id",
+            referencedColumnName: "id",
+        },
+    }),
     __metadata("design:type", Array)
-], Group.prototype, "groupDetails", void 0);
+], Group.prototype, "students", void 0);
+__decorate([
+    (0, typeorm_1.ManyToMany)(() => course_model_1.default, (cousre) => cousre.addedGroups),
+    (0, typeorm_1.JoinTable)({
+        name: "group_courses",
+        joinColumn: {
+            name: "group_id",
+            referencedColumnName: "id",
+        },
+        inverseJoinColumn: {
+            name: "course_id",
+            referencedColumnName: "id",
+        },
+    }),
+    __metadata("design:type", Array)
+], Group.prototype, "courses", void 0);
 Group = __decorate([
     (0, typeorm_1.Entity)({ name: "groups" })
 ], Group);

@@ -12,6 +12,7 @@ app.use(bodyParser.json())
 app.use(bodyParser.urlencoded({ extended: true }))
 
 useExpressServer(app,{
+  cors: true,
   routePrefix: '/api',
   controllers: [path.join(__dirname + '/controllers/*.controller.{js,ts}')],
   middlewares: [path.join(__dirname + '/middlewares/*.middleware.{js,ts}')],

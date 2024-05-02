@@ -13,12 +13,12 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
 };
 Object.defineProperty(exports, "__esModule", { value: true });
 require("reflect-metadata");
-const base_model_1 = require("./base-model");
+const baseModel_1 = require("./baseModel");
 const user_model_1 = __importDefault(require("./user.model"));
 const comment_model_1 = __importDefault(require("./comment.model"));
 const react_model_1 = __importDefault(require("./react.model"));
 const typeorm_1 = require("typeorm");
-let Post = class Post extends base_model_1.BaseModel {
+let Post = class Post extends baseModel_1.BaseModel {
 };
 __decorate([
     (0, typeorm_1.ManyToOne)(() => user_model_1.default, (user) => user.myPosts),

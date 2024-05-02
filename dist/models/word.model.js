@@ -13,10 +13,10 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
 };
 Object.defineProperty(exports, "__esModule", { value: true });
 require("reflect-metadata");
-const base_model_1 = require("./base-model");
+const baseModel_1 = require("./baseModel");
 const course_model_1 = __importDefault(require("./course.model"));
 const typeorm_1 = require("typeorm");
-let Word = class Word extends base_model_1.BaseModel {
+let Word = class Word extends baseModel_1.BaseModel {
 };
 __decorate([
     (0, typeorm_1.ManyToOne)(() => course_model_1.default, (course) => course.words),

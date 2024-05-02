@@ -1,9 +1,10 @@
 import "reflect-metadata";
 
-import { BaseModel } from "./base-model";
+import { BaseModel } from "./baseModel";
 import User from "./user.model";
-import GroupDetail from "./group-detail.model";
-import { Entity, Column, ManyToOne, OneToMany } from "typeorm";
+import { Entity, Column, ManyToOne, OneToMany, ManyToMany, JoinTable } from "typeorm";
+import Course from "./course.model";
+import { join } from "path";
 
 @Entity({ name: "groups" })
 export default class Group extends BaseModel {
@@ -16,6 +17,31 @@ export default class Group extends BaseModel {
   @ManyToOne(() => User, (user) => user.myGroups)
   owner: User;
 
-  @OneToMany(() => GroupDetail, (groupDetail) => groupDetail.group, { nullable: true })
-  groupDetails: GroupDetail[];
+  @ManyToMany(() => User, (user) => user.addedGroups)
+  @JoinTable({
+    name: "group_students",
+    joinColumn: {
+      name: "group_id",
+      referencedColumnName: "id",
+    },
+    inverseJoinColumn: {
+      name: "user_id",
+      referencedColumnName: "id",
+    },
+  })
+  students: User[];
+
+  @ManyToMany(() => Course, (cousre) => cousre.addedGroups)
+  @JoinTable({
+    name: "group_courses",
+    joinColumn: {
+      name: "group_id",
+      referencedColumnName: "id",
+    },
+    inverseJoinColumn: {
+      name: "course_id",
+      referencedColumnName: "id",
+    },
+  })
+  courses: Course[];
 }

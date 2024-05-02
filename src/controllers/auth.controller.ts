@@ -1,5 +1,5 @@
 import User from "../models/user.model";
-import { BaseController } from "./base-controller";
+import { BaseController } from "./baseController";
 import {
   generateAccessToken,
   generateRefreshToken,
@@ -13,16 +13,16 @@ import {
   Res,
   UnauthorizedError,
 } from "routing-controllers";
-import UserService from "../services/user.service";
+import AuthService from "../services/auth/auth.service";
 import { Request, Response } from "express";
 import jwt from "jsonwebtoken";
 import bcrypt from "bcrypt";
 import { Payload } from "../type/DefineType";
 
 @JsonController("/auth")
-export default class Authcontroller extends BaseController<User, UserService> {
+export default class Authcontroller extends BaseController<User, AuthService> {
   constructor() {
-    super(new UserService());
+    super(new AuthService());
   }
   @Post("/register")
   async register(@Req() req: Request, @Res() res: Response) {

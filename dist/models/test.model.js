@@ -13,10 +13,12 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
 };
 Object.defineProperty(exports, "__esModule", { value: true });
 require("reflect-metadata");
-const base_model_1 = require("./base-model");
-const test_item_model_1 = __importDefault(require("./test-item.model"));
+const baseModel_1 = require("./baseModel");
+const testItem_model_1 = __importDefault(require("./testItem.model"));
 const typeorm_1 = require("typeorm");
-let Test = class Test extends base_model_1.BaseModel {
+const user_model_1 = __importDefault(require("./user.model"));
+const course_model_1 = __importDefault(require("./course.model"));
+let Test = class Test extends baseModel_1.BaseModel {
 };
 __decorate([
     (0, typeorm_1.Column)(),
@@ -27,7 +29,15 @@ __decorate([
     __metadata("design:type", Boolean)
 ], Test.prototype, "is_first_done", void 0);
 __decorate([
-    (0, typeorm_1.OneToMany)(() => test_item_model_1.default, (testItem) => testItem.test, { nullable: true }),
+    (0, typeorm_1.ManyToOne)(() => user_model_1.default, (user) => user.myTests, { nullable: true }),
+    __metadata("design:type", user_model_1.default)
+], Test.prototype, "user", void 0);
+__decorate([
+    (0, typeorm_1.ManyToOne)(() => course_model_1.default, (course) => course.tests, { nullable: true }),
+    __metadata("design:type", course_model_1.default)
+], Test.prototype, "course", void 0);
+__decorate([
+    (0, typeorm_1.OneToMany)(() => testItem_model_1.default, (testItem) => testItem.test, { nullable: true }),
     __metadata("design:type", Array)
 ], Test.prototype, "testItems", void 0);
 Test = __decorate([

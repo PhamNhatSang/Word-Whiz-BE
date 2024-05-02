@@ -14,14 +14,14 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
 Object.defineProperty(exports, "__esModule", { value: true });
 require("reflect-metadata");
 const Accessiblity_1 = require("../enum/Accessiblity");
-const base_model_1 = require("./base-model");
-const group_detail_model_1 = __importDefault(require("./group-detail.model"));
+const baseModel_1 = require("./baseModel");
+const group_model_1 = __importDefault(require("./group.model"));
 const user_model_1 = __importDefault(require("./user.model"));
 const word_model_1 = __importDefault(require("./word.model"));
 const test_model_1 = __importDefault(require("./test.model"));
-const course_rate_model_1 = __importDefault(require("./course-rate.model"));
+const courseRate_model_1 = __importDefault(require("./courseRate.model"));
 const typeorm_1 = require("typeorm");
-let Course = class Course extends base_model_1.BaseModel {
+let Course = class Course extends baseModel_1.BaseModel {
 };
 __decorate([
     (0, typeorm_1.ManyToOne)(() => user_model_1.default, (user) => user.myCourses),
@@ -40,26 +40,36 @@ __decorate([
     __metadata("design:type", String)
 ], Course.prototype, "accessiblity", void 0);
 __decorate([
-    (0, typeorm_1.Column)({ type: "boolean" }),
-    __metadata("design:type", Boolean)
-], Course.prototype, "is_creadted", void 0);
-__decorate([
     (0, typeorm_1.OneToMany)(() => word_model_1.default, (word) => word.course, { nullable: true }),
     __metadata("design:type", Array)
 ], Course.prototype, "words", void 0);
 __decorate([
-    (0, typeorm_1.OneToOne)(() => test_model_1.default),
-    (0, typeorm_1.JoinColumn)(),
-    __metadata("design:type", test_model_1.default)
-], Course.prototype, "test", void 0);
-__decorate([
-    (0, typeorm_1.OneToMany)(() => group_detail_model_1.default, (groupDetail) => groupDetail.course),
+    (0, typeorm_1.OneToMany)(() => test_model_1.default, (test) => test.course, { nullable: true }),
     __metadata("design:type", Array)
-], Course.prototype, "groupDetails", void 0);
+], Course.prototype, "tests", void 0);
 __decorate([
-    (0, typeorm_1.OneToMany)(() => course_rate_model_1.default, (courseRate) => courseRate.course),
+    (0, typeorm_1.OneToMany)(() => courseRate_model_1.default, (courseRate) => courseRate.course, { nullable: true }),
     __metadata("design:type", Array)
 ], Course.prototype, "courseRate", void 0);
+__decorate([
+    (0, typeorm_1.ManyToMany)(() => group_model_1.default, (group) => group.courses, { nullable: true }),
+    __metadata("design:type", Array)
+], Course.prototype, "addedGroups", void 0);
+__decorate([
+    (0, typeorm_1.ManyToMany)(() => user_model_1.default, (user) => user.courseImports, { nullable: true }),
+    (0, typeorm_1.JoinTable)({
+        name: "course_imports", // table name for the junction table of this relation
+        joinColumn: {
+            name: "courses",
+            referencedColumnName: "id"
+        },
+        inverseJoinColumn: {
+            name: "users",
+            referencedColumnName: "id"
+        }
+    }),
+    __metadata("design:type", Array)
+], Course.prototype, "userImporteds", void 0);
 Course = __decorate([
     (0, typeorm_1.Entity)({ name: "courses" })
 ], Course);
