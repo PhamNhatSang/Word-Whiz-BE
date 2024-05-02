@@ -5,7 +5,7 @@
   "main": "index.js",
   "scripts": {
     "start": "nodemon dist/index.js",
-    "watch":" tsc -w",
+    "watch": " tsc -w",
     "build": "rimraf dist && tsc",
     "ts.check": "tsc --project tsconfig.json",
     "add-build": "git add dist",
@@ -49,7 +49,8 @@
     "sequelize": "^6.37.1",
     "sequelize-typescript": "^2.1.6",
     "ts-node": "^10.9.2",
-    "typeorm": "^0.3.20"
+    "typeorm": "^0.3.20",
+    "typescript": "^5.4.5"
   },
   "devDependencies": {
     "pre-commit": "^1.2.2",
