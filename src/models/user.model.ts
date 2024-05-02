@@ -12,7 +12,6 @@ import { Entity, ManyToMany, OneToMany } from "typeorm";
 import { Column, } from "typeorm";
 import React from "./react.model";
 import { IsEmail } from "class-validator";
-import test from "node:test";
 import Test from "./test.model";
 @Entity({name:"users"})
 export default class User extends BaseModel {
