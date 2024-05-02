@@ -1,6 +1,10 @@
 import "reflect-metadata";
-import path, { dirname } from "path";
+import path, { dirname,join } from "path";
 import { DataSourceOptions } from "typeorm";
+
+const isProduction = process.env.NODE_ENV === "production";
+const rootDir = isProduction ? process.cwd() : join(process.cwd(), "src");
+
 export const dbConfig: DataSourceOptions = {
   logging: true,
   type: "postgres",
@@ -9,7 +13,7 @@ export const dbConfig: DataSourceOptions = {
   username: process.env.DB_USERNAME,
   password: process.env.DB_PASSWORD,
   database: process.env.DB_NAME,
-  entities: ["/**/models/*.model.{js,ts}"],
-  migrations: ["/**/migrations/*.{js,ts}"],
+  entities: [join(rootDir, "models", "*.model.{js,ts}")],
+  migrations: [join(rootDir, "migrations", "*.{js,ts}")],
   ssl: {},
 };
