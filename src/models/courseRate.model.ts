@@ -4,7 +4,7 @@ import { BaseModel } from "./baseModel";
 import User from "./user.model";
 import Course from "./course.model";
 import { Entity, Column, ManyToOne } from "typeorm";
-@Entity({ name: "course_rates" })
+@Entity()
 export default class CourseRate extends BaseModel {
   @ManyToOne(() => Course, (course) => course.courseRate)
   course: Course;

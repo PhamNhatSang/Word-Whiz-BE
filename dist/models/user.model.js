@@ -89,7 +89,7 @@ __decorate([
     __metadata("design:type", Array)
 ], User.prototype, "addedGroups", void 0);
 User = __decorate([
-    (0, typeorm_1.Entity)({ name: "users" })
+    (0, typeorm_1.Entity)()
 ], User);
 exports.default = User;
 //# sourceMappingURL=user.model.js.map

@@ -3,7 +3,7 @@ import "reflect-metadata";
 import { BaseModel } from "./baseModel";
 import Course from "./course.model";
 import { Entity, Column, ManyToOne } from "typeorm";
-@Entity({ name: "words" })
+@Entity()
 export default class Word extends BaseModel {
   @ManyToOne(() => Course, (course) => course.words)
   course: Course;

@@ -41,7 +41,7 @@ __decorate([
     __metadata("design:type", Array)
 ], Post.prototype, "postReacts", void 0);
 Post = __decorate([
-    (0, typeorm_1.Entity)({ name: "posts" })
+    (0, typeorm_1.Entity)()
 ], Post);
 exports.default = Post;
 //# sourceMappingURL=post.model.js.map

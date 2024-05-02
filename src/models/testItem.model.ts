@@ -3,7 +3,7 @@ import "reflect-metadata";
 import Test from "./test.model";
 import { Entity, Column, ManyToOne } from "typeorm";
 import { BaseModel } from "./baseModel";
-@Entity({name:"test_items"})
+@Entity()
 export default class TestItem extends BaseModel {
   
   @Column({ type: "text" })

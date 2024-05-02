@@ -71,7 +71,7 @@ __decorate([
     __metadata("design:type", Array)
 ], Course.prototype, "userImporteds", void 0);
 Course = __decorate([
-    (0, typeorm_1.Entity)({ name: "courses" })
+    (0, typeorm_1.Entity)()
 ], Course);
 exports.default = Course;
 //# sourceMappingURL=course.model.js.map

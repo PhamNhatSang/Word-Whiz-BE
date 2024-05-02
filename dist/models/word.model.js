@@ -43,7 +43,7 @@ __decorate([
     __metadata("design:type", String)
 ], Word.prototype, "image", void 0);
 Word = __decorate([
-    (0, typeorm_1.Entity)({ name: "words" })
+    (0, typeorm_1.Entity)()
 ], Word);
 exports.default = Word;
 //# sourceMappingURL=word.model.js.map

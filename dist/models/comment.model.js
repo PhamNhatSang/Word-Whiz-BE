@@ -32,7 +32,7 @@ __decorate([
     __metadata("design:type", String)
 ], Comment.prototype, "content", void 0);
 Comment = __decorate([
-    (0, typeorm_1.Entity)({ name: "comments" })
+    (0, typeorm_1.Entity)()
 ], Comment);
 exports.default = Comment;
 //# sourceMappingURL=comment.model.js.map

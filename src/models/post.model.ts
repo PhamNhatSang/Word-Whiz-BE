@@ -5,7 +5,7 @@ import User from "./user.model";
 import Comment from "./comment.model";
 import React from "./react.model";
 import { Entity, Column, ManyToOne, OneToMany } from "typeorm";
-@Entity({ name: "posts" })
+@Entity()
 export default class Post extends BaseModel {
   @ManyToOne(() => User, (user) => user.myPosts)
   owner: User;

@@ -32,7 +32,7 @@ __decorate([
     __metadata("design:type", Number)
 ], CourseRate.prototype, "rate", void 0);
 CourseRate = __decorate([
-    (0, typeorm_1.Entity)({ name: "course_rates" })
+    (0, typeorm_1.Entity)()
 ], CourseRate);
 exports.default = CourseRate;
 //# sourceMappingURL=courseRate.model.js.map

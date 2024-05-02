@@ -41,7 +41,7 @@ __decorate([
     __metadata("design:type", Array)
 ], Test.prototype, "testItems", void 0);
 Test = __decorate([
-    (0, typeorm_1.Entity)({ name: "tests" })
+    (0, typeorm_1.Entity)()
 ], Test);
 exports.default = Test;
 //# sourceMappingURL=test.model.js.map

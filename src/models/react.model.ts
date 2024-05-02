@@ -5,7 +5,7 @@ import User from "./user.model";
 import Post from "./post.model";
 import { Emotion } from "../enum/Emotion";
 import { Entity, ManyToOne, Column } from "typeorm";
-@Entity({ name: "reacts" })
+@Entity()
 export default class React extends BaseModel {
   @ManyToOne(() => User, (user) => user.myReacts)
   user: User;

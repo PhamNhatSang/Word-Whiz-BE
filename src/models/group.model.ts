@@ -6,7 +6,7 @@ import { Entity, Column, ManyToOne, OneToMany, ManyToMany, JoinTable } from "typ
 import Course from "./course.model";
 import { join } from "path";
 
-@Entity({ name: "groups" })
+@Entity()
 export default class Group extends BaseModel {
   @Column({nullable: true})
   group_name: string;

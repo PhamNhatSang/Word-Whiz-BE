@@ -20,7 +20,7 @@ import {
   JoinTable,
 } from "typeorm";
 
-@Entity({ name: "courses" })
+@Entity()
 export default class Course extends BaseModel {
   @ManyToOne(() => User, (user) => user.myCourses)
   owner: User;

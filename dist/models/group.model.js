@@ -62,7 +62,7 @@ __decorate([
     __metadata("design:type", Array)
 ], Group.prototype, "courses", void 0);
 Group = __decorate([
-    (0, typeorm_1.Entity)({ name: "groups" })
+    (0, typeorm_1.Entity)()
 ], Group);
 exports.default = Group;
 //# sourceMappingURL=group.model.js.map

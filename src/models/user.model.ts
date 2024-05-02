@@ -13,7 +13,7 @@ import { Column, } from "typeorm";
 import React from "./react.model";
 import { IsEmail } from "class-validator";
 import Test from "./test.model";
-@Entity({name:"users"})
+@Entity()
 export default class User extends BaseModel {
   @Column({nullable:true})
   name: string;

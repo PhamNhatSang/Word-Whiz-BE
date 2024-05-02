@@ -37,7 +37,7 @@ __decorate([
     __metadata("design:type", String)
 ], React.prototype, "emotion", void 0);
 React = __decorate([
-    (0, typeorm_1.Entity)({ name: "reacts" })
+    (0, typeorm_1.Entity)()
 ], React);
 exports.default = React;
 //# sourceMappingURL=react.model.js.map

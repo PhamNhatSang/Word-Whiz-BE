@@ -4,7 +4,7 @@ import TestItem from "./testItem.model";
 import { Entity, Column, OneToMany, ManyToOne } from "typeorm";
 import User from "./user.model";
 import Course from "./course.model";
-@Entity({ name: "tests"})
+@Entity()
 export default class Test extends BaseModel {
   
   @Column()
