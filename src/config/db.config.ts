@@ -4,7 +4,7 @@ import { DataSourceOptions } from "typeorm";
 
 const isProduction = process.env.NODE_ENV === "production";
 const rootDir = isProduction ? process.cwd() : join(process.cwd(), "src");
-
+import User from "../models/user.model";
 export const dbConfig: DataSourceOptions = {
   logging: true,
   type: "postgres",
@@ -13,7 +13,7 @@ export const dbConfig: DataSourceOptions = {
   username: process.env.DB_USERNAME,
   password: process.env.DB_PASSWORD,
   database: process.env.DB_NAME,
-  entities: [join(rootDir, "models", "*.model.{js,ts}")],
+  entities: [User],
   migrations: [join(rootDir, "migrations", "*.{js,ts}")],
   ssl: {},
 };
