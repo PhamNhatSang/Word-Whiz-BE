@@ -35,8 +35,8 @@ class HomeService extends base_service_1.BaseService {
                 .leftJoin("course.words", "word") // Join with words relation
                 .select([
                 "course.id",
-                "course.title", // Add other course fields as needed
-                "course.accessiblity",
+                "course.title as title", // Add other course fields as needed
+                "course.accessiblity as accessiblity",
                 "owner.id", // Select owner fields
                 "owner.name",
                 "owner.email",
@@ -60,8 +60,8 @@ class HomeService extends base_service_1.BaseService {
                 .leftJoin("course.words", "word") // Join with words relation
                 .select([
                 "course.id",
-                "course.title", // Add other course fields as needed
-                "course.accessiblity",
+                "course.title as title", // Add other course fields as needed
+                "course.accessiblity as accessiblity",
                 "owner.id", // Select owner fields
                 "owner.name",
                 "owner.email",
@@ -99,9 +99,9 @@ class HomeService extends base_service_1.BaseService {
                 .select([
                 'course.id as courseId',
                 'course.title as title',
-                'owner.id as ownerId',
-                'owner.name as ownerName',
-                'owner.avatar as ownerAvatar',
+                'owner.id as owner_id',
+                'owner.name as owner_name',
+                'owner.avatar as owner_avatar',
                 'COUNT(word.id) as terms',
                 'learning.lastWordIndex',
             ])
