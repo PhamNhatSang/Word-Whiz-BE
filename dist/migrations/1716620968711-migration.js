@@ -8,27 +8,22 @@ var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, ge
         step((generator = generator.apply(thisArg, _arguments || [])).next());
     });
 };
-var __importDefault = (this && this.__importDefault) || function (mod) {
-    return (mod && mod.__esModule) ? mod : { "default": mod };
-};
 Object.defineProperty(exports, "__esModule", { value: true });
-require("reflect-metadata");
-const base_service_1 = require("../base/base.service");
-const user_model_1 = __importDefault(require("../../models/user.model"));
-class AuthService extends base_service_1.BaseService {
+exports.Migration1716620968711 = void 0;
+class Migration1716620968711 {
     constructor() {
-        super();
+        this.name = 'Migration1716620968711';
     }
-    getByEmail(email) {
+    up(queryRunner) {
         return __awaiter(this, void 0, void 0, function* () {
-            return yield this.manager.findOne(user_model_1.default, { where: { email } });
+            yield queryRunner.query(`ALTER TABLE "test" ALTER COLUMN "score" SET DEFAULT '0'`);
         });
     }
-    getAllInfor(id) {
+    down(queryRunner) {
         return __awaiter(this, void 0, void 0, function* () {
-            return yield this.manager.findOne(user_model_1.default, { where: { id }, relations: { myGroups: true, myCourses: true, addedGroups: true } });
+            yield queryRunner.query(`ALTER TABLE "test" ALTER COLUMN "score" DROP DEFAULT`);
         });
     }
 }
-exports.default = AuthService;
-//# sourceMappingURL=auth.service.js.map
+exports.Migration1716620968711 = Migration1716620968711;
+//# sourceMappingURL=1716620968711-migration.js.map

@@ -16,11 +16,11 @@ const user_model_1 = __importDefault(require("../../models/user.model"));
 const base_service_1 = require("../base/base.service");
 class RankingService extends base_service_1.BaseService {
     constructor() {
-        super(user_model_1.default);
+        super();
     }
     getTopRanking() {
         return __awaiter(this, void 0, void 0, function* () {
-            const users = yield this.repository.find();
+            const users = yield this.manager.find(user_model_1.default, { relations: ["myTests"] });
             users.sort((a, b) => b.myTests.map(test => test.score).reduce((acc, score) => acc + score, 0) - a.myTests.map(test => test.score).reduce((acc, score) => acc + score, 0));
             return users.slice(0, 20);
         });

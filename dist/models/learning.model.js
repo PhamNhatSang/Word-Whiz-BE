@@ -14,34 +14,31 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
 Object.defineProperty(exports, "__esModule", { value: true });
 require("reflect-metadata");
 const baseModel_1 = require("./baseModel");
-const testItem_model_1 = __importDefault(require("./testItem.model"));
 const typeorm_1 = require("typeorm");
 const user_model_1 = __importDefault(require("./user.model"));
 const course_model_1 = __importDefault(require("./course.model"));
-let Test = class Test extends baseModel_1.BaseModel {
+let Learning = class Learning extends baseModel_1.BaseModel {
 };
 __decorate([
-    (0, typeorm_1.Column)({ type: "int", name: 'score', default: 0 }),
-    __metadata("design:type", Number)
-], Test.prototype, "score", void 0);
-__decorate([
-    (0, typeorm_1.Column)({ type: "boolean", default: false, name: 'is_first_done' }),
-    __metadata("design:type", Boolean)
-], Test.prototype, "isFirstDone", void 0);
-__decorate([
-    (0, typeorm_1.ManyToOne)(() => user_model_1.default, (user) => user.myTests, { nullable: true }),
+    (0, typeorm_1.ManyToOne)(() => user_model_1.default, (user) => user.learnings),
+    (0, typeorm_1.JoinColumn)({ name: "user_id" }),
     __metadata("design:type", user_model_1.default)
-], Test.prototype, "user", void 0);
+], Learning.prototype, "user", void 0);
 __decorate([
-    (0, typeorm_1.ManyToOne)(() => course_model_1.default, (course) => course.tests, { nullable: true }),
+    (0, typeorm_1.ManyToOne)(() => course_model_1.default, (course) => course.learnings, { onDelete: 'CASCADE', onUpdate: 'CASCADE' }),
+    (0, typeorm_1.JoinColumn)({ name: "course_id" }),
     __metadata("design:type", course_model_1.default)
-], Test.prototype, "course", void 0);
+], Learning.prototype, "course", void 0);
 __decorate([
-    (0, typeorm_1.OneToMany)(() => testItem_model_1.default, (testItem) => testItem.test, { nullable: true }),
-    __metadata("design:type", Array)
-], Test.prototype, "testItems", void 0);
-Test = __decorate([
+    (0, typeorm_1.Column)({ default: 0 }),
+    __metadata("design:type", Number)
+], Learning.prototype, "lastWordIndex", void 0);
+__decorate([
+    (0, typeorm_1.Column)({ default: false }),
+    __metadata("design:type", Boolean)
+], Learning.prototype, "isDone", void 0);
+Learning = __decorate([
     (0, typeorm_1.Entity)()
-], Test);
-exports.default = Test;
-//# sourceMappingURL=test.model.js.map
+], Learning);
+exports.default = Learning;
+//# sourceMappingURL=learning.model.js.map

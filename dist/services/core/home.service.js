@@ -15,53 +15,103 @@ Object.defineProperty(exports, "__esModule", { value: true });
 const course_model_1 = __importDefault(require("../../models/course.model"));
 const user_model_1 = __importDefault(require("../../models/user.model"));
 const typeorm_1 = require("typeorm");
-const database_1 = require("../../database");
 const base_service_1 = require("../base/base.service");
 const Accessiblity_1 = require("../../enum/Accessiblity");
 const ExistData_1 = __importDefault(require("../../exceptions/ExistData"));
 class HomeService extends base_service_1.BaseService {
     constructor() {
-        super(course_model_1.default);
+        super();
         this.getCourseByTitle = (title) => __awaiter(this, void 0, void 0, function* () {
-            const course = yield this.repository.find({
+            const course = yield this.manager.find(course_model_1.default, {
                 where: { title: (0, typeorm_1.Like)(`%${title}%`), accessiblity: Accessiblity_1.Accessiblity.PUBLIC },
             });
             return course;
         });
         this.getTopCourse = () => __awaiter(this, void 0, void 0, function* () {
-            const course = yield this.repository.createQueryBuilder('course')
-                .leftJoin('course.courseRates', 'courseRate') // Assuming you have a courseRates relationship
-                .select('course')
-                .where('course.accessiblity = :accessiblity', { accessiblity: Accessiblity_1.Accessiblity.PUBLIC })
-                .addSelect('AVG(courseRate.rate)', 'avgRate') // Select average rate as avgRate
-                .groupBy('course.id')
-                .orderBy('avgRate', 'DESC')
-                .limit(5).getRawMany();
+            const course = yield this.manager
+                .createQueryBuilder(course_model_1.default, "course")
+                .leftJoin("course.courseRate", "courseRate") // Assuming you have a courseRates relationship
+                .leftJoinAndSelect("course.owner", "owner")
+                .leftJoin("course.words", "word") // Join with words relation
+                .select([
+                "course.id",
+                "course.title", // Add other course fields as needed
+                "course.accessiblity",
+                "owner.id", // Select owner fields
+                "owner.name",
+                "owner.email",
+                "owner.avatar",
+            ])
+                .where("course.accessiblity = :accessiblity", {
+                accessiblity: Accessiblity_1.Accessiblity.PUBLIC,
+            })
+                .addSelect("AVG(courseRate.rate)", "avgrate")
+                .addSelect("COUNT(word.id)", "terms") // Count items in words relation and alias it as terms
+                .groupBy("course.id, owner.id")
+                .orderBy("avgrate", "DESC")
+                .limit(5)
+                .getRawMany();
             return course;
         });
         this.getNewCourse = () => __awaiter(this, void 0, void 0, function* () {
-            const course = yield this.repository.find({
-                where: { accessiblity: Accessiblity_1.Accessiblity.PUBLIC },
-                order: { createdAt: "DESC" },
-                take: 5,
-            });
+            const course = yield this.manager
+                .createQueryBuilder(course_model_1.default, "course")
+                .leftJoinAndSelect("course.owner", "owner")
+                .leftJoin("course.words", "word") // Join with words relation
+                .select([
+                "course.id",
+                "course.title", // Add other course fields as needed
+                "course.accessiblity",
+                "owner.id", // Select owner fields
+                "owner.name",
+                "owner.email",
+                "owner.avatar",
+            ])
+                .where("course.accessiblity = :accessiblity", {
+                accessiblity: Accessiblity_1.Accessiblity.PUBLIC,
+            })
+                .addSelect("COUNT(word.id)", "terms")
+                .addSelect("course.createdAt", "createdat") // Count items in words relation and alias it as terms
+                .groupBy("course.id, owner.id")
+                .orderBy("createdAt", "DESC")
+                .limit(5)
+                .getRawMany();
             return course;
         });
         this.importCourse = (userId, courseId) => __awaiter(this, void 0, void 0, function* () {
-            const user = yield this.userRepository.findOne({
+            const user = yield this.manager.findOne(user_model_1.default, {
                 where: { id: userId },
-                relations: ["courseImports"],
+                relations: ["courseImports", "myCourses", "learnings"],
             });
-            const course = yield this.repository.findOne({
+            const course = yield this.manager.findOne(course_model_1.default, {
                 where: { id: courseId },
             });
-            if (user.courseImports.find((course) => course.id === courseId)) {
-                throw new ExistData_1.default("Course is already imported");
+            if (user.courseImports.find((course) => course.id === courseId) ||
+                user.myCourses.find((course) => course.id === courseId)) {
+                throw new ExistData_1.default("Course is already");
             }
             user.courseImports.push(course);
-            yield this.userRepository.save(user);
+            yield this.manager.getRepository(user_model_1.default).save(user);
         });
-        this.userRepository = database_1.database.getRepository(user_model_1.default);
+        this.getContinueCourse = (userId) => __awaiter(this, void 0, void 0, function* () {
+            const course = yield this.manager
+                .createQueryBuilder(course_model_1.default, 'course')
+                .select([
+                'course.id as courseId',
+                'course.title as title',
+                'owner.id as ownerId',
+                'owner.name as ownerName',
+                'owner.avatar as ownerAvatar',
+                'COUNT(word.id) as terms',
+                'learning.lastWordIndex',
+            ])
+                .innerJoin('course.owner', 'owner')
+                .leftJoin('course.words', 'word')
+                .leftJoin('course.learnings', 'learning', 'learning.user.id = :learnerId', { learnerId: userId })
+                .groupBy('course.id, owner.id, learning.lastWordIndex')
+                .getRawMany();
+            return course;
+        });
     }
 }
 exports.default = HomeService;

@@ -7,7 +7,7 @@ import UserService from "../services/auth/auth.service";
 import { Request, Response } from "express";
 
 @JsonController()
-export default class UserController extends BaseController<User, UserService> {
+export default class UserController extends BaseController< UserService> {
   constructor() {
     super(new UserService());
   }
@@ -15,7 +15,7 @@ export default class UserController extends BaseController<User, UserService> {
   @Get("/.me")
   async getCurrentUser(@Req() req: Request, @Res() res: Response) {
     const currentUserId = req.body.currentUserData.id;
-    const user = await this.service.getById(currentUserId);
+    const user = await this.service.getAllInfor(currentUserId);
     return res.send(user);
   }
 }

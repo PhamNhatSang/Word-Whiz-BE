@@ -15,20 +15,28 @@ Object.defineProperty(exports, "__esModule", { value: true });
 const base_service_1 = require("../base/base.service");
 const course_model_1 = __importDefault(require("../../models/course.model"));
 const user_model_1 = __importDefault(require("../../models/user.model"));
-const database_1 = require("../../database");
+const group_model_1 = __importDefault(require("../../models/group.model"));
 class LibraryService extends base_service_1.BaseService {
     constructor() {
-        super(course_model_1.default);
-        this.createCourse = (userId, course) => __awaiter(this, void 0, void 0, function* () {
-            const user = yield this.userRepository.findOne({
+        super();
+        this.getAllCourse = (userId) => __awaiter(this, void 0, void 0, function* () {
+            const user = yield this.manager.findOne(user_model_1.default, {
                 where: { id: userId },
-                relations: ["myCourses"],
+                relations: ["myCourses", "courseImports"],
             });
-            user.myCourses.push(course);
-            yield this.userRepository.save(user);
+            const courseAll = user.myCourses.concat(user.courseImports);
+            return courseAll;
+        });
+        this.createCourse = (userId, course) => __awaiter(this, void 0, void 0, function* () {
+            const user = yield this.manager.findOne(user_model_1.default, {
+                where: { id: userId },
+                relations: ["myCourses", "learnings"],
+            });
+            course.owner = user;
+            yield this.manager.getRepository(course_model_1.default).save(course);
         });
         this.getCourseByTitle = (userId, title) => __awaiter(this, void 0, void 0, function* () {
-            const user = yield this.userRepository.findOne({
+            const user = yield this.manager.findOne(user_model_1.default, {
                 where: { id: userId },
                 relations: ["myCourses, courseImports"],
             });
@@ -42,20 +50,39 @@ class LibraryService extends base_service_1.BaseService {
             return { myCourseTitle, courseImportTitle };
         });
         this.deleteCourse = (userId, courseId) => __awaiter(this, void 0, void 0, function* () {
-            const user = yield this.userRepository.findOne({
+            const user = yield this.manager.findOne(user_model_1.default, {
                 where: { id: userId },
-                relations: ["myCourses", "courseImports"],
+                relations: ["myCourses"],
             });
             if (user.myCourses.find((course) => course.id === courseId)) {
-                user.myCourses = user.myCourses.filter((course) => course.id !== courseId);
-                this.repository.delete(courseId);
+                yield this.manager.delete(course_model_1.default, courseId);
+                return courseId;
             }
             if (user.courseImports.find((course) => course.id === courseId)) {
                 user.courseImports = user.courseImports.filter((course) => course.id !== courseId);
+                yield this.manager.save(user);
+                return courseId;
             }
-            yield this.userRepository.save(user);
+            throw new Error("Course not found");
         });
-        this.userRepository = database_1.database.getRepository(user_model_1.default);
+        this.getListCourseToAddGroup = (userId, groupId) => __awaiter(this, void 0, void 0, function* () {
+            const user = yield this.manager.findOne(user_model_1.default, {
+                where: { id: userId },
+                relations: ["myCourses"],
+            });
+            const group = yield this.manager.findOne(group_model_1.default, {
+                where: { id: groupId },
+                relations: ["courses"],
+            });
+            const courseToAdd = user.myCourses.map((course) => {
+                var isAdded = false;
+                if (group.courses.find((courseGroup) => courseGroup.id === course.id)) {
+                    isAdded = true;
+                }
+                return { "courseName": course.title, "courseId": course.id, "isAdded": isAdded };
+            });
+            return courseToAdd;
+        });
     }
 }
 exports.default = LibraryService;

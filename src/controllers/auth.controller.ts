@@ -20,7 +20,7 @@ import bcrypt from "bcrypt";
 import { Payload } from "../type/DefineType";
 
 @JsonController("/auth")
-export default class Authcontroller extends BaseController<User, AuthService> {
+export default class Authcontroller extends BaseController< AuthService> {
   constructor() {
     super(new AuthService());
   }
@@ -31,7 +31,7 @@ export default class Authcontroller extends BaseController<User, AuthService> {
       throw new BadRequestError("User already exists");
     }
     const hash = bcrypt.hashSync(req.body.password, 10);
-    const newUser = await this.service.create({
+    const newUser = await this.service.create(User,{
       name: req.body.name,
       email: req.body.email,
       password: hash,
@@ -63,7 +63,7 @@ export default class Authcontroller extends BaseController<User, AuthService> {
       role: user.role,
     } as Payload);
     user.refeshToken = refreshToken;
-    await this.service.update(user);
+    await this.service.update(User,user);
     return res.send({ accessToken, refreshToken });
   }
 
@@ -78,7 +78,7 @@ export default class Authcontroller extends BaseController<User, AuthService> {
         refreshToken,
         process.env.REFRESH_SECRET_KEY
       ) as Payload;
-      const user = await this.service.getById(payload.id);
+      const user = await this.service.getById(User,payload.id);
 
       if (!user || user.refeshToken !== refreshToken) {
         throw new BadRequestError("Invalid refresh token");

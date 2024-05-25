@@ -13,6 +13,7 @@ import { Column, } from "typeorm";
 import React from "./react.model";
 import { IsEmail } from "class-validator";
 import Test from "./test.model";
+import Learning from "./learning.model";
 @Entity()
 export default class User extends BaseModel {
   @Column({nullable:true})
@@ -56,8 +57,11 @@ export default class User extends BaseModel {
   @ManyToMany(()=>Course,(course)=>course.userImporteds,{nullable:true})
   courseImports:Course[]
 
-  @ManyToMany(() => Group, (group) => group.students)
+  @ManyToMany(() => Group, (group) => group.students, { nullable: true })
   addedGroups: Group[];
+  
+  @OneToMany(() => Learning, (learning) => learning.user, { nullable: true})
+  learnings: Learning[];
 
   
 }

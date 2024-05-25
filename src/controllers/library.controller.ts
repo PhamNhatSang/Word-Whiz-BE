@@ -4,10 +4,7 @@ import { Request, Response } from "express";
 import Course from "../models/course.model";
 import LibraryService from "../services/core/library.service";
 @Controller("/library")
-export default class HomeController extends BaseController<
-  Course,
-  LibraryService
-> {
+export default class HomeController extends BaseController<LibraryService> {
   constructor() {
     super(new LibraryService());
   }
@@ -28,8 +25,9 @@ export default class HomeController extends BaseController<
   async createCourse(@Req() req: Request, @Res() res: Response) {
     try {
       const userId = req.body.currentUserData.id;
-      const course = req.body.course;
-      await this.service.createCourse(parseInt(userId), course as Course);
+
+      const course = req.body as Course;
+      await this.service.createCourse(parseInt(userId), course);
       return res.send("Create course successfully");
     } catch (error) {
       return res.status(400).send(error);
@@ -59,4 +57,17 @@ export default class HomeController extends BaseController<
       return res.status(400).send(error);
     }
   }
+
+  @Get("/course-add-group/:id")
+  async getCourseAddGroup(@Req() req: Request, @Res() res: Response) {
+    try {
+      const userId = req.body.currentUserData.id;
+      const groupId = req.params.id;
+      const result = await this.service.getListCourseToAddGroup(parseInt(userId), parseInt(groupId));
+      return res.send(result);
+    } catch (error) {
+      return res.status(400).send(error);
+    }
+  }
+
 }

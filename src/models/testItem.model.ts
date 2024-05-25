@@ -21,8 +21,8 @@ export default class TestItem extends BaseModel {
   @Column({ type: "text" })
   option_4: string;
 
-  @Column({ type: "text" })
-  correct_answer: string;
+  @Column({ type: "text" ,name:'correct_answer'})
+  correctAnswer: string;
   
   @ManyToOne(() => Test, (test) => test.testItems)
   test: Test;

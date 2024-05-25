@@ -26,57 +26,18 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
 Object.defineProperty(exports, "__esModule", { value: true });
 const baseController_1 = require("./baseController");
 const routing_controllers_1 = require("routing-controllers");
-const library_service_1 = __importDefault(require("../services/core/library.service"));
-let HomeController = class HomeController extends baseController_1.BaseController {
+const learning_service_1 = __importDefault(require("../services/core/learning.service"));
+const learning_model_1 = __importDefault(require("./../models/learning.model"));
+let LearningController = class LearningController extends baseController_1.BaseController {
     constructor() {
-        super(new library_service_1.default());
+        super(new learning_service_1.default());
     }
-    getLibrary(req, res) {
-        return __awaiter(this, void 0, void 0, function* () {
-            var _a;
-            try {
-                const userId = req.body.currentUserData.id;
-                const title = (_a = req.query) === null || _a === void 0 ? void 0 : _a.title;
-                const result = this.service.getCourseByTitle(userId, title);
-                return res.send(result);
-            }
-            catch (error) {
-                return res.status(400).send(error);
-            }
-        });
-    }
-    createCourse(req, res) {
-        return __awaiter(this, void 0, void 0, function* () {
-            try {
-                const userId = req.body.currentUserData.id;
-                const course = req.body;
-                yield this.service.createCourse(parseInt(userId), course);
-                return res.send("Create course successfully");
-            }
-            catch (error) {
-                return res.status(400).send(error);
-            }
-        });
-    }
-    deleteCourse(req, res) {
+    getFlashcard(req, res) {
         return __awaiter(this, void 0, void 0, function* () {
             try {
                 const userId = req.body.currentUserData.id;
                 const courseId = req.params.id;
-                yield this.service.deleteCourse(parseInt(userId), parseInt(courseId));
-                return res.send("Delete course successfully");
-            }
-            catch (error) {
-                return res.status(400).send(error);
-            }
-        });
-    }
-    searchCourse(req, res) {
-        return __awaiter(this, void 0, void 0, function* () {
-            try {
-                const userId = req.body.currentUserData.id;
-                const title = req.query.title;
-                const result = this.service.getCourseByTitle(userId, title);
+                const result = yield this.service.getOrCreateFLashCardLearningByUserId(parseInt(userId), parseInt(courseId));
                 return res.send(result);
             }
             catch (error) {
@@ -84,63 +45,82 @@ let HomeController = class HomeController extends baseController_1.BaseControlle
             }
         });
     }
-    getCourseAddGroup(req, res) {
+    learningFlashcard(req, res) {
+        return __awaiter(this, void 0, void 0, function* () {
+            try {
+                const learning = req.body.learning;
+                yield this.service.update(learning_model_1.default, learning);
+                return res.send("Learning flashcard successfully");
+            }
+            catch (error) {
+                return res.status(400).send(error);
+            }
+        });
+    }
+    startTest(req, res) {
         return __awaiter(this, void 0, void 0, function* () {
             try {
                 const userId = req.body.currentUserData.id;
-                const groupId = req.params.id;
-                const result = yield this.service.getListCourseToAddGroup(parseInt(userId), parseInt(groupId));
+                const courseId = req.params.id;
+                const result = yield this.service.createTest(parseInt(userId), parseInt(courseId));
                 return res.send(result);
             }
             catch (error) {
+                console.log(error);
+                return res.status(400).send(error);
+            }
+        });
+    }
+    submitTest(req, res) {
+        return __awaiter(this, void 0, void 0, function* () {
+            try {
+                const testId = req.params.id;
+                const answers = req.body.answers;
+                const result = yield this.service.submitTest(answers, parseInt(testId));
+                return res.send(result);
+            }
+            catch (error) {
+                console.log(error);
                 return res.status(400).send(error);
             }
         });
     }
 };
 __decorate([
-    (0, routing_controllers_1.Get)("/"),
+    (0, routing_controllers_1.Get)("/flascard/:id"),
     __param(0, (0, routing_controllers_1.Req)()),
     __param(1, (0, routing_controllers_1.Res)()),
     __metadata("design:type", Function),
     __metadata("design:paramtypes", [Object, Object]),
     __metadata("design:returntype", Promise)
-], HomeController.prototype, "getLibrary", null);
+], LearningController.prototype, "getFlashcard", null);
 __decorate([
-    (0, routing_controllers_1.Post)("/course"),
+    (0, routing_controllers_1.Put)("/flashcard/:id"),
     __param(0, (0, routing_controllers_1.Req)()),
     __param(1, (0, routing_controllers_1.Res)()),
     __metadata("design:type", Function),
     __metadata("design:paramtypes", [Object, Object]),
     __metadata("design:returntype", Promise)
-], HomeController.prototype, "createCourse", null);
+], LearningController.prototype, "learningFlashcard", null);
 __decorate([
-    (0, routing_controllers_1.Delete)("/course/:id"),
+    (0, routing_controllers_1.Post)("/test/:id"),
     __param(0, (0, routing_controllers_1.Req)()),
     __param(1, (0, routing_controllers_1.Res)()),
     __metadata("design:type", Function),
     __metadata("design:paramtypes", [Object, Object]),
     __metadata("design:returntype", Promise)
-], HomeController.prototype, "deleteCourse", null);
+], LearningController.prototype, "startTest", null);
 __decorate([
-    (0, routing_controllers_1.Get)("/search"),
+    (0, routing_controllers_1.Put)("/test/:id"),
     __param(0, (0, routing_controllers_1.Req)()),
     __param(1, (0, routing_controllers_1.Res)()),
     __metadata("design:type", Function),
     __metadata("design:paramtypes", [Object, Object]),
     __metadata("design:returntype", Promise)
-], HomeController.prototype, "searchCourse", null);
-__decorate([
-    (0, routing_controllers_1.Get)("/course-add-group/:id"),
-    __param(0, (0, routing_controllers_1.Req)()),
-    __param(1, (0, routing_controllers_1.Res)()),
-    __metadata("design:type", Function),
-    __metadata("design:paramtypes", [Object, Object]),
-    __metadata("design:returntype", Promise)
-], HomeController.prototype, "getCourseAddGroup", null);
-HomeController = __decorate([
-    (0, routing_controllers_1.Controller)("/library"),
+], LearningController.prototype, "submitTest", null);
+LearningController = __decorate([
+    (0, routing_controllers_1.Controller)("/learning"),
     __metadata("design:paramtypes", [])
-], HomeController);
-exports.default = HomeController;
-//# sourceMappingURL=library.controller.js.map
+], LearningController);
+exports.default = LearningController;
+//# sourceMappingURL=learning.controller.js.map

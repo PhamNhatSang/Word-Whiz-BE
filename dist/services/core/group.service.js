@@ -16,73 +16,87 @@ const base_service_1 = require("../base/base.service");
 const group_model_1 = __importDefault(require("../../models/group.model"));
 const typeorm_1 = require("typeorm");
 const user_model_1 = __importDefault(require("../../models/user.model"));
-const database_1 = require("../../database");
 const ExistData_1 = __importDefault(require("../../exceptions/ExistData"));
 class GroupService extends base_service_1.BaseService {
     constructor() {
-        super(group_model_1.default);
-        this.userRepository = database_1.database.getRepository(user_model_1.default);
+        super();
     }
     getAllGroup(userId) {
         return __awaiter(this, void 0, void 0, function* () {
-            const user = yield this.userRepository.findOne({
-                where: { id: userId },
-                relations: ["myGroups", "addedGroups"],
-            });
-            const groupAll = user.myGroups.concat(user.addedGroups);
-            return groupAll;
+            const groups = yield this.manager.createQueryBuilder(group_model_1.default, 'group')
+                .leftJoinAndSelect('group.owner', 'owner')
+                .leftJoinAndSelect('group.students', 'student')
+                .leftJoinAndSelect('group.courses', 'course')
+                .leftJoin(user_model_1.default, 'user', 'user.id = :userId', { userId })
+                .where('owner.id = :userId', { userId })
+                .orWhere('student.id = :userId', { userId })
+                .select([
+                'group.groupName',
+                'owner.name',
+                'owner.avatar',
+                'COUNT(DISTINCT course.id) AS numberOfCourses',
+                'COUNT(DISTINCT student.id) AS numberOfMembers'
+            ])
+                .groupBy('group.id')
+                .addGroupBy('owner.id')
+                .getRawMany();
+            return groups;
         });
     }
     createGroup(userId, group) {
         return __awaiter(this, void 0, void 0, function* () {
-            const user = yield this.userRepository.findOne({
+            const user = yield this.manager.findOne(user_model_1.default, {
                 where: { id: userId },
                 relations: ["myGroups"],
             });
             user.myGroups.push(group);
-            yield this.userRepository.save(user);
+            yield this.manager.save(user);
+            group.owner = user;
+            console.log(group);
+            return yield this.manager.getRepository(group_model_1.default).save(group);
         });
     }
     deleteGroup(userId, groupId) {
         return __awaiter(this, void 0, void 0, function* () {
-            const user = yield this.userRepository.findOne({
+            const user = yield this.manager.findOne(user_model_1.default, {
                 where: { id: userId },
                 relations: ["myGroups"],
             });
             user.myGroups = user.myGroups.filter((group) => group.id !== groupId);
-            yield this.repository.delete(groupId);
-            yield this.userRepository.save(user);
+            yield this.manager.delete(group_model_1.default, groupId);
+            yield this.manager.save(user);
         });
     }
     addStudent(groupId, email) {
         return __awaiter(this, void 0, void 0, function* () {
-            const group = yield this.repository.findOne({
+            const group = yield this.manager.findOne(group_model_1.default, {
                 where: { id: groupId },
                 relations: ["students"],
             });
-            const user = yield this.userRepository.findOne({
+            const user = yield this.manager.find(user_model_1.default, {
                 where: { email: (0, typeorm_1.In)(email) },
             });
-            group.students.push(user);
-            return yield this.repository.save(group);
+            const userToAdd = user.filter(user => !group.students.some(student => student.email === user.email));
+            if (userToAdd.length === 0) {
+                throw new ExistData_1.default("All Student is already in group");
+            }
+            group.students.push(...userToAdd);
+            return yield this.manager.save(group);
         });
     }
     removeStudent(groupId, email) {
         return __awaiter(this, void 0, void 0, function* () {
-            const group = yield this.repository.findOne({
+            const group = yield this.manager.findOne(group_model_1.default, {
                 where: { id: groupId },
                 relations: ["students"],
             });
-            const user = yield this.userRepository.findOne({
-                where: { email: (0, typeorm_1.In)(email) },
-            });
-            group.students = group.students.filter((student) => !email.includes(student.email));
-            yield this.repository.save(group);
+            group.students = group.students.filter((student) => student.email !== email);
+            return yield this.manager.getRepository(group_model_1.default).save(group);
         });
     }
     findStudent(email) {
         return __awaiter(this, void 0, void 0, function* () {
-            const student = yield this.userRepository.findOne({
+            const student = yield this.manager.findOne(user_model_1.default, {
                 where: { email },
             });
             return { email: student.email, name: student.name };
@@ -90,31 +104,33 @@ class GroupService extends base_service_1.BaseService {
     }
     addCourseToGroup(groupId, userId, courseId) {
         return __awaiter(this, void 0, void 0, function* () {
-            const group = yield this.repository.findOne({
+            const group = yield this.manager.findOne(group_model_1.default, {
                 where: { id: groupId },
                 relations: ["courses"],
             });
-            const user = yield this.userRepository.findOne({
+            const user = yield this.manager.findOne(user_model_1.default, {
                 where: { id: userId },
                 relations: ["myCourses"],
             });
             const course = user.myCourses.find((course) => course.id === courseId);
+            if (!course) {
+                throw new ExistData_1.default("Course is not exist in your list");
+            }
             if (group.courses.find((course) => course.id === courseId)) {
                 throw new ExistData_1.default("Course is already in group");
             }
             group.courses.push(course);
-            group.students.forEach((student) => { student.courseImports.push(course); this.userRepository.save(student); });
-            yield this.repository.save(group);
+            yield this.manager.save(group);
         });
     }
     removeCourseFromGroup(groupId, courseId) {
         return __awaiter(this, void 0, void 0, function* () {
-            const group = yield this.repository.findOne({
+            const group = yield this.manager.findOne(group_model_1.default, {
                 where: { id: groupId },
                 relations: ["courses"],
             });
             group.courses = group.courses.filter((course) => course.id !== courseId);
-            return yield this.repository.save(group);
+            return yield this.manager.save(group);
         });
     }
 }

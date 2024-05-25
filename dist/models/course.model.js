@@ -21,6 +21,7 @@ const word_model_1 = __importDefault(require("./word.model"));
 const test_model_1 = __importDefault(require("./test.model"));
 const courseRate_model_1 = __importDefault(require("./courseRate.model"));
 const typeorm_1 = require("typeorm");
+const learning_model_1 = __importDefault(require("./learning.model"));
 let Course = class Course extends baseModel_1.BaseModel {
 };
 __decorate([
@@ -40,7 +41,7 @@ __decorate([
     __metadata("design:type", String)
 ], Course.prototype, "accessiblity", void 0);
 __decorate([
-    (0, typeorm_1.OneToMany)(() => word_model_1.default, (word) => word.course, { nullable: true }),
+    (0, typeorm_1.OneToMany)(() => word_model_1.default, (word) => word.course, { nullable: true, cascade: true }),
     __metadata("design:type", Array)
 ], Course.prototype, "words", void 0);
 __decorate([
@@ -52,19 +53,23 @@ __decorate([
     __metadata("design:type", Array)
 ], Course.prototype, "courseRate", void 0);
 __decorate([
+    (0, typeorm_1.OneToMany)(() => learning_model_1.default, (learning) => learning.course, { nullable: true }),
+    __metadata("design:type", Array)
+], Course.prototype, "learnings", void 0);
+__decorate([
     (0, typeorm_1.ManyToMany)(() => group_model_1.default, (group) => group.courses, { nullable: true }),
     __metadata("design:type", Array)
 ], Course.prototype, "addedGroups", void 0);
 __decorate([
-    (0, typeorm_1.ManyToMany)(() => user_model_1.default, (user) => user.courseImports, { nullable: true }),
+    (0, typeorm_1.ManyToMany)(() => user_model_1.default, (user) => user.courseImports, { nullable: true, cascade: true }),
     (0, typeorm_1.JoinTable)({
         name: "course_imports", // table name for the junction table of this relation
         joinColumn: {
-            name: "courses",
+            name: "course_id",
             referencedColumnName: "id"
         },
         inverseJoinColumn: {
-            name: "users",
+            name: "user_id",
             referencedColumnName: "id"
         }
     }),

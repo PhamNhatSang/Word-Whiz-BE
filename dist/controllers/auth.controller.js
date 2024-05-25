@@ -24,6 +24,7 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
     return (mod && mod.__esModule) ? mod : { "default": mod };
 };
 Object.defineProperty(exports, "__esModule", { value: true });
+const user_model_1 = __importDefault(require("../models/user.model"));
 const baseController_1 = require("./baseController");
 const generateTokens_1 = require("../utils/generateTokens");
 const routing_controllers_1 = require("routing-controllers");
@@ -41,7 +42,7 @@ let Authcontroller = class Authcontroller extends baseController_1.BaseControlle
                 throw new routing_controllers_1.BadRequestError("User already exists");
             }
             const hash = bcrypt_1.default.hashSync(req.body.password, 10);
-            const newUser = yield this.service.create({
+            const newUser = yield this.service.create(user_model_1.default, {
                 name: req.body.name,
                 email: req.body.email,
                 password: hash,
@@ -71,7 +72,7 @@ let Authcontroller = class Authcontroller extends baseController_1.BaseControlle
                 role: user.role,
             });
             user.refeshToken = refreshToken;
-            yield this.service.update(user);
+            yield this.service.update(user_model_1.default, user);
             return res.send({ accessToken, refreshToken });
         });
     }
@@ -83,7 +84,7 @@ let Authcontroller = class Authcontroller extends baseController_1.BaseControlle
             }
             try {
                 const payload = jsonwebtoken_1.default.verify(refreshToken, process.env.REFRESH_SECRET_KEY);
-                const user = yield this.service.getById(payload.id);
+                const user = yield this.service.getById(user_model_1.default, payload.id);
                 if (!user || user.refeshToken !== refreshToken) {
                     throw new routing_controllers_1.BadRequestError("Invalid refresh token");
                 }

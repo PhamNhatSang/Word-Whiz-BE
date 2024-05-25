@@ -19,7 +19,7 @@ const generateAccessToken = (dataPayload) => __awaiter(void 0, void 0, void 0, f
         const accessToken = jsonwebtoken_1.default.sign(dataPayload, process.env.ACCESS_SECRET_KEY, {
             algorithm: "HS256",
             allowInsecureKeySizes: true,
-            expiresIn: 60,
+            expiresIn: "30d",
         });
         return Promise.resolve(accessToken);
     }
@@ -33,7 +33,7 @@ const generateRefreshToken = (userData) => __awaiter(void 0, void 0, void 0, fun
         const refreshToken = jsonwebtoken_1.default.sign(userData, process.env.REFRESH_SECRET_KEY, {
             algorithm: "HS256",
             allowInsecureKeySizes: true,
-            expiresIn: 120,
+            expiresIn: "30d",
         });
         return Promise.resolve(refreshToken);
     }

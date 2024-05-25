@@ -20,19 +20,19 @@ const course_model_1 = __importDefault(require("./course.model"));
 let Group = class Group extends baseModel_1.BaseModel {
 };
 __decorate([
-    (0, typeorm_1.Column)({ nullable: true }),
+    (0, typeorm_1.Column)({ nullable: true, name: "group_name" }),
     __metadata("design:type", String)
-], Group.prototype, "group_name", void 0);
+], Group.prototype, "groupName", void 0);
 __decorate([
-    (0, typeorm_1.Column)({ nullable: true }),
+    (0, typeorm_1.Column)({ nullable: true, name: "group_description" }),
     __metadata("design:type", String)
-], Group.prototype, "group_description", void 0);
+], Group.prototype, "groupDescription", void 0);
 __decorate([
     (0, typeorm_1.ManyToOne)(() => user_model_1.default, (user) => user.myGroups),
     __metadata("design:type", user_model_1.default)
 ], Group.prototype, "owner", void 0);
 __decorate([
-    (0, typeorm_1.ManyToMany)(() => user_model_1.default, (user) => user.addedGroups),
+    (0, typeorm_1.ManyToMany)(() => user_model_1.default, (user) => user.addedGroups, { nullable: true, cascade: true }),
     (0, typeorm_1.JoinTable)({
         name: "group_students",
         joinColumn: {
@@ -47,7 +47,7 @@ __decorate([
     __metadata("design:type", Array)
 ], Group.prototype, "students", void 0);
 __decorate([
-    (0, typeorm_1.ManyToMany)(() => course_model_1.default, (cousre) => cousre.addedGroups),
+    (0, typeorm_1.ManyToMany)(() => course_model_1.default, (cousre) => cousre.addedGroups, { nullable: true, cascade: true }),
     (0, typeorm_1.JoinTable)({
         name: "group_courses",
         joinColumn: {

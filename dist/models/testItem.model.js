@@ -39,9 +39,9 @@ __decorate([
     __metadata("design:type", String)
 ], TestItem.prototype, "option_4", void 0);
 __decorate([
-    (0, typeorm_1.Column)({ type: "text" }),
+    (0, typeorm_1.Column)({ type: "text", name: 'correct_answer' }),
     __metadata("design:type", String)
-], TestItem.prototype, "correct_answer", void 0);
+], TestItem.prototype, "correctAnswer", void 0);
 __decorate([
     (0, typeorm_1.ManyToOne)(() => test_model_1.default, (test) => test.testItems),
     __metadata("design:type", test_model_1.default)

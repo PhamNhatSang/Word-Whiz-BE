@@ -19,6 +19,7 @@ import {
   ManyToMany,
   JoinTable,
 } from "typeorm";
+import Learning from "./learning.model";
 
 @Entity()
 export default class Course extends BaseModel {
@@ -34,7 +35,7 @@ export default class Course extends BaseModel {
   @Column({ type: "enum", enum: ["PUBLIC", "PRIVATE"], default: "PUBLIC" })
   accessiblity: Accessiblity;
 
-  @OneToMany(() => Word, (word) => word.course, { nullable: true })
+  @OneToMany(() => Word, (word) => word.course, { nullable: true,cascade:true})
   words: Word[];
 
   @OneToMany(() => Test, (test) => test.course, { nullable: true })
@@ -42,22 +43,26 @@ export default class Course extends BaseModel {
   
   @OneToMany(() => CourseRate, (courseRate) => courseRate.course,{nullable:true})
   courseRate: CourseRate[];
-
+  @OneToMany(() => Learning, (learning) => learning.course, { nullable: true })
+  learnings: Learning[];
   @ManyToMany(() => Group, (group) => group.courses, { nullable: true })
   addedGroups: Group[];
 
 
-  @ManyToMany(() => User, (user) => user.courseImports, { nullable: true })
+  @ManyToMany(() => User, (user) => user.courseImports, { nullable: true,cascade:true })
   @JoinTable({
     name: "course_imports", // table name for the junction table of this relation
     joinColumn: {
-        name: "courses",
+        name: "course_id",
         referencedColumnName: "id"
+        
+        
     },
     inverseJoinColumn: {
-        name: "users",
+        name: "user_id",
         referencedColumnName: "id"
     }
+    
 })
   userImporteds: User[];
 

@@ -8,16 +8,17 @@ import { join } from "path";
 
 @Entity()
 export default class Group extends BaseModel {
-  @Column({nullable: true})
-  group_name: string;
+  @Column({nullable: true,name:"group_name"})
+  groupName: string;
 
-  @Column({nullable: true})
-  group_description: string;
+  @Column({nullable: true,name:"group_description"})
+
+  groupDescription: string;
 
   @ManyToOne(() => User, (user) => user.myGroups)
   owner: User;
 
-  @ManyToMany(() => User, (user) => user.addedGroups)
+  @ManyToMany(() => User, (user) => user.addedGroups ,{nullable:true,cascade:true})
   @JoinTable({
     name: "group_students",
     joinColumn: {
@@ -31,7 +32,7 @@ export default class Group extends BaseModel {
   })
   students: User[];
 
-  @ManyToMany(() => Course, (cousre) => cousre.addedGroups)
+  @ManyToMany(() => Course, (cousre) => cousre.addedGroups,{nullable:true,cascade:true})
   @JoinTable({
     name: "group_courses",
     joinColumn: {

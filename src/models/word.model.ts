@@ -5,8 +5,11 @@ import Course from "./course.model";
 import { Entity, Column, ManyToOne } from "typeorm";
 @Entity()
 export default class Word extends BaseModel {
-  @ManyToOne(() => Course, (course) => course.words)
+  @ManyToOne(() => Course, (course) => course.words,{onDelete:'CASCADE',onUpdate:'CASCADE'})
   course: Course;
+
+  
+
 
   @Column()
   term: string;

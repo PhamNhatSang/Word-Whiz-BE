@@ -1,4 +1,4 @@
 export enum Accessiblity {
-    PUBLIC = "public",
-    PRIVATE = "private",
+    PUBLIC = "PUBLIC",
+    PRIVATE = "PRIVATE",
 }

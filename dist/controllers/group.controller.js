@@ -20,17 +20,26 @@ var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, ge
         step((generator = generator.apply(thisArg, _arguments || [])).next());
     });
 };
+var __importDefault = (this && this.__importDefault) || function (mod) {
+    return (mod && mod.__esModule) ? mod : { "default": mod };
+};
 Object.defineProperty(exports, "__esModule", { value: true });
 const baseController_1 = require("./baseController");
 const routing_controllers_1 = require("routing-controllers");
+const group_model_1 = __importDefault(require("../models/group.model"));
+const group_service_1 = __importDefault(require("../services/core/group.service"));
 let GroupController = class GroupController extends baseController_1.BaseController {
+    constructor() {
+        super(new group_service_1.default());
+    }
     getListGroup(req, res) {
         return __awaiter(this, void 0, void 0, function* () {
             try {
-                const result = yield this.service.getAll();
+                const result = yield this.service.getAllGroup(parseInt(req.body.currentUserData.id));
                 return res.send(result);
             }
             catch (error) {
+                console.log(error);
                 return res.status(400).send(error);
             }
         });
@@ -39,7 +48,7 @@ let GroupController = class GroupController extends baseController_1.BaseControl
         return __awaiter(this, void 0, void 0, function* () {
             try {
                 const groupId = req.params.id;
-                const result = yield this.service.getById(parseInt(groupId));
+                const result = yield this.service.getById(group_model_1.default, parseInt(groupId));
                 return res.send(result);
             }
             catch (error) {
@@ -50,7 +59,7 @@ let GroupController = class GroupController extends baseController_1.BaseControl
     createGroup(req, res) {
         return __awaiter(this, void 0, void 0, function* () {
             try {
-                const group = req.body.group;
+                const group = req.body;
                 const userId = req.body.currentUserData.id;
                 yield this.service.createGroup(parseInt(userId), group);
                 return res.send("Create group successfully");
@@ -82,6 +91,7 @@ let GroupController = class GroupController extends baseController_1.BaseControl
                 return res.send(group);
             }
             catch (error) {
+                console.log(error);
                 return res.status(400).send(error);
             }
         });
@@ -90,8 +100,9 @@ let GroupController = class GroupController extends baseController_1.BaseControl
         return __awaiter(this, void 0, void 0, function* () {
             try {
                 const groupId = req.body.groupId;
-                const emails = req.body.emails;
-                const group = yield this.service.removeStudent(parseInt(groupId), emails);
+                const email = req.body.email;
+                console.log(email, groupId);
+                const group = yield this.service.removeStudent(parseInt(groupId), email);
                 return res.send(group);
             }
             catch (error) {
@@ -169,7 +180,7 @@ __decorate([
     __metadata("design:returntype", Promise)
 ], GroupController.prototype, "addStudent", null);
 __decorate([
-    (0, routing_controllers_1.Delete)("/student"),
+    (0, routing_controllers_1.Put)("/student"),
     __param(0, (0, routing_controllers_1.Req)()),
     __param(1, (0, routing_controllers_1.Res)()),
     __metadata("design:type", Function),
@@ -185,7 +196,7 @@ __decorate([
     __metadata("design:returntype", Promise)
 ], GroupController.prototype, "addCourse", null);
 __decorate([
-    (0, routing_controllers_1.Delete)("/course"),
+    (0, routing_controllers_1.Put)("/course"),
     __param(0, (0, routing_controllers_1.Req)()),
     __param(1, (0, routing_controllers_1.Res)()),
     __metadata("design:type", Function),
@@ -193,7 +204,8 @@ __decorate([
     __metadata("design:returntype", Promise)
 ], GroupController.prototype, "removeCourse", null);
 GroupController = __decorate([
-    (0, routing_controllers_1.Controller)("/group")
+    (0, routing_controllers_1.Controller)("/group"),
+    __metadata("design:paramtypes", [])
 ], GroupController);
 exports.default = GroupController;
 //# sourceMappingURL=group.controller.js.map

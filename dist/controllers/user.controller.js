@@ -35,7 +35,7 @@ let UserController = class UserController extends baseController_1.BaseControlle
     getCurrentUser(req, res) {
         return __awaiter(this, void 0, void 0, function* () {
             const currentUserId = req.body.currentUserData.id;
-            const user = yield this.service.getById(currentUserId);
+            const user = yield this.service.getAllInfor(currentUserId);
             return res.send(user);
         });
     }

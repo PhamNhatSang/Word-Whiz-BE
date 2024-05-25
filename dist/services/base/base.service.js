@@ -13,27 +13,32 @@ exports.BaseService = void 0;
 require("reflect-metadata");
 const database_1 = require("../../database");
 class BaseService {
-    constructor(entity) {
-        this.repository = database_1.database.getRepository(entity);
+    constructor() {
+        this.manager = database_1.manager;
     }
-    getAll() {
+    create(entity, entityData) {
         return __awaiter(this, void 0, void 0, function* () {
-            return yield this.repository.find();
+            return yield this.manager.getRepository(entity).save(entityData);
         });
     }
-    getById(id) {
+    update(entity, entityData) {
         return __awaiter(this, void 0, void 0, function* () {
-            return yield this.repository.findOneBy({ id: id });
+            return yield this.manager.getRepository(entity).save(entityData);
         });
     }
-    update(entity) {
+    delete(entity, id) {
         return __awaiter(this, void 0, void 0, function* () {
-            return yield this.repository.save(entity);
+            yield this.manager.getRepository(entity).delete({ id: id });
         });
     }
-    delete(id) {
+    getAll(entity) {
         return __awaiter(this, void 0, void 0, function* () {
-            yield this.repository.delete(id);
+            return yield this.manager.find(entity);
+        });
+    }
+    getById(entity, id) {
+        return __awaiter(this, void 0, void 0, function* () {
+            return yield this.manager.findOne(entity, id);
         });
     }
 }

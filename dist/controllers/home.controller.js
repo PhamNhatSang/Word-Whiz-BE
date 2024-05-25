@@ -36,9 +36,10 @@ let HomeController = class HomeController extends baseController_1.BaseControlle
     getHome(req, res) {
         return __awaiter(this, void 0, void 0, function* () {
             try {
-                const topCourse = this.service.getTopCourse();
-                const newCourse = this.service.getNewCourse();
-                return res.send({ topCourse, newCourse });
+                const topCourse = yield this.service.getTopCourse();
+                const newCourse = yield this.service.getNewCourse();
+                const continueCourse = yield this.service.getContinueCourse(req.body.currentUserData.id);
+                return res.send({ topCourse, newCourse, continueCourse });
             }
             catch (error) {
                 return res.status(400).send(error);
@@ -61,8 +62,8 @@ let HomeController = class HomeController extends baseController_1.BaseControlle
         return __awaiter(this, void 0, void 0, function* () {
             try {
                 const userId = req.body.currentUserData.id;
-                const courseId = req.body.courseId;
-                yield this.service.importCourse(userId, courseId);
+                const courseId = req.params.id;
+                yield this.service.importCourse(userId, parseInt(courseId));
                 return res.send("Import course successfully");
             }
             catch (error) {
@@ -88,7 +89,7 @@ __decorate([
     __metadata("design:returntype", Promise)
 ], HomeController.prototype, "searchCourse", null);
 __decorate([
-    (0, routing_controllers_1.Post)("/import/course"),
+    (0, routing_controllers_1.Post)("/import/course/:id"),
     __param(0, (0, routing_controllers_1.Req)()),
     __param(1, (0, routing_controllers_1.Res)()),
     __metadata("design:type", Function),

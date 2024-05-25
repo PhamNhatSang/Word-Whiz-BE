@@ -19,7 +19,7 @@ const typeorm_1 = require("typeorm");
 let Word = class Word extends baseModel_1.BaseModel {
 };
 __decorate([
-    (0, typeorm_1.ManyToOne)(() => course_model_1.default, (course) => course.words),
+    (0, typeorm_1.ManyToOne)(() => course_model_1.default, (course) => course.words, { onDelete: 'CASCADE', onUpdate: 'CASCADE' }),
     __metadata("design:type", course_model_1.default)
 ], Word.prototype, "course", void 0);
 __decorate([

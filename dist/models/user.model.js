@@ -25,6 +25,7 @@ const typeorm_2 = require("typeorm");
 const react_model_1 = __importDefault(require("./react.model"));
 const class_validator_1 = require("class-validator");
 const test_model_1 = __importDefault(require("./test.model"));
+const learning_model_1 = __importDefault(require("./learning.model"));
 let User = class User extends baseModel_1.BaseModel {
 };
 __decorate([
@@ -85,9 +86,13 @@ __decorate([
     __metadata("design:type", Array)
 ], User.prototype, "courseImports", void 0);
 __decorate([
-    (0, typeorm_1.ManyToMany)(() => group_model_1.default, (group) => group.students),
+    (0, typeorm_1.ManyToMany)(() => group_model_1.default, (group) => group.students, { nullable: true }),
     __metadata("design:type", Array)
 ], User.prototype, "addedGroups", void 0);
+__decorate([
+    (0, typeorm_1.OneToMany)(() => learning_model_1.default, (learning) => learning.user, { nullable: true }),
+    __metadata("design:type", Array)
+], User.prototype, "learnings", void 0);
 User = __decorate([
     (0, typeorm_1.Entity)()
 ], User);

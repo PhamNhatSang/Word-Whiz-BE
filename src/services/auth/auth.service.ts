@@ -2,21 +2,19 @@ import "reflect-metadata";
 import { BaseService } from "../base/base.service";
 import User from "../../models/user.model";
 
-export default class AuthService extends BaseService<User>{
+export default class AuthService extends BaseService{
 
     constructor(){
-        super(User);
+        super();
     }
 
     async getByEmail(email: string): Promise<User | null> {
-        return await this.repository.findOne({ where: { email } });
+        return await this.manager.findOne(User,{ where: { email } });
     }
 
-    async create (user: User): Promise<User> {
-        return await this.repository.save(user);
-    }
-    async getAllInfor(email:string): Promise<User | null> {
-        return await this.repository.findOne({ where: { email }, relations:{myGroups:true,myCourses:true}});
+   
+    async getAllInfor(id:number): Promise<User | null> {
+        return await this.manager.findOne(User,{ where: { id }, relations:{myGroups:true,myCourses:true,addedGroups:true}});
     }
     
 

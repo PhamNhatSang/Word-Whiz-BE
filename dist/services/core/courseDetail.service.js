@@ -13,51 +13,30 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
 };
 Object.defineProperty(exports, "__esModule", { value: true });
 const course_model_1 = __importDefault(require("../../models/course.model"));
+const word_model_1 = __importDefault(require("../../models/word.model"));
 const base_service_1 = require("../base/base.service");
 class CourseDetailService extends base_service_1.BaseService {
     constructor() {
-        super(course_model_1.default);
+        super();
     }
     getCourseDetail(courseId) {
         return __awaiter(this, void 0, void 0, function* () {
-            const course = yield this.repository.findOne({
+            const course = yield this.manager.findOne(course_model_1.default, {
                 where: { id: courseId },
                 relations: ["words"],
             });
             return course;
         });
     }
-    createWord(courseId, word) {
+    createWord(courseId, words) {
         return __awaiter(this, void 0, void 0, function* () {
-            const course = yield this.repository.findOne({
+            console.log(words);
+            const course = yield this.manager.findOne(course_model_1.default, {
                 where: { id: courseId },
-                relations: ["words"],
             });
-            course.words.push(word);
-            return word;
-        });
-    }
-    deleteWord(courseId, wordId) {
-        return __awaiter(this, void 0, void 0, function* () {
-            const course = yield this.repository.findOne({
-                where: { id: courseId },
-                relations: ["words"],
-            });
-            course.words = course.words.filter((word) => word.id !== wordId);
-            yield this.repository.save(course);
-            return wordId;
-        });
-    }
-    updateWord(courseId, word) {
-        return __awaiter(this, void 0, void 0, function* () {
-            const course = yield this.repository.findOne({
-                where: { id: courseId },
-                relations: ["words"],
-            });
-            const index = course.words.findIndex((w) => w.id === word.id);
-            course.words[index] = word;
-            yield this.repository.save(course);
-            return word;
+            const wordCreates = yield this.manager.getRepository(word_model_1.default).save(words);
+            course.words = wordCreates;
+            yield this.manager.getRepository(course_model_1.default).save(course);
         });
     }
 }
