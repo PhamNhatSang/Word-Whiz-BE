@@ -20,12 +20,42 @@ class LibraryService extends base_service_1.BaseService {
     constructor() {
         super();
         this.getAllCourse = (userId) => __awaiter(this, void 0, void 0, function* () {
-            const user = yield this.manager.findOne(user_model_1.default, {
-                where: { id: userId },
-                relations: ["myCourses", "courseImports"],
-            });
-            const courseAll = user.myCourses.concat(user.courseImports);
-            return courseAll;
+            const myCourses = yield this.manager
+                .createQueryBuilder(course_model_1.default, "course")
+                .leftJoinAndSelect("course.owner", "owner")
+                .leftJoin("course.words", "words")
+                .select([
+                "course.id",
+                "course.title as title",
+                "course.description as description",
+                "course.accessiblity as accessiblity",
+                "owner.id",
+                "owner.name",
+                "owner.avatar",
+            ])
+                .addSelect("COUNT(words.id)", "terms")
+                .where("owner.id = :userId", { userId: userId })
+                .groupBy("course.id, owner.id")
+                .getRawMany();
+            const importCourses = yield this.manager
+                .createQueryBuilder(course_model_1.default, "course")
+                .leftJoinAndSelect("course.owner", "owner")
+                .leftJoin("course.words", "words")
+                .innerJoin("course.userImporteds", "userImporteds")
+                .select([
+                "course.id",
+                "course.title as title",
+                "course.description as description",
+                "course.accessiblity as accessiblity",
+                "owner.id",
+                "owner.name",
+                "owner.avatar",
+            ])
+                .addSelect("COUNT(words.id)", "terms")
+                .where("userImporteds.id = :userId", { userId: userId })
+                .groupBy("course.id, owner.id")
+                .getRawMany();
+            return { myCourses, importCourses };
         });
         this.createCourse = (userId, course) => __awaiter(this, void 0, void 0, function* () {
             const user = yield this.manager.findOne(user_model_1.default, {
@@ -79,7 +109,11 @@ class LibraryService extends base_service_1.BaseService {
                 if (group.courses.find((courseGroup) => courseGroup.id === course.id)) {
                     isAdded = true;
                 }
-                return { "courseName": course.title, "courseId": course.id, "isAdded": isAdded };
+                return {
+                    courseName: course.title,
+                    courseId: course.id,
+                    isAdded: isAdded,
+                };
             });
             return courseToAdd;
         });

@@ -13,8 +13,7 @@ export default class HomeController extends BaseController<LibraryService> {
   async getLibrary(@Req() req: Request, @Res() res: Response) {
     try {
       const userId = req.body.currentUserData.id;
-      const title = req.query?.title;
-      const result = this.service.getCourseByTitle(userId, title as string);
+      const result = await this.service.getAllCourse(parseInt(userId));
       return res.send(result);
     } catch (error) {
       return res.status(400).send(error);

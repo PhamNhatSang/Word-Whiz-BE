@@ -33,11 +33,9 @@ let HomeController = class HomeController extends baseController_1.BaseControlle
     }
     getLibrary(req, res) {
         return __awaiter(this, void 0, void 0, function* () {
-            var _a;
             try {
                 const userId = req.body.currentUserData.id;
-                const title = (_a = req.query) === null || _a === void 0 ? void 0 : _a.title;
-                const result = this.service.getCourseByTitle(userId, title);
+                const result = yield this.service.getAllCourse(parseInt(userId));
                 return res.send(result);
             }
             catch (error) {

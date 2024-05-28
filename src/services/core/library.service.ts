@@ -7,35 +7,63 @@ import Learning from "../../models/learning.model";
 import Word from "../../models/word.model";
 import Group from "../../models/group.model";
 export default class LibraryService extends BaseService {
-  
   constructor() {
     super();
   }
 
   getAllCourse = async (userId: number) => {
-    const user = await this.manager.findOne(User,{
-      where: { id: userId },
-      relations: ["myCourses","courseImports"],
-    });
-    
-    const courseAll = user.myCourses.concat(user.courseImports);
-    return courseAll;
+    const myCourses = await this.manager
+      .createQueryBuilder(Course, "course")
+      .leftJoinAndSelect("course.owner", "owner")
+      .leftJoin("course.words", "words")
+      .select([
+        "course.id",
+        "course.title as title",
+        "course.description as description",
+        "course.accessiblity as accessiblity",
+        "owner.id",
+        "owner.name",
+        "owner.avatar",
+      ])
+      .addSelect("COUNT(words.id)", "terms")
+      .where("owner.id = :userId", { userId: userId })
+      .groupBy("course.id, owner.id")
+      .getRawMany();
+
+    const importCourses = await this.manager
+      .createQueryBuilder(Course, "course")
+      .leftJoinAndSelect("course.owner", "owner")
+      .leftJoin("course.words", "words")
+      .innerJoin("course.userImporteds", "userImporteds")
+      .select([
+        "course.id",
+        "course.title as title",
+        "course.description as description",
+        "course.accessiblity as accessiblity",
+        "owner.id",
+        "owner.name",
+        "owner.avatar",
+      ])
+      .addSelect("COUNT(words.id)", "terms")
+      .where("userImporteds.id = :userId", { userId: userId })
+      .groupBy("course.id, owner.id")
+      .getRawMany();
+
+    return { myCourses,importCourses };
   };
 
   createCourse = async (userId: number, course: Course) => {
-    const user = await this.manager.findOne(User,{
+    const user = await this.manager.findOne(User, {
       where: { id: userId },
-      relations: ["myCourses","learnings"],
+      relations: ["myCourses", "learnings"],
     });
     course.owner = user;
-   
-   await this.manager.getRepository(Course).save(course);
-   
 
+    await this.manager.getRepository(Course).save(course);
   };
-   
+
   getCourseByTitle = async (userId: number, title: string) => {
-    const user = await this.manager.findOne(User,{
+    const user = await this.manager.findOne(User, {
       where: { id: userId },
       relations: ["myCourses, courseImports"],
     });
@@ -54,52 +82,48 @@ export default class LibraryService extends BaseService {
   };
 
   deleteCourse = async (userId: number, courseId: number) => {
-    const user = await this.manager.findOne(User,{
+    const user = await this.manager.findOne(User, {
       where: { id: userId },
       relations: ["myCourses"],
     });
-   if(user.myCourses.find((course) => course.id === courseId)){
-      await this.manager.delete(Course,courseId);
-      return courseId
-     
-  }
+    if (user.myCourses.find((course) => course.id === courseId)) {
+      await this.manager.delete(Course, courseId);
+      return courseId;
+    }
 
-  if(user.courseImports.find((course) => course.id === courseId)){
-    user.courseImports = user.courseImports.filter((course) => course.id !== courseId);
-    await this.manager.save(user);
-    return courseId
-   
-  }
+    if (user.courseImports.find((course) => course.id === courseId)) {
+      user.courseImports = user.courseImports.filter(
+        (course) => course.id !== courseId
+      );
+      await this.manager.save(user);
+      return courseId;
+    }
 
-  throw new Error("Course not found");
-     
-  }
+    throw new Error("Course not found");
+  };
 
   getListCourseToAddGroup = async (userId: number, groupId: number) => {
-      
-    const user = await this.manager.findOne(User,{
+    const user = await this.manager.findOne(User, {
       where: { id: userId },
       relations: ["myCourses"],
     });
-    const group = await this.manager.findOne(Group,{
+    const group = await this.manager.findOne(Group, {
       where: { id: groupId },
       relations: ["courses"],
     });
 
-    const courseToAdd = user.myCourses.map(
-      (course) => {
-        var isAdded=false;
-        if (group.courses.find((courseGroup) => courseGroup.id === course.id)) {
-          isAdded=true;
-        }
-        return {"courseName":course.title,"courseId":course.id,"isAdded":isAdded};
+    const courseToAdd = user.myCourses.map((course) => {
+      var isAdded = false;
+      if (group.courses.find((courseGroup) => courseGroup.id === course.id)) {
+        isAdded = true;
       }
-    );
+      return {
+        courseName: course.title,
+        courseId: course.id,
+        isAdded: isAdded,
+      };
+    });
 
-    return courseToAdd; 
-   
-  }
- 
-
-  
+    return courseToAdd;
+  };
 }

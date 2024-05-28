@@ -112,7 +112,7 @@ export default class HomeService extends BaseService {
     ])
     .innerJoin('course.owner', 'owner')
     .leftJoin('course.words', 'word')
-    .leftJoin('course.learnings', 'learning', 'learning.user.id = :learnerId', {learnerId: userId })
+    .innerJoin('course.learnings', 'learning', 'learning.user.id = :learnerId', {learnerId: userId })
     .groupBy('course.id, owner.id, learning.lastWordIndex')
     .getRawMany();
 
