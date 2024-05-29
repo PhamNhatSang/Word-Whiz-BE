@@ -31,7 +31,8 @@ class GroupService extends base_service_1.BaseService {
                 .where('owner.id = :userId', { userId })
                 .orWhere('student.id = :userId', { userId })
                 .select([
-                'group.groupName',
+                'group.id',
+                'group.groupName AS group_name',
                 'owner.name',
                 'owner.avatar',
                 'COUNT(DISTINCT course.id) AS numberOfCourses',
