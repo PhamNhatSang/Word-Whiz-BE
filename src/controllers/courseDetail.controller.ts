@@ -21,7 +21,8 @@ export default class CourseDetailController extends BaseController<CourseDetailS
   async getCourseDetail(@Req() req: Request, @Res() res: Response) {
     try {
       const courseId = req.params.id;
-      const result = await this.service.getCourseDetail(parseInt(courseId));
+      const userId = req.body.currentUserData.id;
+      const result = await this.service.getCourseDetail(parseInt(userId),parseInt(courseId));
       return res.send(result);
     } catch (error) {
       return res.status(400).send(error);

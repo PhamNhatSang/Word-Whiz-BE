@@ -36,7 +36,8 @@ let CourseDetailController = class CourseDetailController extends baseController
         return __awaiter(this, void 0, void 0, function* () {
             try {
                 const courseId = req.params.id;
-                const result = yield this.service.getCourseDetail(parseInt(courseId));
+                const userId = req.body.currentUserData.id;
+                const result = yield this.service.getCourseDetail(parseInt(userId), parseInt(courseId));
                 return res.send(result);
             }
             catch (error) {
