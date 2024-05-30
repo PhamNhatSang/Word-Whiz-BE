@@ -58,6 +58,8 @@ class GroupService extends base_service_1.BaseService {
                 .select([
                 "group.id",
                 "group.groupName AS group_name",
+                "owner.name",
+                "owner.avatar",
                 "group.groupDescription AS description",
                 "group.code AS code",
                 "COUNT(DISTINCT course.id) AS numberOfCourses",
@@ -86,7 +88,17 @@ class GroupService extends base_service_1.BaseService {
                 .groupBy("course.id, owner.id,groups.id")
                 .where("groups.id = :groupId", { groupId: groupId })
                 .getRawMany();
-            return Object.assign(Object.assign({}, groupDetail), { courses: course });
+            const students = yield this.manager
+                .createQueryBuilder(user_model_1.default, "user")
+                .leftJoinAndSelect("user.addedGroups", "group")
+                .where("group.id = :groupId", { groupId })
+                .select([
+                "user.id as student_id",
+                "user.name as student_name",
+                "user.avatar as student_avatar",
+            ])
+                .getRawMany();
+            return Object.assign(Object.assign({}, groupDetail), { courses: course, students: students });
         });
     }
     createGroup(userId, group) {

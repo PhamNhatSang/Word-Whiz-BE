@@ -34,7 +34,6 @@ export default class GroupController extends BaseController<GroupService> {
   async getGroupDetail(@Req() req: Request, @Res() res: Response) {
     try {
       const groupId = req.params.id;
-      console.log(groupId)
       const result = await this.service.getGroupDetail(parseInt(groupId));
       return res.send(result);
     } catch (error) {

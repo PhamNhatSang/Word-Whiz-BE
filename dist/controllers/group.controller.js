@@ -47,7 +47,6 @@ let GroupController = class GroupController extends baseController_1.BaseControl
         return __awaiter(this, void 0, void 0, function* () {
             try {
                 const groupId = req.params.id;
-                console.log(groupId);
                 const result = yield this.service.getGroupDetail(parseInt(groupId));
                 return res.send(result);
             }
