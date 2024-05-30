@@ -56,6 +56,19 @@ let GroupController = class GroupController extends baseController_1.BaseControl
             }
         });
     }
+    getCoursesInGroup(req, res) {
+        return __awaiter(this, void 0, void 0, function* () {
+            try {
+                const groupId = req.params.id;
+                console.log(groupId);
+                const result = yield this.service.getCourseInGroup(parseInt(groupId));
+                return res.send(result);
+            }
+            catch (error) {
+                return res.status(400).send(error);
+            }
+        });
+    }
     createGroup(req, res) {
         return __awaiter(this, void 0, void 0, function* () {
             try {
@@ -155,6 +168,14 @@ __decorate([
     __metadata("design:paramtypes", [Object, Object]),
     __metadata("design:returntype", Promise)
 ], GroupController.prototype, "getGroupById", null);
+__decorate([
+    (0, routing_controllers_1.Get)("/:id/courses"),
+    __param(0, (0, routing_controllers_1.Req)()),
+    __param(1, (0, routing_controllers_1.Res)()),
+    __metadata("design:type", Function),
+    __metadata("design:paramtypes", [Object, Object]),
+    __metadata("design:returntype", Promise)
+], GroupController.prototype, "getCoursesInGroup", null);
 __decorate([
     (0, routing_controllers_1.Post)("/"),
     __param(0, (0, routing_controllers_1.Req)()),

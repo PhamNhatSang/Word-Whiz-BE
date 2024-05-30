@@ -18,6 +18,17 @@ const user_model_1 = __importDefault(require("./user.model"));
 const typeorm_1 = require("typeorm");
 const course_model_1 = __importDefault(require("./course.model"));
 let Group = class Group extends baseModel_1.BaseModel {
+    generateCode() {
+        this.code = this.generateRandomString(8);
+    }
+    generateRandomString(length) {
+        const characters = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789';
+        let result = '';
+        for (let i = 0; i < length; i++) {
+            result += characters.charAt(Math.floor(Math.random() * characters.length));
+        }
+        return '#' + result;
+    }
 };
 __decorate([
     (0, typeorm_1.Column)({ nullable: true, name: "group_name" }),
@@ -27,6 +38,10 @@ __decorate([
     (0, typeorm_1.Column)({ nullable: true, name: "group_description" }),
     __metadata("design:type", String)
 ], Group.prototype, "groupDescription", void 0);
+__decorate([
+    (0, typeorm_1.Column)({ nullable: true, name: "group_code" }),
+    __metadata("design:type", String)
+], Group.prototype, "code", void 0);
 __decorate([
     (0, typeorm_1.ManyToOne)(() => user_model_1.default, (user) => user.myGroups),
     __metadata("design:type", user_model_1.default)
@@ -61,6 +76,12 @@ __decorate([
     }),
     __metadata("design:type", Array)
 ], Group.prototype, "courses", void 0);
+__decorate([
+    (0, typeorm_1.BeforeInsert)(),
+    __metadata("design:type", Function),
+    __metadata("design:paramtypes", []),
+    __metadata("design:returntype", void 0)
+], Group.prototype, "generateCode", null);
 Group = __decorate([
     (0, typeorm_1.Entity)()
 ], Group);

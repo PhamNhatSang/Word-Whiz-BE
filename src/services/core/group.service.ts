@@ -4,6 +4,7 @@ import { In, Repository } from "typeorm";
 import User from "../../models/user.model";
 import { database } from "../../database";
 import ExistData from "../../exceptions/ExistData";
+import Course from "../../models/course.model";
 export default class GroupService extends BaseService {
     constructor() {
         super();
@@ -20,6 +21,8 @@ export default class GroupService extends BaseService {
         .select([
           'group.id',
           'group.groupName AS group_name',
+          'group.description AS description',
+          'group.code AS code',
           'owner.name',
           'owner.avatar',
           'COUNT(DISTINCT course.id) AS numberOfCourses',
@@ -29,6 +32,29 @@ export default class GroupService extends BaseService {
         .addGroupBy('owner.id')
         .getRawMany();
         return groups
+    }
+    async getCourseInGroup(groupId: number) {
+
+      const course=  await this.manager
+      .createQueryBuilder(Course, "course")
+      .leftJoinAndSelect("course.owner", "owner")
+      .leftJoinAndSelect("course.addedGroups","groups")
+      .leftJoin("course.words", "words")
+      .select([
+        "course.id",
+        "course.title as title",
+        "course.description as description",
+        "course.accessiblity as accessiblity",
+        "owner.id",
+        "owner.name",
+        "owner.avatar",
+      ])
+      .addSelect("COUNT(words.id)", "terms")
+      .groupBy("course.id, owner.id,groups.id")
+      .where("groups.id = :groupId", { groupId: groupId })
+      .getRawMany();
+      return course;
+        
     }
 
     async createGroup(userId: number, group: Group) {

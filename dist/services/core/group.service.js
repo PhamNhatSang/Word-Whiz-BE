@@ -17,6 +17,7 @@ const group_model_1 = __importDefault(require("../../models/group.model"));
 const typeorm_1 = require("typeorm");
 const user_model_1 = __importDefault(require("../../models/user.model"));
 const ExistData_1 = __importDefault(require("../../exceptions/ExistData"));
+const course_model_1 = __importDefault(require("../../models/course.model"));
 class GroupService extends base_service_1.BaseService {
     constructor() {
         super();
@@ -33,6 +34,8 @@ class GroupService extends base_service_1.BaseService {
                 .select([
                 'group.id',
                 'group.groupName AS group_name',
+                'group.description AS description',
+                'group.code AS code',
                 'owner.name',
                 'owner.avatar',
                 'COUNT(DISTINCT course.id) AS numberOfCourses',
@@ -42,6 +45,29 @@ class GroupService extends base_service_1.BaseService {
                 .addGroupBy('owner.id')
                 .getRawMany();
             return groups;
+        });
+    }
+    getCourseInGroup(groupId) {
+        return __awaiter(this, void 0, void 0, function* () {
+            const course = yield this.manager
+                .createQueryBuilder(course_model_1.default, "course")
+                .leftJoinAndSelect("course.owner", "owner")
+                .leftJoinAndSelect("course.addedGroups", "groups")
+                .leftJoin("course.words", "words")
+                .select([
+                "course.id",
+                "course.title as title",
+                "course.description as description",
+                "course.accessiblity as accessiblity",
+                "owner.id",
+                "owner.name",
+                "owner.avatar",
+            ])
+                .addSelect("COUNT(words.id)", "terms")
+                .groupBy("course.id, owner.id,groups.id")
+                .where("groups.id = :groupId", { groupId: groupId })
+                .getRawMany();
+            return course;
         });
     }
     createGroup(userId, group) {

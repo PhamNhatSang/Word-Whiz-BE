@@ -2,7 +2,7 @@ import "reflect-metadata";
 
 import { BaseModel } from "./baseModel";
 import User from "./user.model";
-import { Entity, Column, ManyToOne, OneToMany, ManyToMany, JoinTable } from "typeorm";
+import { Entity, Column, ManyToOne, OneToMany, ManyToMany, JoinTable, BeforeInsert } from "typeorm";
 import Course from "./course.model";
 import { join } from "path";
 
@@ -14,6 +14,9 @@ export default class Group extends BaseModel {
   @Column({nullable: true,name:"group_description"})
 
   groupDescription: string;
+
+  @Column({nullable: true,name:"group_code"})
+  code: string;
 
   @ManyToOne(() => User, (user) => user.myGroups)
   owner: User;
@@ -45,4 +48,19 @@ export default class Group extends BaseModel {
     },
   })
   courses: Course[];
+
+
+  @BeforeInsert()
+  generateCode() {
+    this.code = this.generateRandomString(8);
+  }
+
+  private generateRandomString(length: number): string {
+    const characters = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789';
+    let result = '';
+    for (let i = 0; i < length; i++) {
+      result += characters.charAt(Math.floor(Math.random() * characters.length));
+    }
+    return '#'+result;
+  }
 }
