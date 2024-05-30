@@ -35,6 +35,26 @@ export default class GroupService extends BaseService {
     return groups;
   }
   async getCourseInGroup(groupId: number) {
+    
+
+
+   const groupDetail= await this.manager
+      .createQueryBuilder(Group, "group")
+      .leftJoinAndSelect("group.owner", "owner")
+      .leftJoinAndSelect("group.students", "student")
+      .leftJoinAndSelect("group.courses", "course")
+      .select([
+        "group.id",
+        "group.groupName AS group_name",
+        "group.groupDescription AS description",
+        "group.code AS code",
+        "COUNT(DISTINCT course.id) AS numberOfCourses",
+        "COUNT(DISTINCT student.id) AS numberOfMembers",
+      ])
+      .groupBy("group.id")
+      .addGroupBy("owner.id")
+      .where("group.id = :groupId", { groupId })
+      .getRawOne();
     const course = await this.manager
       .createQueryBuilder(Course, "course")
       .leftJoinAndSelect("course.owner", "owner")
@@ -54,7 +74,9 @@ export default class GroupService extends BaseService {
       .groupBy("course.id, owner.id,groups.id")
       .where("groups.id = :groupId", { groupId: groupId })
       .getRawMany();
-    return course;
+
+
+    return {...groupDetail,courses:course};
   }
 
   async createGroup(userId: number, group: Group) {

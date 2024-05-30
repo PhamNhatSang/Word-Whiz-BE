@@ -50,6 +50,23 @@ class GroupService extends base_service_1.BaseService {
     }
     getCourseInGroup(groupId) {
         return __awaiter(this, void 0, void 0, function* () {
+            const groupDetail = yield this.manager
+                .createQueryBuilder(group_model_1.default, "group")
+                .leftJoinAndSelect("group.owner", "owner")
+                .leftJoinAndSelect("group.students", "student")
+                .leftJoinAndSelect("group.courses", "course")
+                .select([
+                "group.id",
+                "group.groupName AS group_name",
+                "group.groupDescription AS description",
+                "group.code AS code",
+                "COUNT(DISTINCT course.id) AS numberOfCourses",
+                "COUNT(DISTINCT student.id) AS numberOfMembers",
+            ])
+                .groupBy("group.id")
+                .addGroupBy("owner.id")
+                .where("group.id = :groupId", { groupId })
+                .getRawOne();
             const course = yield this.manager
                 .createQueryBuilder(course_model_1.default, "course")
                 .leftJoinAndSelect("course.owner", "owner")
@@ -69,7 +86,7 @@ class GroupService extends base_service_1.BaseService {
                 .groupBy("course.id, owner.id,groups.id")
                 .where("groups.id = :groupId", { groupId: groupId })
                 .getRawMany();
-            return course;
+            return Object.assign(Object.assign({}, groupDetail), { courses: course });
         });
     }
     createGroup(userId, group) {
