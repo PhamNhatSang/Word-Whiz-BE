@@ -43,12 +43,12 @@ let GroupController = class GroupController extends baseController_1.BaseControl
             }
         });
     }
-    getCoursesInGroup(req, res) {
+    getGroupDetail(req, res) {
         return __awaiter(this, void 0, void 0, function* () {
             try {
                 const groupId = req.params.id;
                 console.log(groupId);
-                const result = yield this.service.getCourseInGroup(parseInt(groupId));
+                const result = yield this.service.getGroupDetail(parseInt(groupId));
                 return res.send(result);
             }
             catch (error) {
@@ -148,13 +148,13 @@ __decorate([
     __metadata("design:returntype", Promise)
 ], GroupController.prototype, "getListGroup", null);
 __decorate([
-    (0, routing_controllers_1.Get)("/:id/courses"),
+    (0, routing_controllers_1.Get)("/:id"),
     __param(0, (0, routing_controllers_1.Req)()),
     __param(1, (0, routing_controllers_1.Res)()),
     __metadata("design:type", Function),
     __metadata("design:paramtypes", [Object, Object]),
     __metadata("design:returntype", Promise)
-], GroupController.prototype, "getCoursesInGroup", null);
+], GroupController.prototype, "getGroupDetail", null);
 __decorate([
     (0, routing_controllers_1.Post)("/"),
     __param(0, (0, routing_controllers_1.Req)()),

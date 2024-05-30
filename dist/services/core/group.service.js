@@ -48,7 +48,7 @@ class GroupService extends base_service_1.BaseService {
             return groups;
         });
     }
-    getCourseInGroup(groupId) {
+    getGroupDetail(groupId) {
         return __awaiter(this, void 0, void 0, function* () {
             const groupDetail = yield this.manager
                 .createQueryBuilder(group_model_1.default, "group")

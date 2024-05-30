@@ -34,7 +34,7 @@ export default class GroupService extends BaseService {
       .getRawMany();
     return groups;
   }
-  async getCourseInGroup(groupId: number) {
+  async getGroupDetail(groupId: number) {
     
 
 
