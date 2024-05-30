@@ -26,7 +26,6 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
 Object.defineProperty(exports, "__esModule", { value: true });
 const baseController_1 = require("./baseController");
 const routing_controllers_1 = require("routing-controllers");
-const group_model_1 = __importDefault(require("../models/group.model"));
 const group_service_1 = __importDefault(require("../services/core/group.service"));
 let GroupController = class GroupController extends baseController_1.BaseController {
     constructor() {
@@ -40,18 +39,6 @@ let GroupController = class GroupController extends baseController_1.BaseControl
             }
             catch (error) {
                 console.log(error);
-                return res.status(400).send(error);
-            }
-        });
-    }
-    getGroupById(req, res) {
-        return __awaiter(this, void 0, void 0, function* () {
-            try {
-                const groupId = req.params.id;
-                const result = yield this.service.getById(group_model_1.default, parseInt(groupId));
-                return res.send(result);
-            }
-            catch (error) {
                 return res.status(400).send(error);
             }
         });
@@ -160,14 +147,6 @@ __decorate([
     __metadata("design:paramtypes", [Object, Object]),
     __metadata("design:returntype", Promise)
 ], GroupController.prototype, "getListGroup", null);
-__decorate([
-    (0, routing_controllers_1.Get)("/:id"),
-    __param(0, (0, routing_controllers_1.Req)()),
-    __param(1, (0, routing_controllers_1.Res)()),
-    __metadata("design:type", Function),
-    __metadata("design:paramtypes", [Object, Object]),
-    __metadata("design:returntype", Promise)
-], GroupController.prototype, "getGroupById", null);
 __decorate([
     (0, routing_controllers_1.Get)("/:id/courses"),
     __param(0, (0, routing_controllers_1.Req)()),

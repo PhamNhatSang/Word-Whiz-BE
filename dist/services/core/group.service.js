@@ -24,25 +24,26 @@ class GroupService extends base_service_1.BaseService {
     }
     getAllGroup(userId) {
         return __awaiter(this, void 0, void 0, function* () {
-            const groups = yield this.manager.createQueryBuilder(group_model_1.default, 'group')
-                .leftJoinAndSelect('group.owner', 'owner')
-                .leftJoinAndSelect('group.students', 'student')
-                .leftJoinAndSelect('group.courses', 'course')
-                .leftJoin(user_model_1.default, 'user', 'user.id = :userId', { userId })
-                .where('owner.id = :userId', { userId })
-                .orWhere('student.id = :userId', { userId })
+            const groups = yield this.manager
+                .createQueryBuilder(group_model_1.default, "group")
+                .leftJoinAndSelect("group.owner", "owner")
+                .leftJoinAndSelect("group.students", "student")
+                .leftJoinAndSelect("group.courses", "course")
+                .leftJoin(user_model_1.default, "user", "user.id = :userId", { userId })
+                .where("owner.id = :userId", { userId })
+                .orWhere("student.id = :userId", { userId })
                 .select([
-                'group.id',
-                'group.groupName AS group_name',
-                'group.description AS description',
-                'group.code AS code',
-                'owner.name',
-                'owner.avatar',
-                'COUNT(DISTINCT course.id) AS numberOfCourses',
-                'COUNT(DISTINCT student.id) AS numberOfMembers'
+                "group.id",
+                "group.groupName AS group_name",
+                "group.groupDescription AS description",
+                "group.code AS code",
+                "owner.name",
+                "owner.avatar",
+                "COUNT(DISTINCT course.id) AS numberOfCourses",
+                "COUNT(DISTINCT student.id) AS numberOfMembers",
             ])
-                .groupBy('group.id')
-                .addGroupBy('owner.id')
+                .groupBy("group.id")
+                .addGroupBy("owner.id")
                 .getRawMany();
             return groups;
         });
@@ -56,6 +57,7 @@ class GroupService extends base_service_1.BaseService {
                 .leftJoin("course.words", "words")
                 .select([
                 "course.id",
+                "groups.id",
                 "course.title as title",
                 "course.description as description",
                 "course.accessiblity as accessiblity",
@@ -103,7 +105,7 @@ class GroupService extends base_service_1.BaseService {
             const user = yield this.manager.find(user_model_1.default, {
                 where: { email: (0, typeorm_1.In)(email) },
             });
-            const userToAdd = user.filter(user => !group.students.some(student => student.email === user.email));
+            const userToAdd = user.filter((user) => !group.students.some((student) => student.email === user.email));
             if (userToAdd.length === 0) {
                 throw new ExistData_1.default("All Student is already in group");
             }
