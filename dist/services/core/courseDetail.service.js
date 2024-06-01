@@ -46,6 +46,18 @@ class CourseDetailService extends base_service_1.BaseService {
             yield this.manager.getRepository(course_model_1.default).save(course);
         });
     }
+    updateCourse(course) {
+        return __awaiter(this, void 0, void 0, function* () {
+            const courseUpdate = yield this.manager.getRepository(course_model_1.default).save(course);
+            const orphanedWords = yield this.manager.createQueryBuilder(word_model_1.default, 'word')
+                .leftJoinAndSelect('word.course', 'course')
+                .where('word.courseId IS NULL')
+                .getMany();
+            if (orphanedWords.length > 0)
+                yield this.manager.remove(orphanedWords);
+            return courseUpdate;
+        });
+    }
 }
 exports.default = CourseDetailService;
 //# sourceMappingURL=courseDetail.service.js.map

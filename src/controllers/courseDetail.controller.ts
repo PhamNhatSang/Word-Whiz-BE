@@ -56,7 +56,7 @@ export default class CourseDetailController extends BaseController<CourseDetailS
   async updateCourse(@Req() req: Request, @Res() res: Response) {
     try {
       const course = req.body.course as Course;
-      const wordUpdated = await this.service.update(Course,course);
+      const wordUpdated = await this.service.updateCourse(course);
       return res.send(wordUpdated);
     } catch (error) {
       return res.status(400).send(error);

@@ -35,6 +35,17 @@ export default class CourseDetailService extends BaseService {
         course.words = wordCreates;
         await this.manager.getRepository(Course).save(course);
     }
+    async updateCourse(course: Course) {
+        const courseUpdate=  await this.manager.getRepository(Course).save(course);
+        const orphanedWords = await this.manager.createQueryBuilder(Word, 'word')
+      .leftJoinAndSelect('word.course', 'course')
+      .where('word.courseId IS NULL')
+      .getMany();
+      if (orphanedWords.length > 0) 
+        await this.manager.remove(orphanedWords);
+
+        return courseUpdate;
+    }
 
    
     

@@ -26,7 +26,6 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
 Object.defineProperty(exports, "__esModule", { value: true });
 const baseController_1 = require("./baseController");
 const routing_controllers_1 = require("routing-controllers");
-const course_model_1 = __importDefault(require("../models/course.model"));
 const courseDetail_service_1 = __importDefault(require("../services/core/courseDetail.service"));
 const word_model_1 = __importDefault(require("../models/word.model"));
 let CourseDetailController = class CourseDetailController extends baseController_1.BaseController {
@@ -76,7 +75,7 @@ let CourseDetailController = class CourseDetailController extends baseController
         return __awaiter(this, void 0, void 0, function* () {
             try {
                 const course = req.body.course;
-                const wordUpdated = yield this.service.update(course_model_1.default, course);
+                const wordUpdated = yield this.service.updateCourse(course);
                 return res.send(wordUpdated);
             }
             catch (error) {
