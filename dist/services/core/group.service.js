@@ -154,7 +154,7 @@ class GroupService extends base_service_1.BaseService {
             });
             group.students = group.students.filter((student) => student.email !== email);
             yield this.manager.getRepository(group_model_1.default).save(group);
-            return email;
+            return { email: email };
         });
     }
     findStudent(email) {
@@ -211,7 +211,7 @@ class GroupService extends base_service_1.BaseService {
             });
             group.courses = group.courses.filter((course) => course.id !== courseId);
             yield this.manager.save(group);
-            return courseId;
+            return { courseId: courseId };
         });
     }
 }

@@ -143,7 +143,7 @@ export default class GroupService extends BaseService {
     );
 
      await this.manager.getRepository(Group).save(group);
-     return email;
+     return {email:email};
   }
 
   async findStudent(email: string) {
@@ -202,6 +202,6 @@ export default class GroupService extends BaseService {
     group.courses = group.courses.filter((course) => course.id !== courseId);
 
     await this.manager.save(group);
-    return courseId;
+    return {courseId:courseId};
   }
 }
