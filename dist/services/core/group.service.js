@@ -199,7 +199,7 @@ class GroupService extends base_service_1.BaseService {
                 .addSelect("COUNT(words.id)", "terms")
                 .where("course.id = :courseId", { courseId: courseId })
                 .groupBy("course.id, owner.id")
-                .getRawMany();
+                .getRawOne();
             return addCourse;
         });
     }

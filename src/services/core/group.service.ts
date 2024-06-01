@@ -188,7 +188,7 @@ export default class GroupService extends BaseService {
     .addSelect("COUNT(words.id)", "terms")
     .where("course.id = :courseId", { courseId: courseId })
     .groupBy("course.id, owner.id")
-    .getRawMany();
+    .getRawOne();
 
     return addCourse;
     
