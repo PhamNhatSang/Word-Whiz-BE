@@ -15,7 +15,6 @@ export default class CourseDetailService extends BaseService {
         relations: ["words"],
         });
        
-
         const user = await this.manager.findOne(User,{
         where: { id: userId },
         relations: ["myCourses", "courseImports"],
@@ -36,7 +35,8 @@ export default class CourseDetailService extends BaseService {
         course.words = wordCreates;
         await this.manager.getRepository(Course).save(course);
     }
-    
+
+   
     
 
 }

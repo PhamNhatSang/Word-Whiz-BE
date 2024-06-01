@@ -26,6 +26,7 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
 Object.defineProperty(exports, "__esModule", { value: true });
 const baseController_1 = require("./baseController");
 const routing_controllers_1 = require("routing-controllers");
+const course_model_1 = __importDefault(require("../models/course.model"));
 const courseDetail_service_1 = __importDefault(require("../services/core/courseDetail.service"));
 const word_model_1 = __importDefault(require("../models/word.model"));
 let CourseDetailController = class CourseDetailController extends baseController_1.BaseController {
@@ -71,11 +72,11 @@ let CourseDetailController = class CourseDetailController extends baseController
             }
         });
     }
-    updateWord(req, res) {
+    updateCourse(req, res) {
         return __awaiter(this, void 0, void 0, function* () {
             try {
-                const word = req.body;
-                const wordUpdated = yield this.service.update(word_model_1.default, word);
+                const course = req.body.course;
+                const wordUpdated = yield this.service.update(course_model_1.default, course);
                 return res.send(wordUpdated);
             }
             catch (error) {
@@ -109,13 +110,13 @@ __decorate([
     __metadata("design:returntype", Promise)
 ], CourseDetailController.prototype, "deleteWord", null);
 __decorate([
-    (0, routing_controllers_1.Put)("/word"),
+    (0, routing_controllers_1.Put)("/"),
     __param(0, (0, routing_controllers_1.Req)()),
     __param(1, (0, routing_controllers_1.Res)()),
     __metadata("design:type", Function),
     __metadata("design:paramtypes", [Object, Object]),
     __metadata("design:returntype", Promise)
-], CourseDetailController.prototype, "updateWord", null);
+], CourseDetailController.prototype, "updateCourse", null);
 CourseDetailController = __decorate([
     (0, routing_controllers_1.Controller)("/course"),
     __metadata("design:paramtypes", [])

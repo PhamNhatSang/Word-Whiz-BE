@@ -52,11 +52,11 @@ export default class CourseDetailController extends BaseController<CourseDetailS
     }
   }
 
-  @Put("/word")
-  async updateWord(@Req() req: Request, @Res() res: Response) {
+  @Put("/")
+  async updateCourse(@Req() req: Request, @Res() res: Response) {
     try {
-      const word = req.body as Word;
-      const wordUpdated = await this.service.update(Word,word);
+      const course = req.body.course as Course;
+      const wordUpdated = await this.service.update(Course,course);
       return res.send(wordUpdated);
     } catch (error) {
       return res.status(400).send(error);
