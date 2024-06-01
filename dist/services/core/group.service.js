@@ -179,6 +179,23 @@ class GroupService extends base_service_1.BaseService {
             }
             group.courses.push(course);
             yield this.manager.save(group);
+            const addCourse = yield this.manager.createQueryBuilder(course_model_1.default, "course")
+                .leftJoinAndSelect("course.owner", "owner")
+                .leftJoin("course.words", "words")
+                .select([
+                "course.id",
+                "course.title as title",
+                "course.description as description",
+                "course.accessiblity as accessiblity",
+                "owner.id",
+                "owner.name",
+                "owner.avatar",
+            ])
+                .addSelect("COUNT(words.id)", "terms")
+                .where("course.id = :courseId", { courseId: courseId })
+                .groupBy("course.id, owner.id")
+                .getRawMany();
+            return addCourse;
         });
     }
     removeCourseFromGroup(groupId, courseId) {

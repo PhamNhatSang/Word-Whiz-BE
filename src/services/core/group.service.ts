@@ -166,6 +166,26 @@ export default class GroupService extends BaseService {
     }
     group.courses.push(course);
     await this.manager.save(group);
+
+    const addCourse = await this.manager.createQueryBuilder(Course, "course")
+    .leftJoinAndSelect("course.owner", "owner")
+    .leftJoin("course.words", "words")
+    .select([
+      "course.id",
+      "course.title as title",
+      "course.description as description",
+      "course.accessiblity as accessiblity",
+      "owner.id",
+      "owner.name",
+      "owner.avatar",
+    ])
+    .addSelect("COUNT(words.id)", "terms")
+    .where("course.id = :courseId", { courseId: courseId })
+    .groupBy("course.id, owner.id")
+    .getRawMany();
+
+    return addCourse;
+    
   }
 
   async removeCourseFromGroup(groupId: number, courseId: number) {
