@@ -42,6 +42,7 @@ export default class GroupService extends BaseService {
       .leftJoinAndSelect("group.courses", "course")
       .select([
         "group.id",
+        "owner.id",
         "group.groupName AS group_name",
         "owner.name",
         "owner.avatar",

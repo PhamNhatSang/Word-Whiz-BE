@@ -57,6 +57,7 @@ class GroupService extends base_service_1.BaseService {
                 .leftJoinAndSelect("group.courses", "course")
                 .select([
                 "group.id",
+                "owner.id",
                 "group.groupName AS group_name",
                 "owner.name",
                 "owner.avatar",
