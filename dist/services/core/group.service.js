@@ -93,7 +93,7 @@ class GroupService extends base_service_1.BaseService {
                 .leftJoinAndSelect("user.addedGroups", "group")
                 .where("group.id = :groupId", { groupId })
                 .select([
-                "user.id as student_id",
+                "user.email as student_email",
                 "user.name as student_name",
                 "user.avatar as student_avatar",
             ])
@@ -139,7 +139,10 @@ class GroupService extends base_service_1.BaseService {
                 throw new ExistData_1.default("All Student is already in group");
             }
             group.students.push(...userToAdd);
-            return yield this.manager.save(group);
+            yield this.manager.save(group);
+            return userToAdd.map((student) => {
+                return { student_email: student.email, student_name: student.name, student_avatar: student.avatar };
+            });
         });
     }
     removeStudent(groupId, email) {
@@ -149,7 +152,8 @@ class GroupService extends base_service_1.BaseService {
                 relations: ["students"],
             });
             group.students = group.students.filter((student) => student.email !== email);
-            return yield this.manager.getRepository(group_model_1.default).save(group);
+            yield this.manager.getRepository(group_model_1.default).save(group);
+            return email;
         });
     }
     findStudent(email) {
@@ -205,7 +209,8 @@ class GroupService extends base_service_1.BaseService {
                 relations: ["courses"],
             });
             group.courses = group.courses.filter((course) => course.id !== courseId);
-            return yield this.manager.save(group);
+            yield this.manager.save(group);
+            return courseId;
         });
     }
 }

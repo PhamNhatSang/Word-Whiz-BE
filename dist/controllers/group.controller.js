@@ -126,11 +126,10 @@ let GroupController = class GroupController extends baseController_1.BaseControl
     removeCourse(req, res) {
         return __awaiter(this, void 0, void 0, function* () {
             try {
-                const userId = req.body.currentUserData.id;
                 const groupId = req.body.groupId;
                 const courseId = req.body.courseId;
-                const group = yield this.service.removeCourseFromGroup(parseInt(groupId), parseInt(courseId));
-                return res.send(group);
+                const courseIdDelete = yield this.service.removeCourseFromGroup(parseInt(groupId), parseInt(courseId));
+                return res.send(courseIdDelete);
             }
             catch (error) {
                 return res.status(400).send(error);

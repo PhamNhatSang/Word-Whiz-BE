@@ -109,14 +109,13 @@ export default class GroupController extends BaseController<GroupService> {
   @Put("/course")
   async removeCourse(@Req() req: Request, @Res() res: Response) {
     try {
-      const userId = req.body.currentUserData.id;
       const groupId = req.body.groupId;
       const courseId = req.body.courseId;
-      const group = await this.service.removeCourseFromGroup(
+      const courseIdDelete = await this.service.removeCourseFromGroup(
         parseInt(groupId),
         parseInt(courseId)
       );
-      return res.send(group);
+      return res.send(courseIdDelete);
     } catch (error) {
       return res.status(400).send(error);
     }

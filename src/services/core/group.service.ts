@@ -79,7 +79,7 @@ export default class GroupService extends BaseService {
       .leftJoinAndSelect("user.addedGroups", "group")
       .where("group.id = :groupId", { groupId })
       .select([
-        "user.id as student_id",
+        "user.email as student_email",
         "user.name as student_name",
         "user.avatar as student_avatar",
       ])
@@ -125,7 +125,11 @@ export default class GroupService extends BaseService {
     }
     group.students.push(...userToAdd);
 
-    return await this.manager.save(group);
+     await this.manager.save(group);
+      
+     return userToAdd.map((student) => {
+      return {student_email:student.email, student_name: student.name, student_avatar: student.avatar}; })
+
   }
 
   async removeStudent(groupId: number, email: string) {
@@ -137,7 +141,8 @@ export default class GroupService extends BaseService {
       (student) => student.email !== email
     );
 
-    return await this.manager.getRepository(Group).save(group);
+     await this.manager.getRepository(Group).save(group);
+     return email;
   }
 
   async findStudent(email: string) {
@@ -195,6 +200,7 @@ export default class GroupService extends BaseService {
     });
     group.courses = group.courses.filter((course) => course.id !== courseId);
 
-    return await this.manager.save(group);
+    await this.manager.save(group);
+    return courseId;
   }
 }
