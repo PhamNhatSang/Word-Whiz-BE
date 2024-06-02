@@ -87,7 +87,7 @@ let LearningController = class LearningController extends baseController_1.BaseC
     }
 };
 __decorate([
-    (0, routing_controllers_1.Get)("/flascard/:id"),
+    (0, routing_controllers_1.Get)("/flashcard/:id"),
     __param(0, (0, routing_controllers_1.Req)()),
     __param(1, (0, routing_controllers_1.Res)()),
     __metadata("design:type", Function),

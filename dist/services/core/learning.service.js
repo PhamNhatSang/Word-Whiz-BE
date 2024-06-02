@@ -25,9 +25,10 @@ class LearningService extends base_service_1.BaseService {
     }
     getOrCreateFLashCardLearningByUserId(userId, courseId) {
         return __awaiter(this, void 0, void 0, function* () {
-            const learn = this.manager.findOne(learning_model_1.default, {
+            const learn = yield this.manager.findOne(learning_model_1.default, {
                 where: { user: { id: userId }, course: { id: courseId } },
             });
+            console.log(learn);
             if (!learn) {
                 const user = yield this.manager.findOne(user_model_1.default, { where: { id: userId } });
                 const course = yield this.manager.findOne(course_model_1.default, {
@@ -38,7 +39,10 @@ class LearningService extends base_service_1.BaseService {
                 learning.course = course;
                 return yield this.manager.getRepository(learning_model_1.default).save(learning);
             }
-            return learn;
+            const myLearning = Object.assign(Object.assign({}, learn), { courseId: learn.course.id, userId: learn.user.id });
+            delete myLearning.course;
+            delete myLearning.user;
+            return myLearning;
         });
     }
     updateLearning(learnerId, lastWordIndex) {

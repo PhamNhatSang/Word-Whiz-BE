@@ -12,7 +12,7 @@ export default class LearningController extends BaseController<LearningService> 
 
 
 
-    @Get("/flascard/:id")
+    @Get("/flashcard/:id")
     async getFlashcard(@Req() req: Request, @Res() res: Response) {
         try {
             const userId = req.body.currentUserData.id;

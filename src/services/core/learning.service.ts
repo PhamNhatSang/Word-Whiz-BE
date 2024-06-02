@@ -15,11 +15,11 @@ export default class LearningService extends BaseService {
   async getOrCreateFLashCardLearningByUserId(
     userId: number,
     courseId: number
-  ): Promise<Learning> {
-    const learn = this.manager.findOne(Learning, {
+  ) {
+    const learn = await this.manager.findOne(Learning, {
       where: { user: { id: userId }, course: { id: courseId } },
     });
-
+    console.log(learn);
     if (!learn) {
       const user = await this.manager.findOne(User, { where: { id: userId } });
       const course = await this.manager.findOne(Course, {
@@ -31,7 +31,11 @@ export default class LearningService extends BaseService {
       return await this.manager.getRepository(Learning).save(learning);
     }
 
-    return learn;
+    const myLearning ={...learn,courseId:learn.course.id,userId:learn.user.id};
+    delete myLearning.course;
+    delete myLearning.user;
+
+    return myLearning;
   }
 
   async updateLearning(
