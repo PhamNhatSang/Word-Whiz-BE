@@ -44,11 +44,11 @@ class LearningService extends base_service_1.BaseService {
             return myLearning;
         });
     }
-    updateLearning(learnerId, lastWordIndex) {
+    updateLearning(learnId, lastWordIndex) {
         return __awaiter(this, void 0, void 0, function* () {
             yield this.manager
                 .getRepository(learning_model_1.default)
-                .update(learnerId, { lastWordIndex: lastWordIndex });
+                .update(learnId, { lastWordIndex: lastWordIndex });
         });
     }
     createTest(userId, courseId) {

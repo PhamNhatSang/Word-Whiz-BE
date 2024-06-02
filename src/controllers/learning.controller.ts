@@ -27,8 +27,9 @@ export default class LearningController extends BaseController<LearningService> 
     @Put("/flashcard/:id")
     async learningFlashcard(@Req() req: Request, @Res() res: Response) {
         try {
-            const learning = req.body.learning;
-            await this.service.update(Learning,learning);
+            const learnId = req.body.learnId;
+            const lastWordIndex = req.body.lastWordIndex;
+            await this.service.updateLearning(parseInt(learnId), parseInt(lastWordIndex));
             return res.send("Learning flashcard successfully");
         } catch (error) {
             return res.status(400).send(error);

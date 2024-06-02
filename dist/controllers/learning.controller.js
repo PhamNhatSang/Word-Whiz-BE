@@ -27,7 +27,6 @@ Object.defineProperty(exports, "__esModule", { value: true });
 const baseController_1 = require("./baseController");
 const routing_controllers_1 = require("routing-controllers");
 const learning_service_1 = __importDefault(require("../services/core/learning.service"));
-const learning_model_1 = __importDefault(require("./../models/learning.model"));
 let LearningController = class LearningController extends baseController_1.BaseController {
     constructor() {
         super(new learning_service_1.default());
@@ -48,8 +47,9 @@ let LearningController = class LearningController extends baseController_1.BaseC
     learningFlashcard(req, res) {
         return __awaiter(this, void 0, void 0, function* () {
             try {
-                const learning = req.body.learning;
-                yield this.service.update(learning_model_1.default, learning);
+                const learnId = req.body.learnId;
+                const lastWordIndex = req.body.lastWordIndex;
+                yield this.service.updateLearning(parseInt(learnId), parseInt(lastWordIndex));
                 return res.send("Learning flashcard successfully");
             }
             catch (error) {

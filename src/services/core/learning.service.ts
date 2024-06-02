@@ -38,12 +38,12 @@ export default class LearningService extends BaseService {
   }
 
   async updateLearning(
-    learnerId: number,
+    learnId: number,
     lastWordIndex: number
   ): Promise<void> {
     await this.manager
       .getRepository(Learning)
-      .update(learnerId, { lastWordIndex: lastWordIndex });
+      .update(learnId, { lastWordIndex: lastWordIndex });
   }
 
   async createTest(userId: number, courseId: number): Promise<Test> {
