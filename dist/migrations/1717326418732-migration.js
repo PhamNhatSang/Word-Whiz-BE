@@ -9,21 +9,23 @@ var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, ge
     });
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.Migration1717073033103 = void 0;
-class Migration1717073033103 {
+exports.Migration1717326418732 = void 0;
+class Migration1717326418732 {
     constructor() {
-        this.name = 'Migration1717073033103';
+        this.name = 'Migration1717326418732';
     }
     up(queryRunner) {
         return __awaiter(this, void 0, void 0, function* () {
-            yield queryRunner.query(`ALTER TABLE "group" ADD "group_code" character varying`);
+            yield queryRunner.query(`ALTER TABLE "test_item" DROP CONSTRAINT "FK_7064d12473e33fe92164d07a7ce"`);
+            yield queryRunner.query(`ALTER TABLE "test_item" ADD CONSTRAINT "FK_7064d12473e33fe92164d07a7ce" FOREIGN KEY ("testId") REFERENCES "test"("id") ON DELETE CASCADE ON UPDATE CASCADE`);
         });
     }
     down(queryRunner) {
         return __awaiter(this, void 0, void 0, function* () {
-            yield queryRunner.query(`ALTER TABLE "group" DROP COLUMN "group_code"`);
+            yield queryRunner.query(`ALTER TABLE "test_item" DROP CONSTRAINT "FK_7064d12473e33fe92164d07a7ce"`);
+            yield queryRunner.query(`ALTER TABLE "test_item" ADD CONSTRAINT "FK_7064d12473e33fe92164d07a7ce" FOREIGN KEY ("testId") REFERENCES "test"("id") ON DELETE NO ACTION ON UPDATE NO ACTION`);
         });
     }
 }
-exports.Migration1717073033103 = Migration1717073033103;
-//# sourceMappingURL=1717073033103-migration.js.map
+exports.Migration1717326418732 = Migration1717326418732;
+//# sourceMappingURL=1717326418732-migration.js.map

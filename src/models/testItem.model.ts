@@ -24,7 +24,7 @@ export default class TestItem extends BaseModel {
   @Column({ type: "text" ,name:'correct_answer'})
   correctAnswer: string;
   
-  @ManyToOne(() => Test, (test) => test.testItems)
+  @ManyToOne(() => Test, (test) => test.testItems,{onDelete:'CASCADE',onUpdate:'CASCADE'})
   test: Test;
 
 }

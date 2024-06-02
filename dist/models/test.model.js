@@ -37,7 +37,7 @@ __decorate([
     __metadata("design:type", course_model_1.default)
 ], Test.prototype, "course", void 0);
 __decorate([
-    (0, typeorm_1.OneToMany)(() => testItem_model_1.default, (testItem) => testItem.test, { nullable: true }),
+    (0, typeorm_1.OneToMany)(() => testItem_model_1.default, (testItem) => testItem.test, { nullable: true, cascade: true }),
     __metadata("design:type", Array)
 ], Test.prototype, "testItems", void 0);
 Test = __decorate([

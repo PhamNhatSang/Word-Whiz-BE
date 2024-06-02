@@ -43,7 +43,7 @@ __decorate([
     __metadata("design:type", String)
 ], TestItem.prototype, "correctAnswer", void 0);
 __decorate([
-    (0, typeorm_1.ManyToOne)(() => test_model_1.default, (test) => test.testItems),
+    (0, typeorm_1.ManyToOne)(() => test_model_1.default, (test) => test.testItems, { onDelete: 'CASCADE', onUpdate: 'CASCADE' }),
     __metadata("design:type", test_model_1.default)
 ], TestItem.prototype, "test", void 0);
 TestItem = __decorate([

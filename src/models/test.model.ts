@@ -19,6 +19,6 @@ export default class Test extends BaseModel {
   @ManyToOne(()=>Course,(course)=>course.tests,{nullable:true})
   course:Course;
   
-  @OneToMany(() => TestItem, (testItem) => testItem.test, { nullable: true })
+  @OneToMany(() => TestItem, (testItem) => testItem.test, { nullable: true,cascade:true })
   testItems: TestItem[];
 }
