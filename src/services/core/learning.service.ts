@@ -46,6 +46,12 @@ export default class LearningService extends BaseService {
       .getRepository(Learning)
       .update(learnId, { lastWordIndex: lastWordIndex });
   }
+  async updateTestItem(testItemId: number, userAnswer: string): Promise<void> {
+    await this.manager
+      .getRepository(TestItem)
+      .update(testItemId, { user_answer: userAnswer });
+  }
+
 
   async createTest(userId: number, courseId: number): Promise<Test> {
     let test = await this.manager.findOne(Test, {

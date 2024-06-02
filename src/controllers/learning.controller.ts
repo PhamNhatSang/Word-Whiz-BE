@@ -63,4 +63,17 @@ export default class LearningController extends BaseController<LearningService> 
         }
     }
 
+    @Put("/testItem")
+    async updateTestItem(@Req() req: Request, @Res() res: Response) {
+        try {
+            const testItemId = req.body.testItemId;
+            const userAnswer = req.body.userAnswer;
+            const result = await this.service.updateTestItem(parseInt(testItemId), userAnswer);
+            return res.send(result);
+        } catch (error) {
+            console.log(error);
+            return res.status(400).send(error);
+        }
+    }
+
 }

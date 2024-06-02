@@ -53,6 +53,13 @@ class LearningService extends base_service_1.BaseService {
                 .update(learnId, { lastWordIndex: lastWordIndex });
         });
     }
+    updateTestItem(testItemId, userAnswer) {
+        return __awaiter(this, void 0, void 0, function* () {
+            yield this.manager
+                .getRepository(testItem_model_1.default)
+                .update(testItemId, { user_answer: userAnswer });
+        });
+    }
     createTest(userId, courseId) {
         return __awaiter(this, void 0, void 0, function* () {
             let test = yield this.manager.findOne(test_model_1.default, {

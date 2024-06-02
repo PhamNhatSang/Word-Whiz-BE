@@ -85,6 +85,20 @@ let LearningController = class LearningController extends baseController_1.BaseC
             }
         });
     }
+    updateTestItem(req, res) {
+        return __awaiter(this, void 0, void 0, function* () {
+            try {
+                const testItemId = req.body.testItemId;
+                const userAnswer = req.body.userAnswer;
+                const result = yield this.service.updateTestItem(parseInt(testItemId), userAnswer);
+                return res.send(result);
+            }
+            catch (error) {
+                console.log(error);
+                return res.status(400).send(error);
+            }
+        });
+    }
 };
 __decorate([
     (0, routing_controllers_1.Get)("/flashcard/:id"),
@@ -118,6 +132,14 @@ __decorate([
     __metadata("design:paramtypes", [Object, Object]),
     __metadata("design:returntype", Promise)
 ], LearningController.prototype, "submitTest", null);
+__decorate([
+    (0, routing_controllers_1.Put)("/testItem"),
+    __param(0, (0, routing_controllers_1.Req)()),
+    __param(1, (0, routing_controllers_1.Res)()),
+    __metadata("design:type", Function),
+    __metadata("design:paramtypes", [Object, Object]),
+    __metadata("design:returntype", Promise)
+], LearningController.prototype, "updateTestItem", null);
 LearningController = __decorate([
     (0, routing_controllers_1.Controller)("/learning"),
     __metadata("design:paramtypes", [])
