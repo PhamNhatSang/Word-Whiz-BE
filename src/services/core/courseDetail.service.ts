@@ -12,15 +12,17 @@ export default class CourseDetailService extends BaseService {
     async getCourseDetail(userId:number,courseId: number) {
         const course = await this.manager.findOne(Course,{
         where: { id: courseId },
-        relations: ["words"],
+        relations: ["words",'owner'],
         });
        
         const user = await this.manager.findOne(User,{
         where: { id: userId },
         relations: ["myCourses", "courseImports"],
         });
+        
         const isInLibrary = user.courseImports.some((courseImport) => courseImport.id === courseId)||user.myCourses.some((myCourse) => myCourse.id === courseId);
-        const courseDetail = {...course,isInLibrary:isInLibrary};
+        const courseDetail = {...course,owner_id:course.owner.id,isInLibrary:isInLibrary};
+        delete courseDetail.owner; 
         return courseDetail;
     }
 

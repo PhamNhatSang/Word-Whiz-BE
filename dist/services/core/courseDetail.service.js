@@ -24,14 +24,15 @@ class CourseDetailService extends base_service_1.BaseService {
         return __awaiter(this, void 0, void 0, function* () {
             const course = yield this.manager.findOne(course_model_1.default, {
                 where: { id: courseId },
-                relations: ["words"],
+                relations: ["words", 'owner'],
             });
             const user = yield this.manager.findOne(user_model_1.default, {
                 where: { id: userId },
                 relations: ["myCourses", "courseImports"],
             });
             const isInLibrary = user.courseImports.some((courseImport) => courseImport.id === courseId) || user.myCourses.some((myCourse) => myCourse.id === courseId);
-            const courseDetail = Object.assign(Object.assign({}, course), { isInLibrary: isInLibrary });
+            const courseDetail = Object.assign(Object.assign({}, course), { owner_id: course.owner.id, isInLibrary: isInLibrary });
+            delete courseDetail.owner;
             return courseDetail;
         });
     }
