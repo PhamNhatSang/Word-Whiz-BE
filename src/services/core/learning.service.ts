@@ -16,22 +16,21 @@ export default class LearningService extends BaseService {
     userId: number,
     courseId: number
   ) {
-    const learn = await this.manager.findOne(Learning, {
-      where: { user: { id: userId }, course: { id: courseId } },
+    let learn = await this.manager.findOne(Learning, {
+      where: { user: { id: userId }, course: { id: courseId } },relations:{course:{words:true}}
     });
-    console.log(learn);
     if (!learn) {
       const user = await this.manager.findOne(User, { where: { id: userId } });
       const course = await this.manager.findOne(Course, {
-        where: { id: courseId },
+        where: { id: courseId },relations:['words']
       });
       const learning = new Learning();
       learning.user = user;
       learning.course = course;
-      return await this.manager.getRepository(Learning).save(learning);
+      learn = await this.manager.getRepository(Learning).save(learning);
     }
 
-    const myLearning ={...learn,courseId:learn.course.id,userId:learn.user.id};
+    const myLearning ={...learn,courseId:courseId,userId:userId,words:learn.course.words};
     delete myLearning.course;
     delete myLearning.user;
 
