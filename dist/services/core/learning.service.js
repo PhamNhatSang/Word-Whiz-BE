@@ -132,6 +132,7 @@ class LearningService extends base_service_1.BaseService {
                 delete item.correct_answer;
                 return item;
             });
+            test.testItems.sort((a, b) => a.id - b.id);
             delete test.user;
             delete test.course;
             return test;
