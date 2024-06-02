@@ -22,7 +22,11 @@ export default class TestItem extends BaseModel {
   option_4: string;
 
   @Column({ type: "text" ,name:'correct_answer'})
-  correctAnswer: string;
+  correct_answer: string;
+
+
+  @Column({ type: "text" ,name:'user_answer',nullable:true,default:''})
+  user_answer: string;
   
   @ManyToOne(() => Test, (test) => test.testItems,{onDelete:'CASCADE',onUpdate:'CASCADE'})
   test: Test;

@@ -41,7 +41,11 @@ __decorate([
 __decorate([
     (0, typeorm_1.Column)({ type: "text", name: 'correct_answer' }),
     __metadata("design:type", String)
-], TestItem.prototype, "correctAnswer", void 0);
+], TestItem.prototype, "correct_answer", void 0);
+__decorate([
+    (0, typeorm_1.Column)({ type: "text", name: 'user_answer', nullable: true, default: '' }),
+    __metadata("design:type", String)
+], TestItem.prototype, "user_answer", void 0);
 __decorate([
     (0, typeorm_1.ManyToOne)(() => test_model_1.default, (test) => test.testItems, { onDelete: 'CASCADE', onUpdate: 'CASCADE' }),
     __metadata("design:type", test_model_1.default)

@@ -21,13 +21,13 @@ const course_model_1 = __importDefault(require("./course.model"));
 let Test = class Test extends baseModel_1.BaseModel {
 };
 __decorate([
-    (0, typeorm_1.Column)({ type: "int", name: 'score', default: 0 }),
+    (0, typeorm_1.Column)({ type: "int", name: 'score', default: -1 }),
     __metadata("design:type", Number)
 ], Test.prototype, "score", void 0);
 __decorate([
-    (0, typeorm_1.Column)({ type: "boolean", default: false, name: 'is_first_done' }),
+    (0, typeorm_1.Column)({ type: "boolean", default: false, name: 'is_done' }),
     __metadata("design:type", Boolean)
-], Test.prototype, "isFirstDone", void 0);
+], Test.prototype, "isDone", void 0);
 __decorate([
     (0, typeorm_1.ManyToOne)(() => user_model_1.default, (user) => user.myTests, { nullable: true }),
     __metadata("design:type", user_model_1.default)

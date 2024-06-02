@@ -7,11 +7,11 @@ import Course from "./course.model";
 @Entity()
 export default class Test extends BaseModel {
   
-  @Column({type:"int",name:'score',default:0})
+  @Column({type:"int",name:'score',default:-1})
   score: number;
 
-  @Column({ type: "boolean",default:false,name:'is_first_done'} )
-  isFirstDone: boolean;
+  @Column({ type: "boolean",default:false,name:'is_done'} )
+  isDone: boolean;
 
   @ManyToOne(() => User, (user)=> user.myTests,{nullable:true})
   user: User;

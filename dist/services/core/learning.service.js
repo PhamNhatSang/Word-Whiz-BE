@@ -26,12 +26,14 @@ class LearningService extends base_service_1.BaseService {
     getOrCreateFLashCardLearningByUserId(userId, courseId) {
         return __awaiter(this, void 0, void 0, function* () {
             let learn = yield this.manager.findOne(learning_model_1.default, {
-                where: { user: { id: userId }, course: { id: courseId } }, relations: { course: { words: true } }
+                where: { user: { id: userId }, course: { id: courseId } },
+                relations: { course: { words: true } },
             });
             if (!learn) {
                 const user = yield this.manager.findOne(user_model_1.default, { where: { id: userId } });
                 const course = yield this.manager.findOne(course_model_1.default, {
-                    where: { id: courseId }, relations: ['words']
+                    where: { id: courseId },
+                    relations: ["words"],
                 });
                 const learning = new learning_model_1.default();
                 learning.user = user;
@@ -55,6 +57,7 @@ class LearningService extends base_service_1.BaseService {
         return __awaiter(this, void 0, void 0, function* () {
             let test = yield this.manager.findOne(test_model_1.default, {
                 where: { user: { id: userId }, course: { id: courseId } },
+                relations: ["testItems"],
             });
             const course = yield this.manager.findOne(course_model_1.default, {
                 where: { id: courseId },
@@ -62,60 +65,87 @@ class LearningService extends base_service_1.BaseService {
             });
             const user = yield this.manager.findOne(user_model_1.default, { where: { id: userId } });
             if (!test) {
+                const listWord = course.words;
+                const listTestItem = course.words.map((word) => {
+                    const testItem = new testItem_model_1.default();
+                    const otherDefinitions = listWord
+                        .filter((td) => td.term !== word.term)
+                        .map((td) => td.definition);
+                    const shuffledDefinitions = (0, shuffle_1.shuffleArray)(otherDefinitions);
+                    const options = [
+                        shuffledDefinitions[0] || "",
+                        shuffledDefinitions[1] || "",
+                        shuffledDefinitions[2] || "",
+                        word.definition,
+                    ];
+                    const shuffledOptions = (0, shuffle_1.shuffleArray)(options);
+                    testItem.question = word.term;
+                    testItem.correct_answer = word.definition;
+                    testItem.option_1 = shuffledOptions[0];
+                    testItem.option_2 = shuffledOptions[1];
+                    testItem.option_3 = shuffledOptions[2];
+                    testItem.option_4 = shuffledOptions[3];
+                    return testItem;
+                });
                 const testCreate = new test_model_1.default();
                 testCreate.user = user;
                 testCreate.course = course;
+                testCreate.testItems = listTestItem;
                 test = yield this.manager.getRepository(test_model_1.default).save(testCreate);
             }
-            yield this.manager.getRepository(testItem_model_1.default).clear();
-            const listWord = course.words;
-            const listTestItem = course.words.map((word) => {
-                const testItem = new testItem_model_1.default();
-                const otherDefinitions = listWord
-                    .filter((td) => td.term !== word.term)
-                    .map((td) => td.definition);
-                const shuffledDefinitions = (0, shuffle_1.shuffleArray)(otherDefinitions);
-                const options = [
-                    shuffledDefinitions[0] || "",
-                    shuffledDefinitions[1] || "",
-                    shuffledDefinitions[2] || "",
-                    word.definition,
-                ];
-                const shuffledOptions = (0, shuffle_1.shuffleArray)(options);
-                testItem.question = word.term;
-                testItem.correctAnswer = word.definition;
-                testItem.option_1 = shuffledOptions[0];
-                testItem.option_2 = shuffledOptions[1];
-                testItem.option_3 = shuffledOptions[2];
-                testItem.option_4 = shuffledOptions[3];
-                testItem.test = test;
-                return testItem;
+            if (test.isDone) {
+                yield this.manager.getRepository(testItem_model_1.default).remove(test.testItems);
+                const listWord = course.words;
+                const listTestItem = course.words.map((word) => {
+                    const testItem = new testItem_model_1.default();
+                    const otherDefinitions = listWord
+                        .filter((td) => td.term !== word.term)
+                        .map((td) => td.definition);
+                    const shuffledDefinitions = (0, shuffle_1.shuffleArray)(otherDefinitions);
+                    const options = [
+                        shuffledDefinitions[0] || "",
+                        shuffledDefinitions[1] || "",
+                        shuffledDefinitions[2] || "",
+                        word.definition,
+                    ];
+                    const shuffledOptions = (0, shuffle_1.shuffleArray)(options);
+                    testItem.question = word.term;
+                    testItem.correct_answer = word.definition;
+                    testItem.option_1 = shuffledOptions[0];
+                    testItem.option_2 = shuffledOptions[1];
+                    testItem.option_3 = shuffledOptions[2];
+                    testItem.option_4 = shuffledOptions[3];
+                    return testItem;
+                });
+                test.testItems = listTestItem;
+                test.isDone = false;
+                test = yield this.manager.getRepository(test_model_1.default).save(test);
+            }
+            test.testItems = test.testItems.map((item) => {
+                delete item.correct_answer;
+                return item;
             });
-            yield this.manager.getRepository(testItem_model_1.default).save(listTestItem);
-            const testData = yield this.manager.findOne(test_model_1.default, { where: { id: test.id }, relations: ['testItems'] });
-            testData.testItems.forEach((item) => {
-                delete item.correctAnswer;
-            });
-            return testData;
+            delete test.user;
+            delete test.course;
+            return test;
         });
     }
     submitTest(answers, testId) {
         return __awaiter(this, void 0, void 0, function* () {
             const test = yield this.manager.findOne(test_model_1.default, {
                 where: { id: testId },
-                relations: ['testItems']
+                relations: ["testItems"],
             });
-            console.log(test);
             let scorePass = 0;
-            const correctAnswers = test.testItems.map((item) => item.correctAnswer);
+            const correctAnswers = test.testItems.map((item) => item.correct_answer);
             answers.forEach((answer, index) => {
                 if (answer.answer === correctAnswers[index]) {
-                    if (!test.isFirstDone)
+                    if (test.score === -1)
                         scorePass += 100;
                 }
             });
             test.score = scorePass;
-            test.isFirstDone = true;
+            test.isDone = true;
             return yield this.manager.getRepository(test_model_1.default).save(test);
         });
     }

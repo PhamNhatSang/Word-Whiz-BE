@@ -12,17 +12,16 @@ export default class LearningService extends BaseService {
     super();
   }
 
-  async getOrCreateFLashCardLearningByUserId(
-    userId: number,
-    courseId: number
-  ) {
+  async getOrCreateFLashCardLearningByUserId(userId: number, courseId: number) {
     let learn = await this.manager.findOne(Learning, {
-      where: { user: { id: userId }, course: { id: courseId } },relations:{course:{words:true}}
+      where: { user: { id: userId }, course: { id: courseId } },
+      relations: { course: { words: true } },
     });
     if (!learn) {
       const user = await this.manager.findOne(User, { where: { id: userId } });
       const course = await this.manager.findOne(Course, {
-        where: { id: courseId },relations:['words']
+        where: { id: courseId },
+        relations: ["words"],
       });
       const learning = new Learning();
       learning.user = user;
@@ -30,17 +29,19 @@ export default class LearningService extends BaseService {
       learn = await this.manager.getRepository(Learning).save(learning);
     }
 
-    const myLearning ={...learn,courseId:courseId,userId:userId,words:learn.course.words};
+    const myLearning = {
+      ...learn,
+      courseId: courseId,
+      userId: userId,
+      words: learn.course.words,
+    };
     delete myLearning.course;
     delete myLearning.user;
 
     return myLearning;
   }
 
-  async updateLearning(
-    learnId: number,
-    lastWordIndex: number
-  ): Promise<void> {
+  async updateLearning(learnId: number, lastWordIndex: number): Promise<void> {
     await this.manager
       .getRepository(Learning)
       .update(learnId, { lastWordIndex: lastWordIndex });
@@ -49,6 +50,7 @@ export default class LearningService extends BaseService {
   async createTest(userId: number, courseId: number): Promise<Test> {
     let test = await this.manager.findOne(Test, {
       where: { user: { id: userId }, course: { id: courseId } },
+      relations: ["testItems"],
     });
     const course = await this.manager.findOne(Course, {
       where: { id: courseId },
@@ -57,64 +59,94 @@ export default class LearningService extends BaseService {
     const user = await this.manager.findOne(User, { where: { id: userId } });
 
     if (!test) {
+
+
+      const listWord = course.words;
+      const listTestItem = course.words.map((word) => {
+        const testItem = new TestItem();
+        const otherDefinitions = listWord
+          .filter((td) => td.term !== word.term)
+          .map((td) => td.definition);
+        const shuffledDefinitions = shuffleArray(otherDefinitions);
+        const options = [
+          shuffledDefinitions[0] || "",
+          shuffledDefinitions[1] || "",
+          shuffledDefinitions[2] || "",
+          word.definition,
+        ];
+        const shuffledOptions = shuffleArray(options);
+
+        testItem.question = word.term;
+        testItem.correct_answer = word.definition;
+        testItem.option_1 = shuffledOptions[0];
+        testItem.option_2 = shuffledOptions[1];
+        testItem.option_3 = shuffledOptions[2];
+        testItem.option_4 = shuffledOptions[3];
+        return testItem;
+      });
       const testCreate = new Test();
       testCreate.user = user;
       testCreate.course = course;
+      testCreate.testItems = listTestItem;
       test = await this.manager.getRepository(Test).save(testCreate);
     }
-    await this.manager.getRepository(TestItem).clear();
 
-    const listWord = course.words;
-    const listTestItem = course.words.map((word) => {
-      const testItem = new TestItem();
-      const otherDefinitions = listWord
-        .filter((td) => td.term !== word.term)
-        .map((td) => td.definition);
-      const shuffledDefinitions = shuffleArray(otherDefinitions);
-      const options = [
-        shuffledDefinitions[0] || "",
-        shuffledDefinitions[1] || "",
-        shuffledDefinitions[2] || "",
-        word.definition,
-      ];
-      const shuffledOptions = shuffleArray(options);
 
-      testItem.question = word.term;
-      testItem.correctAnswer = word.definition;
-      testItem.option_1 = shuffledOptions[0];
-      testItem.option_2 = shuffledOptions[1];
-      testItem.option_3 = shuffledOptions[2];
-      testItem.option_4 = shuffledOptions[3];
-      testItem.test = test;
-      return testItem;
+    if(test.isDone){  
+      await this.manager.getRepository(TestItem).remove(test.testItems);
+
+      const listWord = course.words;
+      const listTestItem = course.words.map((word) => {
+        const testItem = new TestItem();
+        const otherDefinitions = listWord
+          .filter((td) => td.term !== word.term)
+          .map((td) => td.definition);
+        const shuffledDefinitions = shuffleArray(otherDefinitions);
+        const options = [
+          shuffledDefinitions[0] || "",
+          shuffledDefinitions[1] || "",
+          shuffledDefinitions[2] || "",
+          word.definition,
+        ];
+        const shuffledOptions = shuffleArray(options);
+
+        testItem.question = word.term;
+        testItem.correct_answer = word.definition;
+        testItem.option_1 = shuffledOptions[0];
+        testItem.option_2 = shuffledOptions[1];
+        testItem.option_3 = shuffledOptions[2];
+        testItem.option_4 = shuffledOptions[3];
+        return testItem;
+      });
+
+      test.testItems = listTestItem;
+      test.isDone = false;
+      test = await this.manager.getRepository(Test).save(test);
+    }
+    
+    test.testItems = test.testItems.map((item) => {
+      delete item.correct_answer;
+      return item;
     });
-     await this.manager.getRepository(TestItem).save(listTestItem);
-     
-     const testData=  await this.manager.findOne(Test,{where:{id:test.id},relations:['testItems']})
-     testData.testItems.forEach((item)=>{
-       delete item.correctAnswer;
-      })
-      return testData;
-
+    delete test.user;
+    delete test.course;
+    return test;
   }
 
-  async submitTest(answers:Answer[],testId:number):Promise<Test>{
-    const test = await this.manager.findOne(Test,{
-      where:{id:testId},
-      relations:['testItems']
+  async submitTest(answers: Answer[], testId: number): Promise<Test> {
+    const test = await this.manager.findOne(Test, {
+      where: { id: testId },
+      relations: ["testItems"],
     });
-    console.log(test);
-    let scorePass=0;
-    const correctAnswers = test.testItems.map((item)=>item.correctAnswer);
-    answers.forEach((answer,index)=>{
-        if(answer.answer === correctAnswers[index]){
-            if(!test.isFirstDone)
-            scorePass+=100;
-        }
-        })
+    let scorePass = 0;
+    const correctAnswers = test.testItems.map((item) => item.correct_answer);
+    answers.forEach((answer, index) => {
+      if (answer.answer === correctAnswers[index]) {
+        if (test.score === -1) scorePass += 100;
+      }
+    });
     test.score = scorePass;
-    test.isFirstDone = true;
+    test.isDone = true;
     return await this.manager.getRepository(Test).save(test);
   }
-
 }

@@ -9,23 +9,21 @@ var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, ge
     });
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.Migration1717326418732 = void 0;
-class Migration1717326418732 {
+exports.Migration1717350373687 = void 0;
+class Migration1717350373687 {
     constructor() {
-        this.name = 'Migration1717326418732';
+        this.name = 'Migration1717350373687';
     }
     up(queryRunner) {
         return __awaiter(this, void 0, void 0, function* () {
-            yield queryRunner.query(`ALTER TABLE "test_item" DROP CONSTRAINT "FK_7064d12473e33fe92164d07a7ce"`);
-            yield queryRunner.query(`ALTER TABLE "test_item" ADD CONSTRAINT "FK_7064d12473e33fe92164d07a7ce" FOREIGN KEY ("testId") REFERENCES "test"("id") ON DELETE CASCADE ON UPDATE CASCADE`);
+            yield queryRunner.query(`ALTER TABLE "test" RENAME COLUMN "is_first_done" TO "is_done"`);
         });
     }
     down(queryRunner) {
         return __awaiter(this, void 0, void 0, function* () {
-            yield queryRunner.query(`ALTER TABLE "test_item" DROP CONSTRAINT "FK_7064d12473e33fe92164d07a7ce"`);
-            yield queryRunner.query(`ALTER TABLE "test_item" ADD CONSTRAINT "FK_7064d12473e33fe92164d07a7ce" FOREIGN KEY ("testId") REFERENCES "test"("id") ON DELETE NO ACTION ON UPDATE NO ACTION`);
+            yield queryRunner.query(`ALTER TABLE "test" RENAME COLUMN "is_done" TO "is_first_done"`);
         });
     }
 }
-exports.Migration1717326418732 = Migration1717326418732;
-//# sourceMappingURL=1717326418732-migration.js.map
+exports.Migration1717350373687 = Migration1717350373687;
+//# sourceMappingURL=1717350373687-migration.js.map
