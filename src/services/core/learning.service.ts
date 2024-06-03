@@ -119,13 +119,14 @@ export default class LearningService extends BaseService {
     test.isDone = true;
     await this.manager.getRepository(Test).save(test);
     const numberOfCorrectAnswer = scorePass / 100;
-    const numberOfQuestion = test.testItems.length;
+    const numberOfWrong = test.testItems.length - numberOfCorrectAnswer;
     const percentage = parseFloat(
-      ((numberOfCorrectAnswer / numberOfQuestion) * 100).toFixed(2)
+      ((numberOfCorrectAnswer / test.testItems.length) * 100).toFixed(2)
     );
     return {
+      testId: test.id,
       numberOfCorrectAnswer,
-      numberOfQuestion,
+      numberOfWrong,
       percentage,
       score: scorePass,
     };

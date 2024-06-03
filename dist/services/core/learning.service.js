@@ -126,11 +126,12 @@ class LearningService extends base_service_1.BaseService {
             test.isDone = true;
             yield this.manager.getRepository(test_model_1.default).save(test);
             const numberOfCorrectAnswer = scorePass / 100;
-            const numberOfQuestion = test.testItems.length;
-            const percentage = parseFloat(((numberOfCorrectAnswer / numberOfQuestion) * 100).toFixed(2));
+            const numberOfWrong = test.testItems.length - numberOfCorrectAnswer;
+            const percentage = parseFloat(((numberOfCorrectAnswer / test.testItems.length) * 100).toFixed(2));
             return {
+                testId: test.id,
                 numberOfCorrectAnswer,
-                numberOfQuestion,
+                numberOfWrong,
                 percentage,
                 score: scorePass,
             };
