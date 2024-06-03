@@ -7,7 +7,6 @@ dotenv.config();
 const port = process.env.PORT || 8080
 import { database } from './database'
 import express from 'express';
-import Test from './models/test.model';
 const app = express();
 app.use(bodyParser.json())
 app.use(bodyParser.urlencoded({ extended: true }))
