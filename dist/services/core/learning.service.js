@@ -63,7 +63,7 @@ class LearningService extends base_service_1.BaseService {
     createTest(userId, courseId) {
         return __awaiter(this, void 0, void 0, function* () {
             let test = yield this.manager.findOne(test_model_1.default, {
-                where: { user: { id: userId }, course: { id: courseId } },
+                where: { user: { id: userId }, course: { id: courseId }, isDone: false },
                 relations: ["testItems"],
             });
             const course = yield this.manager.findOne(course_model_1.default, {
@@ -71,7 +71,7 @@ class LearningService extends base_service_1.BaseService {
                 relations: ["words"],
             });
             const user = yield this.manager.findOne(user_model_1.default, { where: { id: userId } });
-            if (!test || (test === null || test === void 0 ? void 0 : test.isDone)) {
+            if (!test) {
                 const listWord = course.words;
                 const listTestItem = course.words.map((word) => {
                     const testItem = new testItem_model_1.default();

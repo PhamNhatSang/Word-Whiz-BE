@@ -54,7 +54,7 @@ export default class LearningService extends BaseService {
 
   async createTest(userId: number, courseId: number): Promise<Test> {
     let test = await this.manager.findOne(Test, {
-      where: { user: { id: userId }, course: { id: courseId } },
+      where: { user: { id: userId }, course: { id: courseId },isDone:false },
       relations: ["testItems"],
     });
     const course = await this.manager.findOne(Course, {
@@ -63,7 +63,7 @@ export default class LearningService extends BaseService {
     });
     const user = await this.manager.findOne(User, { where: { id: userId } });
 
-    if (!test || test?.isDone) {
+    if (!test) {
       const listWord = course.words;
       const listTestItem = course.words.map((word) => {
         const testItem = new TestItem();
