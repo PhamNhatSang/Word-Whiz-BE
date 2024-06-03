@@ -129,7 +129,6 @@ class LearningService extends base_service_1.BaseService {
             const numberOfWrong = test.testItems.length - numberOfCorrectAnswer;
             const percentage = parseFloat(((numberOfCorrectAnswer / test.testItems.length) * 100).toFixed(2));
             return {
-                testId: test.id,
                 numberOfCorrectAnswer,
                 numberOfWrong,
                 percentage,

@@ -124,7 +124,6 @@ export default class LearningService extends BaseService {
       ((numberOfCorrectAnswer / test.testItems.length) * 100).toFixed(2)
     );
     return {
-      testId: test.id,
       numberOfCorrectAnswer,
       numberOfWrong,
       percentage,
