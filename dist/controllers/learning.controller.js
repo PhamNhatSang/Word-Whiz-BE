@@ -75,8 +75,7 @@ let LearningController = class LearningController extends baseController_1.BaseC
         return __awaiter(this, void 0, void 0, function* () {
             try {
                 const testId = req.params.id;
-                const answers = req.body.answers;
-                const result = yield this.service.submitTest(answers, parseInt(testId));
+                const result = yield this.service.submitTest(parseInt(testId));
                 return res.send(result);
             }
             catch (error) {

@@ -110,22 +110,30 @@ class LearningService extends base_service_1.BaseService {
             return test;
         });
     }
-    submitTest(answers, testId) {
+    submitTest(testId) {
         return __awaiter(this, void 0, void 0, function* () {
             const test = yield this.manager.findOne(test_model_1.default, {
                 where: { id: testId },
                 relations: ["testItems"],
             });
             let scorePass = 0;
-            const correctAnswers = test.testItems.map((item) => item.correct_answer);
-            answers.forEach((answer, index) => {
-                if (answer.answer === correctAnswers[index]) {
+            test.testItems.forEach((item) => {
+                if (item.user_answer === item.correct_answer) {
                     scorePass += 100;
                 }
             });
             test.score = scorePass;
             test.isDone = true;
-            return yield this.manager.getRepository(test_model_1.default).save(test);
+            yield this.manager.getRepository(test_model_1.default).save(test);
+            const numberOfCorrectAnswer = scorePass / 100;
+            const numberOfQuestion = test.testItems.length;
+            const percentage = parseFloat(((numberOfCorrectAnswer / numberOfQuestion) * 100).toFixed(2));
+            return {
+                numberOfCorrectAnswer,
+                numberOfQuestion,
+                percentage,
+                score: scorePass,
+            };
         });
     }
 }

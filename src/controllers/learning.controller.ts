@@ -54,8 +54,7 @@ export default class LearningController extends BaseController<LearningService> 
         try {
 
             const testId = req.params.id;
-            const answers = req.body.answers as Answer[];
-            const result = await this.service.submitTest(answers,parseInt(testId));
+            const result = await this.service.submitTest(parseInt(testId));
             return res.send(result);
         } catch (error) {
             console.log(error);

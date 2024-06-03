@@ -52,7 +52,6 @@ export default class LearningService extends BaseService {
       .update(testItemId, { user_answer: userAnswer });
   }
 
-
   async createTest(userId: number, courseId: number): Promise<Test> {
     let test = await this.manager.findOne(Test, {
       where: { user: { id: userId }, course: { id: courseId } },
@@ -65,8 +64,6 @@ export default class LearningService extends BaseService {
     const user = await this.manager.findOne(User, { where: { id: userId } });
 
     if (!test || test?.isDone) {
-
-
       const listWord = course.words;
       const listTestItem = course.words.map((word) => {
         const testItem = new TestItem();
@@ -97,31 +94,40 @@ export default class LearningService extends BaseService {
       test = await this.manager.getRepository(Test).save(testCreate);
     }
 
-    
     test.testItems = test.testItems.map((item) => {
       delete item.correct_answer;
       return item;
     });
-    test.testItems.sort((a, b) => a.id - b.id)
+    test.testItems.sort((a, b) => a.id - b.id);
     delete test.user;
     delete test.course;
     return test;
   }
 
-  async submitTest(answers: Answer[], testId: number): Promise<Test> {
+  async submitTest(testId: number) {
     const test = await this.manager.findOne(Test, {
       where: { id: testId },
       relations: ["testItems"],
     });
     let scorePass = 0;
-    const correctAnswers = test.testItems.map((item) => item.correct_answer);
-    answers.forEach((answer, index) => {
-      if (answer.answer === correctAnswers[index]) {
-         scorePass += 100;
+    test.testItems.forEach((item) => {
+      if (item.user_answer === item.correct_answer) {
+        scorePass += 100;
       }
     });
     test.score = scorePass;
     test.isDone = true;
-    return await this.manager.getRepository(Test).save(test);
+    await this.manager.getRepository(Test).save(test);
+    const numberOfCorrectAnswer = scorePass / 100;
+    const numberOfQuestion = test.testItems.length;
+    const percentage = parseFloat(
+      ((numberOfCorrectAnswer / numberOfQuestion) * 100).toFixed(2)
+    );
+    return {
+      numberOfCorrectAnswer,
+      numberOfQuestion,
+      percentage,
+      score: scorePass,
+    };
   }
 }
