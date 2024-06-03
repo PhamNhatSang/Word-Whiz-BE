@@ -21,7 +21,7 @@ const course_model_1 = __importDefault(require("./course.model"));
 let Test = class Test extends baseModel_1.BaseModel {
 };
 __decorate([
-    (0, typeorm_1.Column)({ type: "int", name: 'score', default: -1 }),
+    (0, typeorm_1.Column)({ type: "int", name: 'score', default: 0 }),
     __metadata("design:type", Number)
 ], Test.prototype, "score", void 0);
 __decorate([

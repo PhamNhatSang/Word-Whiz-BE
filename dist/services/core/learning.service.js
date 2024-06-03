@@ -71,7 +71,7 @@ class LearningService extends base_service_1.BaseService {
                 relations: ["words"],
             });
             const user = yield this.manager.findOne(user_model_1.default, { where: { id: userId } });
-            if (!test) {
+            if (!test || (test === null || test === void 0 ? void 0 : test.isDone)) {
                 const listWord = course.words;
                 const listTestItem = course.words.map((word) => {
                     const testItem = new testItem_model_1.default();
@@ -100,34 +100,6 @@ class LearningService extends base_service_1.BaseService {
                 testCreate.testItems = listTestItem;
                 test = yield this.manager.getRepository(test_model_1.default).save(testCreate);
             }
-            if (test.isDone) {
-                yield this.manager.getRepository(testItem_model_1.default).remove(test.testItems);
-                const listWord = course.words;
-                const listTestItem = course.words.map((word) => {
-                    const testItem = new testItem_model_1.default();
-                    const otherDefinitions = listWord
-                        .filter((td) => td.term !== word.term)
-                        .map((td) => td.definition);
-                    const shuffledDefinitions = (0, shuffle_1.shuffleArray)(otherDefinitions);
-                    const options = [
-                        shuffledDefinitions[0] || "",
-                        shuffledDefinitions[1] || "",
-                        shuffledDefinitions[2] || "",
-                        word.definition,
-                    ];
-                    const shuffledOptions = (0, shuffle_1.shuffleArray)(options);
-                    testItem.question = word.term;
-                    testItem.correct_answer = word.definition;
-                    testItem.option_1 = shuffledOptions[0];
-                    testItem.option_2 = shuffledOptions[1];
-                    testItem.option_3 = shuffledOptions[2];
-                    testItem.option_4 = shuffledOptions[3];
-                    return testItem;
-                });
-                test.testItems = listTestItem;
-                test.isDone = false;
-                test = yield this.manager.getRepository(test_model_1.default).save(test);
-            }
             test.testItems = test.testItems.map((item) => {
                 delete item.correct_answer;
                 return item;
@@ -148,8 +120,7 @@ class LearningService extends base_service_1.BaseService {
             const correctAnswers = test.testItems.map((item) => item.correct_answer);
             answers.forEach((answer, index) => {
                 if (answer.answer === correctAnswers[index]) {
-                    if (test.score === -1)
-                        scorePass += 100;
+                    scorePass += 100;
                 }
             });
             test.score = scorePass;

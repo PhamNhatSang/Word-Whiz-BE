@@ -7,9 +7,9 @@ import Course from "./course.model";
 @Entity()
 export default class Test extends BaseModel {
   
-  @Column({type:"int",name:'score',default:-1})
+  @Column({type:"int",name:'score',default:0})
   score: number;
-
+  
   @Column({ type: "boolean",default:false,name:'is_done'} )
   isDone: boolean;
 

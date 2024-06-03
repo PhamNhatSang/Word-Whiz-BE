@@ -64,7 +64,7 @@ export default class LearningService extends BaseService {
     });
     const user = await this.manager.findOne(User, { where: { id: userId } });
 
-    if (!test) {
+    if (!test || test?.isDone) {
 
 
       const listWord = course.words;
@@ -97,38 +97,6 @@ export default class LearningService extends BaseService {
       test = await this.manager.getRepository(Test).save(testCreate);
     }
 
-
-    if(test.isDone){  
-      await this.manager.getRepository(TestItem).remove(test.testItems);
-
-      const listWord = course.words;
-      const listTestItem = course.words.map((word) => {
-        const testItem = new TestItem();
-        const otherDefinitions = listWord
-          .filter((td) => td.term !== word.term)
-          .map((td) => td.definition);
-        const shuffledDefinitions = shuffleArray(otherDefinitions);
-        const options = [
-          shuffledDefinitions[0] || "",
-          shuffledDefinitions[1] || "",
-          shuffledDefinitions[2] || "",
-          word.definition,
-        ];
-        const shuffledOptions = shuffleArray(options);
-
-        testItem.question = word.term;
-        testItem.correct_answer = word.definition;
-        testItem.option_1 = shuffledOptions[0];
-        testItem.option_2 = shuffledOptions[1];
-        testItem.option_3 = shuffledOptions[2];
-        testItem.option_4 = shuffledOptions[3];
-        return testItem;
-      });
-
-      test.testItems = listTestItem;
-      test.isDone = false;
-      test = await this.manager.getRepository(Test).save(test);
-    }
     
     test.testItems = test.testItems.map((item) => {
       delete item.correct_answer;
@@ -149,7 +117,7 @@ export default class LearningService extends BaseService {
     const correctAnswers = test.testItems.map((item) => item.correct_answer);
     answers.forEach((answer, index) => {
       if (answer.answer === correctAnswers[index]) {
-        if (test.score === -1) scorePass += 100;
+         scorePass += 100;
       }
     });
     test.score = scorePass;
