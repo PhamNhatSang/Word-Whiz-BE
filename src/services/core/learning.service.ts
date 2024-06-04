@@ -117,7 +117,7 @@ export default class LearningService extends BaseService {
     });
     test.score = scorePass;
     test.isDone = true;
-    await this.manager.getRepository(Test).save(test);
+    const testResult= await this.manager.getRepository(Test).save(test);
     const numberOfCorrectAnswer = scorePass / 100;
     const numberOfWrong = test.testItems.length - numberOfCorrectAnswer;
     const percentage = parseFloat(
@@ -128,6 +128,7 @@ export default class LearningService extends BaseService {
       numberOfWrong,
       percentage,
       score: scorePass,
+      testItems: testResult.testItems,
     };
   }
 }

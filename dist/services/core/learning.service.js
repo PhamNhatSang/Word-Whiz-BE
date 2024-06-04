@@ -124,7 +124,7 @@ class LearningService extends base_service_1.BaseService {
             });
             test.score = scorePass;
             test.isDone = true;
-            yield this.manager.getRepository(test_model_1.default).save(test);
+            const testResult = yield this.manager.getRepository(test_model_1.default).save(test);
             const numberOfCorrectAnswer = scorePass / 100;
             const numberOfWrong = test.testItems.length - numberOfCorrectAnswer;
             const percentage = parseFloat(((numberOfCorrectAnswer / test.testItems.length) * 100).toFixed(2));
@@ -133,6 +133,7 @@ class LearningService extends base_service_1.BaseService {
                 numberOfWrong,
                 percentage,
                 score: scorePass,
+                testItems: testResult.testItems,
             };
         });
     }
