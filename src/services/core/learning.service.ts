@@ -131,7 +131,7 @@ export default class LearningService extends BaseService {
         percentage,
         score: scorePass,
       },
-      testItems: testResult.testItems,
+      testItems: testResult.testItems.sort((a, b) => a.id - b.id)
     };
   }
 }
