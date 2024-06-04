@@ -131,10 +131,12 @@ class LearningService extends base_service_1.BaseService {
             const percentage = parseFloat(((numberOfCorrectAnswer / test.testItems.length) * 100).toFixed(2));
             return {
                 courseName: testResult.course.title,
-                numberOfCorrectAnswer,
-                numberOfWrong,
-                percentage,
-                score: scorePass,
+                overall: {
+                    numberOfCorrectAnswer,
+                    numberOfWrong,
+                    percentage,
+                    score: scorePass,
+                },
                 testItems: testResult.testItems,
             };
         });

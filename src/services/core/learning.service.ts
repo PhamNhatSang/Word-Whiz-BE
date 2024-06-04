@@ -54,7 +54,7 @@ export default class LearningService extends BaseService {
 
   async createTest(userId: number, courseId: number) {
     let test = await this.manager.findOne(Test, {
-      where: { user: { id: userId }, course: { id: courseId },isDone:false },
+      where: { user: { id: userId }, course: { id: courseId }, isDone: false },
       relations: ["testItems"],
     });
     const course = await this.manager.findOne(Course, {
@@ -99,7 +99,7 @@ export default class LearningService extends BaseService {
       return item;
     });
     test.testItems.sort((a, b) => a.id - b.id);
-    const testData = {...test,courseName:course.title}
+    const testData = { ...test, courseName: course.title };
     delete testData.user;
     delete testData.course;
     return testData;
@@ -118,7 +118,7 @@ export default class LearningService extends BaseService {
     });
     test.score = scorePass;
     test.isDone = true;
-    const testResult= await this.manager.getRepository(Test).save(test);
+    const testResult = await this.manager.getRepository(Test).save(test);
     const numberOfCorrectAnswer = scorePass / 100;
     const numberOfWrong = test.testItems.length - numberOfCorrectAnswer;
     const percentage = parseFloat(
@@ -126,10 +126,12 @@ export default class LearningService extends BaseService {
     );
     return {
       courseName: testResult.course.title,
-      numberOfCorrectAnswer,
-      numberOfWrong,
-      percentage,
-      score: scorePass,
+      overall: {
+        numberOfCorrectAnswer,
+        numberOfWrong,
+        percentage,
+        score: scorePass,
+      },
       testItems: testResult.testItems,
     };
   }
