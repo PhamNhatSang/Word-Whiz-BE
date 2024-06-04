@@ -52,7 +52,7 @@ export default class LearningService extends BaseService {
       .update(testItemId, { user_answer: userAnswer });
   }
 
-  async createTest(userId: number, courseId: number): Promise<Test> {
+  async createTest(userId: number, courseId: number) {
     let test = await this.manager.findOne(Test, {
       where: { user: { id: userId }, course: { id: courseId },isDone:false },
       relations: ["testItems"],
@@ -99,9 +99,10 @@ export default class LearningService extends BaseService {
       return item;
     });
     test.testItems.sort((a, b) => a.id - b.id);
-    delete test.user;
-    delete test.course;
-    return test;
+    const testData = {...test,courseName:course.title}
+    delete testData.user;
+    delete testData.course;
+    return testData;
   }
 
   async submitTest(testId: number) {
@@ -124,6 +125,7 @@ export default class LearningService extends BaseService {
       ((numberOfCorrectAnswer / test.testItems.length) * 100).toFixed(2)
     );
     return {
+      courseName: testResult.course.title,
       numberOfCorrectAnswer,
       numberOfWrong,
       percentage,

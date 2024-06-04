@@ -105,9 +105,10 @@ class LearningService extends base_service_1.BaseService {
                 return item;
             });
             test.testItems.sort((a, b) => a.id - b.id);
-            delete test.user;
-            delete test.course;
-            return test;
+            const testData = Object.assign(Object.assign({}, test), { courseName: course.title });
+            delete testData.user;
+            delete testData.course;
+            return testData;
         });
     }
     submitTest(testId) {
@@ -129,6 +130,7 @@ class LearningService extends base_service_1.BaseService {
             const numberOfWrong = test.testItems.length - numberOfCorrectAnswer;
             const percentage = parseFloat(((numberOfCorrectAnswer / test.testItems.length) * 100).toFixed(2));
             return {
+                courseName: testResult.course.title,
                 numberOfCorrectAnswer,
                 numberOfWrong,
                 percentage,
