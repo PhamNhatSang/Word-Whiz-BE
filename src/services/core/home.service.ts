@@ -102,7 +102,7 @@ export default class HomeService extends BaseService {
     const course = await this.manager
     .createQueryBuilder(Course, 'course')
     .select([
-      'course.id as courseId',
+      'course.id',
       'course.title as title',
       'owner.id as owner_id',
       'owner.name as owner_name',

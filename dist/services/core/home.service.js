@@ -97,7 +97,7 @@ class HomeService extends base_service_1.BaseService {
             const course = yield this.manager
                 .createQueryBuilder(course_model_1.default, 'course')
                 .select([
-                'course.id as courseId',
+                'course.id',
                 'course.title as title',
                 'owner.id as owner_id',
                 'owner.name as owner_name',
