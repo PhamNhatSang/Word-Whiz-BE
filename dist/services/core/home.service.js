@@ -88,7 +88,8 @@ class HomeService extends base_service_1.BaseService {
                 course.owner_avatar = imageUrl;
                 return course;
             }));
-            return coursePromises;
+            const courseData = yield Promise.all(coursePromises);
+            return courseData;
         });
         this.importCourse = (userId, courseId) => __awaiter(this, void 0, void 0, function* () {
             const user = yield this.manager.findOne(user_model_1.default, {
@@ -127,7 +128,8 @@ class HomeService extends base_service_1.BaseService {
                 course.owner_avatar = imageUrl;
                 return course;
             }));
-            return coursePromises;
+            const courseData = yield Promise.all(coursePromises);
+            return courseData;
         });
     }
 }

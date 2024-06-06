@@ -89,7 +89,8 @@ export default class HomeService extends BaseService {
         return course;
       }
       )
-    return coursePromises;
+      const courseData = await Promise.all(coursePromises);
+    return courseData;
   };
 
   importCourse = async (userId: number, courseId: number) => {
@@ -138,7 +139,8 @@ export default class HomeService extends BaseService {
       return course;
     }
     )
-    return coursePromises;
+    const courseData = await Promise.all(coursePromises);
+    return courseData;
 
 
     }
