@@ -73,7 +73,7 @@ class CommunityService extends base_service_1.BaseService {
                 .resize({ height: 800, width: 1080, fit: "contain" })
                 .toBuffer();
             const mimetype = file.mimetype;
-            const response = (0, s3_1.uploadFile)(buffer, mimetype);
+            const response = yield (0, s3_1.uploadFile)(buffer, mimetype);
             PostItem.image = response;
             const imageUrl = yield (0, s3_2.getObjectSignedUrl)(response);
             const postData = yield this.manager.save(PostItem);

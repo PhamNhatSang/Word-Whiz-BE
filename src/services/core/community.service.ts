@@ -68,7 +68,7 @@ export default class CommunityService extends BaseService {
       .resize({ height: 800, width: 1080, fit: "contain" })
       .toBuffer();
     const mimetype = file.mimetype;
-    const response = uploadFile(buffer, mimetype);
+    const response =  await uploadFile(buffer, mimetype);
     PostItem.image = response;
     const imageUrl = await getObjectSignedUrl(response);
     const postData = await this.manager.save(PostItem);

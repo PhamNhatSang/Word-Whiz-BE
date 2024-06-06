@@ -30,15 +30,17 @@ const s3Client = new client_s3_1.S3Client({
     }
 });
 function uploadFile(fileBuffer, mimetype) {
-    const imageName = crypto_1.default.randomBytes(32).toString('hex');
-    const uploadParams = {
-        Bucket: bucketName,
-        Body: fileBuffer,
-        Key: imageName,
-        ContentType: mimetype
-    };
-    s3Client.send(new client_s3_1.PutObjectCommand(uploadParams));
-    return imageName;
+    return __awaiter(this, void 0, void 0, function* () {
+        const imageName = crypto_1.default.randomBytes(32).toString('hex');
+        const uploadParams = {
+            Bucket: bucketName,
+            Body: fileBuffer,
+            Key: imageName,
+            ContentType: mimetype
+        };
+        yield s3Client.send(new client_s3_1.PutObjectCommand(uploadParams));
+        return imageName;
+    });
 }
 exports.uploadFile = uploadFile;
 function deleteFile(fileName) {

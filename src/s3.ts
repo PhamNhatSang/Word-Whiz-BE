@@ -20,7 +20,7 @@ const s3Client = new S3Client({
 })
 
 
-export function uploadFile(fileBuffer: Buffer, mimetype: string) {
+export async function uploadFile(fileBuffer: Buffer, mimetype: string) {
 
   const imageName = crypto.randomBytes(32).toString('hex')
     const uploadParams = {
@@ -30,7 +30,7 @@ export function uploadFile(fileBuffer: Buffer, mimetype: string) {
         ContentType: mimetype
     }
 
-     s3Client.send(new PutObjectCommand(uploadParams));
+    await s3Client.send(new PutObjectCommand(uploadParams));
     return imageName
 }
 
