@@ -18,6 +18,7 @@ const typeorm_1 = require("typeorm");
 const user_model_1 = __importDefault(require("../../models/user.model"));
 const ExistData_1 = __importDefault(require("../../exceptions/ExistData"));
 const course_model_1 = __importDefault(require("../../models/course.model"));
+const s3_1 = require("../../s3");
 class GroupService extends base_service_1.BaseService {
     constructor() {
         super();
@@ -45,7 +46,13 @@ class GroupService extends base_service_1.BaseService {
                 .groupBy("group.id")
                 .addGroupBy("owner.id")
                 .getRawMany();
-            return groups;
+            const groupPromises = groups.map((group) => __awaiter(this, void 0, void 0, function* () {
+                const imageUrl = yield (0, s3_1.getObjectSignedUrl)(group === null || group === void 0 ? void 0 : group.owner_avatar);
+                group.owner_avatar = imageUrl;
+                return group;
+            }));
+            const groupData = yield Promise.all(groupPromises);
+            return groupData;
         });
     }
     getGroupDetail(groupId) {
@@ -64,6 +71,8 @@ class GroupService extends base_service_1.BaseService {
             ])
                 .where("group.id = :groupId", { groupId })
                 .getRawOne();
+            const onwerGroupAvatar = yield (0, s3_1.getObjectSignedUrl)(groupDetail === null || groupDetail === void 0 ? void 0 : groupDetail.owner_avatar);
+            groupDetail.owner_avatar = onwerGroupAvatar;
             const course = yield this.manager
                 .createQueryBuilder(course_model_1.default, "course")
                 .leftJoinAndSelect("course.owner", "owner")
@@ -83,6 +92,12 @@ class GroupService extends base_service_1.BaseService {
                 .groupBy("course.id, owner.id,groups.id")
                 .where("groups.id = :groupId", { groupId: groupId })
                 .getRawMany();
+            const coursePromises = course.map((course) => __awaiter(this, void 0, void 0, function* () {
+                const imageUrl = yield (0, s3_1.getObjectSignedUrl)(course === null || course === void 0 ? void 0 : course.owner_avatar);
+                course.owner_avatar = imageUrl;
+                return course;
+            }));
+            const courseData = yield Promise.all(coursePromises);
             const students = yield this.manager
                 .createQueryBuilder(user_model_1.default, "user")
                 .leftJoinAndSelect("user.addedGroups", "group")
@@ -93,7 +108,13 @@ class GroupService extends base_service_1.BaseService {
                 "user.avatar as student_avatar",
             ])
                 .getRawMany();
-            return Object.assign(Object.assign({}, groupDetail), { courses: course, students: students });
+            const studentPromises = students.map((student) => __awaiter(this, void 0, void 0, function* () {
+                const imageUrl = yield (0, s3_1.getObjectSignedUrl)(student === null || student === void 0 ? void 0 : student.student_avatar);
+                student.student_avatar = imageUrl;
+                return student;
+            }));
+            const studentData = yield Promise.all(studentPromises);
+            return Object.assign(Object.assign({}, groupDetail), { courses: courseData, students: studentData });
         });
     }
     createGroup(userId, group) {
@@ -105,8 +126,7 @@ class GroupService extends base_service_1.BaseService {
             user.myGroups.push(group);
             yield this.manager.save(user);
             group.owner = user;
-            console.log(group);
-            return yield this.manager.getRepository(group_model_1.default).save(group);
+            yield this.manager.getRepository(group_model_1.default).save(group);
         });
     }
     deleteGroup(userId, groupId) {
@@ -194,6 +214,8 @@ class GroupService extends base_service_1.BaseService {
                 .where("course.id = :courseId", { courseId: courseId })
                 .groupBy("course.id, owner.id")
                 .getRawOne();
+            const onwerCourseAvatar = yield (0, s3_1.getObjectSignedUrl)(addCourse === null || addCourse === void 0 ? void 0 : addCourse.owner_avatar);
+            addCourse.owner_avatar = onwerCourseAvatar;
             return addCourse;
         });
     }

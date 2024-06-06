@@ -7,6 +7,7 @@ import Learning from "../../models/learning.model";
 import Word from "../../models/word.model";
 import Group from "../../models/group.model";
 import { isIn } from "class-validator";
+import { getObjectSignedUrl } from "../../s3";
 export default class LibraryService extends BaseService {
   constructor() {
     super();
@@ -30,6 +31,14 @@ export default class LibraryService extends BaseService {
       .where("owner.id = :userId", { userId: userId })
       .groupBy("course.id, owner.id")
       .getRawMany();
+      const myCoursePromises = myCourses.map(async (course) => {
+        const imageUrl = await getObjectSignedUrl(course?.owner_avatar as string);
+        course.owner_avatar = imageUrl;
+        return course;
+      }
+      )
+      const myCourseData = await Promise.all(myCoursePromises);
+
 
     const importCourses = await this.manager
       .createQueryBuilder(Course, "course")
@@ -49,8 +58,15 @@ export default class LibraryService extends BaseService {
       .where("userImporteds.id = :userId", { userId: userId })
       .groupBy("course.id, owner.id")
       .getRawMany();
+      const importCoursePromises = importCourses.map(async (course) => {
+        const imageUrl = await getObjectSignedUrl(course?.owner_avatar as string);
+        course.owner_avatar = imageUrl;
+        return course;
+      }
+      )
+      const importCourseData = await Promise.all(importCoursePromises);
 
-    return { myCourses,importCourses };
+    return { myCourses:myCourseData,importCourses:importCourseData };
   };
 
   createCourse = async (userId: number, course: Course) => {

@@ -83,6 +83,20 @@ let CourseDetailController = class CourseDetailController extends baseController
             }
         });
     }
+    rateCourse(req, res) {
+        return __awaiter(this, void 0, void 0, function* () {
+            try {
+                const courseId = req.params.id;
+                const userId = req.body.currentUserData.id;
+                const rate = req.body.rate;
+                yield this.service.rateCourse(parseInt(userId), parseInt(courseId), rate);
+                return res.send("Rate course successfully");
+            }
+            catch (error) {
+                return res.status(400).send(error);
+            }
+        });
+    }
 };
 __decorate([
     (0, routing_controllers_1.Get)("/:id"),
@@ -116,6 +130,14 @@ __decorate([
     __metadata("design:paramtypes", [Object, Object]),
     __metadata("design:returntype", Promise)
 ], CourseDetailController.prototype, "updateCourse", null);
+__decorate([
+    (0, routing_controllers_1.Post)("/rate/:id"),
+    __param(0, (0, routing_controllers_1.Req)()),
+    __param(1, (0, routing_controllers_1.Res)()),
+    __metadata("design:type", Function),
+    __metadata("design:paramtypes", [Object, Object]),
+    __metadata("design:returntype", Promise)
+], CourseDetailController.prototype, "rateCourse", null);
 CourseDetailController = __decorate([
     (0, routing_controllers_1.Controller)("/course"),
     __metadata("design:paramtypes", [])

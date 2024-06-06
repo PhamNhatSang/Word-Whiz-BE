@@ -62,4 +62,16 @@ export default class CourseDetailController extends BaseController<CourseDetailS
       return res.status(400).send(error);
     }
   }
+  @Post("/rate/:id")
+  async rateCourse(@Req() req: Request, @Res() res: Response) {
+    try {
+      const courseId = req.params.id;
+      const userId = req.body.currentUserData.id;
+      const rate = req.body.rate;
+      await this.service.rateCourse(parseInt(userId), parseInt(courseId), rate);
+      return res.send("Rate course successfully");
+    } catch (error) {
+      return res.status(400).send(error);
+    }
+  }
 }

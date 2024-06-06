@@ -16,6 +16,7 @@ const base_service_1 = require("../base/base.service");
 const course_model_1 = __importDefault(require("../../models/course.model"));
 const user_model_1 = __importDefault(require("../../models/user.model"));
 const group_model_1 = __importDefault(require("../../models/group.model"));
+const s3_1 = require("../../s3");
 class LibraryService extends base_service_1.BaseService {
     constructor() {
         super();
@@ -37,6 +38,12 @@ class LibraryService extends base_service_1.BaseService {
                 .where("owner.id = :userId", { userId: userId })
                 .groupBy("course.id, owner.id")
                 .getRawMany();
+            const myCoursePromises = myCourses.map((course) => __awaiter(this, void 0, void 0, function* () {
+                const imageUrl = yield (0, s3_1.getObjectSignedUrl)(course === null || course === void 0 ? void 0 : course.owner_avatar);
+                course.owner_avatar = imageUrl;
+                return course;
+            }));
+            const myCourseData = yield Promise.all(myCoursePromises);
             const importCourses = yield this.manager
                 .createQueryBuilder(course_model_1.default, "course")
                 .leftJoinAndSelect("course.owner", "owner")
@@ -55,7 +62,13 @@ class LibraryService extends base_service_1.BaseService {
                 .where("userImporteds.id = :userId", { userId: userId })
                 .groupBy("course.id, owner.id")
                 .getRawMany();
-            return { myCourses, importCourses };
+            const importCoursePromises = importCourses.map((course) => __awaiter(this, void 0, void 0, function* () {
+                const imageUrl = yield (0, s3_1.getObjectSignedUrl)(course === null || course === void 0 ? void 0 : course.owner_avatar);
+                course.owner_avatar = imageUrl;
+                return course;
+            }));
+            const importCourseData = yield Promise.all(importCoursePromises);
+            return { myCourses: myCourseData, importCourses: importCourseData };
         });
         this.createCourse = (userId, course) => __awaiter(this, void 0, void 0, function* () {
             const user = yield this.manager.findOne(user_model_1.default, {

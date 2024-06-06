@@ -28,11 +28,12 @@ __decorate([
     __metadata("design:type", user_model_1.default)
 ], CourseRate.prototype, "user", void 0);
 __decorate([
-    (0, typeorm_1.Column)(),
+    (0, typeorm_1.Column)({ type: "float", default: 1 }),
     __metadata("design:type", Number)
 ], CourseRate.prototype, "rate", void 0);
 CourseRate = __decorate([
-    (0, typeorm_1.Entity)()
+    (0, typeorm_1.Entity)(),
+    (0, typeorm_1.Check)(`"rate" > 0 AND "rate" < 6`)
 ], CourseRate);
 exports.default = CourseRate;
 //# sourceMappingURL=courseRate.model.js.map

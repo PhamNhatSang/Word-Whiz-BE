@@ -5,6 +5,7 @@ import User from "../../models/user.model";
 import { database } from "../../database";
 import ExistData from "../../exceptions/ExistData";
 import Course from "../../models/course.model";
+import { getObjectSignedUrl } from "../../s3";
 export default class GroupService extends BaseService {
   constructor() {
     super();
@@ -32,7 +33,14 @@ export default class GroupService extends BaseService {
       .groupBy("group.id")
       .addGroupBy("owner.id")
       .getRawMany();
-    return groups;
+
+      const groupPromises = groups.map(async (group) => {
+        const imageUrl = await getObjectSignedUrl(group?.owner_avatar as string);
+        group.owner_avatar = imageUrl;
+        return group;
+      })
+      const groupData = await Promise.all(groupPromises);
+    return groupData;
   }
   async getGroupDetail(groupId: number) {
     const groupDetail = await this.manager
@@ -49,6 +57,9 @@ export default class GroupService extends BaseService {
       ])
       .where("group.id = :groupId", { groupId })
       .getRawOne();
+
+      const onwerGroupAvatar = await getObjectSignedUrl(groupDetail?.owner_avatar as string);
+      groupDetail.owner_avatar = onwerGroupAvatar;
     const course = await this.manager
       .createQueryBuilder(Course, "course")
       .leftJoinAndSelect("course.owner", "owner")
@@ -69,6 +80,15 @@ export default class GroupService extends BaseService {
       .where("groups.id = :groupId", { groupId: groupId })
       .getRawMany();
 
+      const coursePromises = course.map(async (course) => {
+        const imageUrl = await getObjectSignedUrl(course?.owner_avatar as string);
+        course.owner_avatar = imageUrl;
+        return course;
+      }
+      )
+      const courseData = await Promise.all(coursePromises);
+
+
     const students = await this.manager
       .createQueryBuilder(User, "user")
       .leftJoinAndSelect("user.addedGroups", "group")
@@ -79,8 +99,16 @@ export default class GroupService extends BaseService {
         "user.avatar as student_avatar",
       ])
       .getRawMany();
+      
+      const studentPromises = students.map(async (student) => {
+        const imageUrl = await getObjectSignedUrl(student?.student_avatar as string);
+        student.student_avatar = imageUrl;
+        return student;
+      }
+      )
+      const studentData = await Promise.all(studentPromises);
 
-    return { ...groupDetail, courses: course,students:students };
+    return { ...groupDetail, courses: courseData,students:studentData };
   }
 
   async createGroup(userId: number, group: Group) {
@@ -91,8 +119,7 @@ export default class GroupService extends BaseService {
     user.myGroups.push(group);
     await this.manager.save(user);
     group.owner = user;
-    console.log(group);
-    return await this.manager.getRepository(Group).save(group);
+    await this.manager.getRepository(Group).save(group);
   }
   async deleteGroup(userId: number, groupId: number): Promise<void> {
     const user = await this.manager.findOne(User, {
@@ -183,7 +210,8 @@ export default class GroupService extends BaseService {
     .where("course.id = :courseId", { courseId: courseId })
     .groupBy("course.id, owner.id")
     .getRawOne();
-
+     const onwerCourseAvatar = await getObjectSignedUrl(addCourse?.owner_avatar as string);
+      addCourse.owner_avatar = onwerCourseAvatar;
     return addCourse;
     
   }

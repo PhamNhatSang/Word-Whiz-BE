@@ -101,11 +101,12 @@ class CommunityService extends base_service_1.BaseService {
             comment.content = content;
             comment.post = post;
             yield this.manager.save(comment);
+            const avatarUrl = yield (0, s3_2.getObjectSignedUrl)(user.avatar);
             return {
                 content: comment.content,
                 commentId: comment.id,
                 userId: comment.user.id,
-                userAvatar: comment.user.avatar,
+                userAvatar: avatarUrl,
                 userName: comment.user.name,
             };
         });
@@ -116,15 +117,18 @@ class CommunityService extends base_service_1.BaseService {
                 where: { post: { id: postId } },
                 relations: ["user"],
             });
-            return comments.map((comment) => {
+            const commentData = comments.map((comment) => __awaiter(this, void 0, void 0, function* () {
+                const avatarUrl = yield (0, s3_2.getObjectSignedUrl)(comment.user.avatar);
                 return {
                     content: comment.content,
                     commentId: comment.id,
                     userId: comment.user.id,
-                    userAvatar: comment.user.avatar,
+                    userAvatar: avatarUrl,
                     userName: comment.user.name,
                 };
-            });
+            }));
+            const resolveData = yield Promise.all(commentData);
+            return resolveData;
         });
     }
     reactPost(userId, isLiked, postId) {

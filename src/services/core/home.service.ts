@@ -7,6 +7,7 @@ import { BaseService } from "../base/base.service";
 import { Accessiblity } from "../../enum/Accessiblity";
 import ExistData from "../../exceptions/ExistData";
 import Learning from "../../models/learning.model";
+import { getObjectSignedUrl } from "../../s3";
 export default class HomeService extends BaseService {
   constructor() {
     super();
@@ -46,7 +47,15 @@ export default class HomeService extends BaseService {
 
       .limit(5)
       .getRawMany();
-    return course;
+
+      const coursePromises = course.map(async (course) => {
+        const imageUrl = await getObjectSignedUrl(course?.owner_avatar as string);
+        course.owner_avatar = imageUrl;
+        return course;
+      }
+      )
+      const courseData = await Promise.all(coursePromises);
+    return courseData;
   };
 
   getNewCourse = async () => {
@@ -73,7 +82,14 @@ export default class HomeService extends BaseService {
       .orderBy("createdAt", "DESC")
       .limit(5)
       .getRawMany();
-    return course;
+
+      const coursePromises = course.map(async (course) => {
+        const imageUrl = await getObjectSignedUrl(course?.owner_avatar as string);
+        course.owner_avatar = imageUrl;
+        return course;
+      }
+      )
+    return coursePromises;
   };
 
   importCourse = async (userId: number, courseId: number) => {
@@ -116,7 +132,14 @@ export default class HomeService extends BaseService {
     .groupBy('course.id, owner.id, learning.lastWordIndex')
     .getRawMany();
 
-    return course;
+    const coursePromises = course.map(async (course) => {
+      const imageUrl = await getObjectSignedUrl(course?.owner_avatar as string);
+      course.owner_avatar = imageUrl;
+      return course;
+    }
+    )
+    return coursePromises;
+
 
     }
 }

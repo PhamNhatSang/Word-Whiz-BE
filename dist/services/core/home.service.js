@@ -18,6 +18,7 @@ const typeorm_1 = require("typeorm");
 const base_service_1 = require("../base/base.service");
 const Accessiblity_1 = require("../../enum/Accessiblity");
 const ExistData_1 = __importDefault(require("../../exceptions/ExistData"));
+const s3_1 = require("../../s3");
 class HomeService extends base_service_1.BaseService {
     constructor() {
         super();
@@ -51,7 +52,13 @@ class HomeService extends base_service_1.BaseService {
                 .orderBy("avgrate", "DESC")
                 .limit(5)
                 .getRawMany();
-            return course;
+            const coursePromises = course.map((course) => __awaiter(this, void 0, void 0, function* () {
+                const imageUrl = yield (0, s3_1.getObjectSignedUrl)(course === null || course === void 0 ? void 0 : course.owner_avatar);
+                course.owner_avatar = imageUrl;
+                return course;
+            }));
+            const courseData = yield Promise.all(coursePromises);
+            return courseData;
         });
         this.getNewCourse = () => __awaiter(this, void 0, void 0, function* () {
             const course = yield this.manager
@@ -76,7 +83,12 @@ class HomeService extends base_service_1.BaseService {
                 .orderBy("createdAt", "DESC")
                 .limit(5)
                 .getRawMany();
-            return course;
+            const coursePromises = course.map((course) => __awaiter(this, void 0, void 0, function* () {
+                const imageUrl = yield (0, s3_1.getObjectSignedUrl)(course === null || course === void 0 ? void 0 : course.owner_avatar);
+                course.owner_avatar = imageUrl;
+                return course;
+            }));
+            return coursePromises;
         });
         this.importCourse = (userId, courseId) => __awaiter(this, void 0, void 0, function* () {
             const user = yield this.manager.findOne(user_model_1.default, {
@@ -110,7 +122,12 @@ class HomeService extends base_service_1.BaseService {
                 .innerJoin('course.learnings', 'learning', 'learning.user.id = :learnerId', { learnerId: userId })
                 .groupBy('course.id, owner.id, learning.lastWordIndex')
                 .getRawMany();
-            return course;
+            const coursePromises = course.map((course) => __awaiter(this, void 0, void 0, function* () {
+                const imageUrl = yield (0, s3_1.getObjectSignedUrl)(course === null || course === void 0 ? void 0 : course.owner_avatar);
+                course.owner_avatar = imageUrl;
+                return course;
+            }));
+            return coursePromises;
         });
     }
 }

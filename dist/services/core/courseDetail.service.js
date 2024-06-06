@@ -16,6 +16,7 @@ const course_model_1 = __importDefault(require("../../models/course.model"));
 const word_model_1 = __importDefault(require("../../models/word.model"));
 const base_service_1 = require("../base/base.service");
 const user_model_1 = __importDefault(require("../../models/user.model"));
+const courseRate_model_1 = __importDefault(require("../../models/courseRate.model"));
 class CourseDetailService extends base_service_1.BaseService {
     constructor() {
         super();
@@ -24,14 +25,15 @@ class CourseDetailService extends base_service_1.BaseService {
         return __awaiter(this, void 0, void 0, function* () {
             const course = yield this.manager.findOne(course_model_1.default, {
                 where: { id: courseId },
-                relations: ["words", 'owner'],
+                relations: { owner: true, words: true },
             });
             const user = yield this.manager.findOne(user_model_1.default, {
                 where: { id: userId },
                 relations: ["myCourses", "courseImports"],
             });
+            const courseRate = yield this.manager.findOne(courseRate_model_1.default, { where: { course: { id: courseId }, user: { id: userId } } });
             const isInLibrary = user.courseImports.some((courseImport) => courseImport.id === courseId) || user.myCourses.some((myCourse) => myCourse.id === courseId);
-            const courseDetail = Object.assign(Object.assign({}, course), { owner_id: course.owner.id, isInLibrary: isInLibrary });
+            const courseDetail = Object.assign(Object.assign({}, course), { owner_id: course.owner.id, isInLibrary: isInLibrary, rate: courseRate === null || courseRate === void 0 ? void 0 : courseRate.rate });
             delete courseDetail.owner;
             return courseDetail;
         });
@@ -57,6 +59,28 @@ class CourseDetailService extends base_service_1.BaseService {
             if (orphanedWords.length > 0)
                 yield this.manager.remove(orphanedWords);
             return courseUpdate;
+        });
+    }
+    rateCourse(userId, courseId, rate) {
+        return __awaiter(this, void 0, void 0, function* () {
+            const courseRate = yield this.manager.findOne(courseRate_model_1.default, { where: { course: { id: courseId }, user: { id: userId } } });
+            if (courseRate) {
+                courseRate.rate = rate;
+                yield this.manager.getRepository(courseRate_model_1.default).save(courseRate);
+            }
+            else {
+                const course = yield this.manager.findOne(course_model_1.default, {
+                    where: { id: courseId },
+                });
+                const user = yield this.manager.findOne(user_model_1.default, {
+                    where: { id: userId },
+                });
+                const courseRate = new courseRate_model_1.default();
+                courseRate.course = course;
+                courseRate.user = user;
+                courseRate.rate = rate;
+                yield this.manager.getRepository(courseRate_model_1.default).save(courseRate);
+            }
         });
     }
 }

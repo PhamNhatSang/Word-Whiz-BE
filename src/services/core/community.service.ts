@@ -95,11 +95,12 @@ export default class CommunityService extends BaseService {
     comment.content = content;
     comment.post = post;
     await this.manager.save(comment);
+    const avatarUrl =  await getObjectSignedUrl(user.avatar);
     return {
       content: comment.content,
       commentId: comment.id,
       userId: comment.user.id,
-      userAvatar: comment.user.avatar,
+      userAvatar: avatarUrl,
       userName: comment.user.name,
     };
   }
@@ -109,15 +110,19 @@ export default class CommunityService extends BaseService {
       where: { post: {id:postId} },
       relations: ["user"],
     });
-    return comments.map((comment) => {
+    const commentData= comments.map(async (comment) => {
+      const avatarUrl =  await getObjectSignedUrl(comment.user.avatar);
       return {
         content: comment.content,
         commentId: comment.id,
         userId: comment.user.id,
-        userAvatar: comment.user.avatar,
+        userAvatar: avatarUrl,
         userName: comment.user.name,
       };
     });
+    const resolveData = await Promise.all(commentData);
+    return resolveData;
+
   }
 
   async reactPost(userId: number,isLiked:boolean, postId: number) {

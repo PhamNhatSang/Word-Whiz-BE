@@ -4,6 +4,7 @@ import Word from "../../models/word.model";
 import { BaseService } from "../base/base.service";
 import { database } from "../../database";
 import User from "../../models/user.model";
+import CourseRate from "../../models/courseRate.model";
 export default class CourseDetailService extends BaseService {
     constructor() {
         super();
@@ -12,16 +13,17 @@ export default class CourseDetailService extends BaseService {
     async getCourseDetail(userId:number,courseId: number) {
         const course = await this.manager.findOne(Course,{
         where: { id: courseId },
-        relations: ["words",'owner'],
+        relations: { owner: true, words: true },
         });
        
         const user = await this.manager.findOne(User,{
         where: { id: userId },
         relations: ["myCourses", "courseImports"],
         });
+        const courseRate = await this.manager.findOne(CourseRate,{where:{course:{id:courseId},user:{id:userId}}});
         
         const isInLibrary = user.courseImports.some((courseImport) => courseImport.id === courseId)||user.myCourses.some((myCourse) => myCourse.id === courseId);
-        const courseDetail = {...course,owner_id:course.owner.id,isInLibrary:isInLibrary};
+        const courseDetail = {...course,owner_id:course.owner.id,isInLibrary:isInLibrary,rate:courseRate?.rate};
         delete courseDetail.owner; 
         return courseDetail;
     }
@@ -47,6 +49,26 @@ export default class CourseDetailService extends BaseService {
         await this.manager.remove(orphanedWords);
 
         return courseUpdate;
+    }
+
+    async rateCourse(userId: number, courseId: number, rate: number) {
+        const courseRate = await this.manager.findOne(CourseRate,{where:{course:{id:courseId},user:{id:userId}}});
+        if(courseRate){
+            courseRate.rate = rate;
+            await this.manager.getRepository(CourseRate).save(courseRate);
+        }else{
+            const course = await this.manager.findOne(Course,{
+                where: { id: courseId },
+            });
+            const user = await this.manager.findOne(User,{
+                where: { id: userId },
+            });
+            const courseRate = new CourseRate();
+            courseRate.course = course;
+            courseRate.user = user;
+            courseRate.rate = rate;
+            await this.manager.getRepository(CourseRate).save(courseRate);
+        }
     }
 
    
