@@ -14,13 +14,13 @@ import {
 import { Request, Response } from "express";
 import CommunityService from "../services/core/community.service";
 @UseBefore(AuthMiddleware)
+@UseBefore(UploadMidleware)
 @Controller("/community")
 export default class CommunityController extends BaseController<CommunityService> {
   constructor() {
     super(new CommunityService());
   }
 
-  @UseBefore(UploadMidleware)
   @Post("/post")
   async createPost(@Req() req: Request, @Res() res: Response) {
     try {

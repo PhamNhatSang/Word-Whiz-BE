@@ -108,7 +108,6 @@ let CommunityController = class CommunityController extends baseController_1.Bas
     }
 };
 __decorate([
-    (0, routing_controllers_1.UseBefore)(upload_middleware_1.UploadMidleware),
     (0, routing_controllers_1.Post)("/post"),
     __param(0, (0, routing_controllers_1.Req)()),
     __param(1, (0, routing_controllers_1.Res)()),
@@ -150,6 +149,7 @@ __decorate([
 ], CommunityController.prototype, "getComments", null);
 CommunityController = __decorate([
     (0, routing_controllers_1.UseBefore)(auth_middleware_1.default),
+    (0, routing_controllers_1.UseBefore)(upload_middleware_1.UploadMidleware),
     (0, routing_controllers_1.Controller)("/community"),
     __metadata("design:paramtypes", [])
 ], CommunityController);
