@@ -16,7 +16,7 @@ export default class React extends BaseModel {
   @Column({
     type: "enum",
     enum: ["LIKE", "SAD", "HAHA", "WOW", "LOVE", "ANGRY","NONE"],
-    default: "LiKE",
+    default: "LIKE",
   })
   emotion: Emotion;
 }

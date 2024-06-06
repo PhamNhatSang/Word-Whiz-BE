@@ -32,7 +32,7 @@ __decorate([
     (0, typeorm_1.Column)({
         type: "enum",
         enum: ["LIKE", "SAD", "HAHA", "WOW", "LOVE", "ANGRY", "NONE"],
-        default: "LiKE",
+        default: "LIKE",
     }),
     __metadata("design:type", String)
 ], React.prototype, "emotion", void 0);
