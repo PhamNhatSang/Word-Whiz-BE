@@ -15,6 +15,7 @@ Object.defineProperty(exports, "__esModule", { value: true });
 require("reflect-metadata");
 const base_service_1 = require("../base/base.service");
 const user_model_1 = __importDefault(require("../../models/user.model"));
+const s3_1 = require("../../s3");
 class AuthService extends base_service_1.BaseService {
     constructor() {
         super();
@@ -26,7 +27,10 @@ class AuthService extends base_service_1.BaseService {
     }
     getAllInfor(id) {
         return __awaiter(this, void 0, void 0, function* () {
-            return yield this.manager.findOne(user_model_1.default, { where: { id }, relations: { myGroups: true, myCourses: true, addedGroups: true } });
+            const user = yield this.manager.findOne(user_model_1.default, { where: { id }, relations: { myGroups: true, myCourses: true, addedGroups: true } });
+            const avatar = yield (0, s3_1.getObjectSignedUrl)(user.avatar);
+            user.avatar = avatar;
+            return user;
         });
     }
 }
