@@ -105,6 +105,7 @@ export default class LibraryService extends BaseService {
 
   getListCourseToAddGroup = async (userId: number, groupId: number) => {
     const user = await this.manager.findOne(User, {
+      
       where: { id: userId },
       relations: ["myCourses"],
     });
