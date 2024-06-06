@@ -105,9 +105,8 @@ export default class CommunityService extends BaseService {
   }
 
   async getComments(postId: number) {
-    const post = await this.manager.findOne(Post, { where: { id: postId } });
     const comments = await this.manager.find(Comment, {
-      where: { post: post },
+      where: { post: {id:postId} },
       relations: ["user"],
     });
     return comments.map((comment) => {

@@ -112,9 +112,8 @@ class CommunityService extends base_service_1.BaseService {
     }
     getComments(postId) {
         return __awaiter(this, void 0, void 0, function* () {
-            const post = yield this.manager.findOne(post_model_1.default, { where: { id: postId } });
             const comments = yield this.manager.find(comment_model_1.default, {
-                where: { post: post },
+                where: { post: { id: postId } },
                 relations: ["user"],
             });
             return comments.map((comment) => {
