@@ -7,10 +7,10 @@ import Post from "./post.model";
 import { Entity, ManyToOne, Column } from "typeorm";
 @Entity()
 export default class Comment extends BaseModel {
-  @ManyToOne(() => User, (user) => user.myComments)
+  @ManyToOne(() => User, (user) => user.myComments, { onDelete: "CASCADE" })
   user: User;
 
-  @ManyToOne(() => Post, (post) => post.postComments)
+  @ManyToOne(() => Post, (post) => post.postComments, { onDelete: "CASCADE" })
   post: Post;
 
   @Column()

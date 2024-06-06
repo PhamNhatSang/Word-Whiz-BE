@@ -69,4 +69,15 @@ export default class HomeController extends BaseController<LibraryService> {
     }
   }
 
+  @Get("/course-add-post")
+  async getCourseAddPost(@Req() req: Request, @Res() res: Response) {
+    try {
+      const userId = req.body.currentUserData.id;
+      const result = await this.service.getListCourseToAddPost(parseInt(userId));
+      return res.send(result);
+    } catch (error) {
+      return res.status(400).send(error);
+    }
+  }
+
 }

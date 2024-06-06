@@ -10,13 +10,13 @@ export default class React extends BaseModel {
   @ManyToOne(() => User, (user) => user.myReacts)
   user: User;
 
-  @ManyToOne(() => Post, (post) => post.postReacts)
+  @ManyToOne(() => Post, (post) => post.postReacts, { onDelete: "CASCADE" ,onUpdate:"CASCADE"})
   post: Post;
 
   @Column({
     type: "enum",
-    enum: ["LIKE", "SAD", "HAHA", "WOW", "LOVE", "ANGRY", "NONE"],
-    default: "NONE",
+    enum: ["LIKE", "SAD", "HAHA", "WOW", "LOVE", "ANGRY","NONE"],
+    default: "LiKE",
   })
   emotion: Emotion;
 }

@@ -95,6 +95,18 @@ let HomeController = class HomeController extends baseController_1.BaseControlle
             }
         });
     }
+    getCourseAddPost(req, res) {
+        return __awaiter(this, void 0, void 0, function* () {
+            try {
+                const userId = req.body.currentUserData.id;
+                const result = yield this.service.getListCourseToAddPost(parseInt(userId));
+                return res.send(result);
+            }
+            catch (error) {
+                return res.status(400).send(error);
+            }
+        });
+    }
 };
 __decorate([
     (0, routing_controllers_1.Get)("/"),
@@ -136,6 +148,14 @@ __decorate([
     __metadata("design:paramtypes", [Object, Object]),
     __metadata("design:returntype", Promise)
 ], HomeController.prototype, "getCourseAddGroup", null);
+__decorate([
+    (0, routing_controllers_1.Get)("/course-add-post"),
+    __param(0, (0, routing_controllers_1.Req)()),
+    __param(1, (0, routing_controllers_1.Res)()),
+    __metadata("design:type", Function),
+    __metadata("design:paramtypes", [Object, Object]),
+    __metadata("design:returntype", Promise)
+], HomeController.prototype, "getCourseAddPost", null);
 HomeController = __decorate([
     (0, routing_controllers_1.Controller)("/library"),
     __metadata("design:paramtypes", [])

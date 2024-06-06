@@ -117,6 +117,20 @@ class LibraryService extends base_service_1.BaseService {
             });
             return courseToAdd;
         });
+        this.getListCourseToAddPost = (userId) => __awaiter(this, void 0, void 0, function* () {
+            const user = yield this.manager.findOne(user_model_1.default, {
+                where: { id: userId },
+                relations: ["myCourses"],
+            });
+            const courseToAdd = user.myCourses.map((course) => {
+                return {
+                    courseName: course.title,
+                    courseId: course.id,
+                    isInPost: false,
+                };
+            });
+            return courseToAdd;
+        });
     }
 }
 exports.default = LibraryService;

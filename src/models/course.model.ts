@@ -20,6 +20,7 @@ import {
   JoinTable,
 } from "typeorm";
 import Learning from "./learning.model";
+import Post from './post.model'
 
 @Entity()
 export default class Course extends BaseModel {
@@ -47,6 +48,9 @@ export default class Course extends BaseModel {
   learnings: Learning[];
   @ManyToMany(() => Group, (group) => group.courses, { nullable: true })
   addedGroups: Group[];
+
+  @ManyToMany(() => Post, (post) => post.courses, { nullable: true })
+  addedPosts: Post[];
 
 
   @ManyToMany(() => User, (user) => user.courseImports, { nullable: true,cascade:true })

@@ -6,6 +6,7 @@ import { database } from "../../database";
 import Learning from "../../models/learning.model";
 import Word from "../../models/word.model";
 import Group from "../../models/group.model";
+import { isIn } from "class-validator";
 export default class LibraryService extends BaseService {
   constructor() {
     super();
@@ -126,4 +127,26 @@ export default class LibraryService extends BaseService {
 
     return courseToAdd;
   };
+
+  getListCourseToAddPost = async (userId: number) => {
+    const user = await this.manager.findOne(User, {
+      where: { id: userId },
+      relations: ["myCourses"],
+    });
+
+    const courseToAdd = user.myCourses.map((course) => {
+    
+      return {
+        courseName: course.title,
+        courseId: course.id,
+        isInPost: false,
+      };
+    });
+
+    return courseToAdd;
+
+  }
+
+
+
 }

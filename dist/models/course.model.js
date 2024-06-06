@@ -22,6 +22,7 @@ const test_model_1 = __importDefault(require("./test.model"));
 const courseRate_model_1 = __importDefault(require("./courseRate.model"));
 const typeorm_1 = require("typeorm");
 const learning_model_1 = __importDefault(require("./learning.model"));
+const post_model_1 = __importDefault(require("./post.model"));
 let Course = class Course extends baseModel_1.BaseModel {
 };
 __decorate([
@@ -60,6 +61,10 @@ __decorate([
     (0, typeorm_1.ManyToMany)(() => group_model_1.default, (group) => group.courses, { nullable: true }),
     __metadata("design:type", Array)
 ], Course.prototype, "addedGroups", void 0);
+__decorate([
+    (0, typeorm_1.ManyToMany)(() => post_model_1.default, (post) => post.courses, { nullable: true }),
+    __metadata("design:type", Array)
+], Course.prototype, "addedPosts", void 0);
 __decorate([
     (0, typeorm_1.ManyToMany)(() => user_model_1.default, (user) => user.courseImports, { nullable: true, cascade: true }),
     (0, typeorm_1.JoinTable)({

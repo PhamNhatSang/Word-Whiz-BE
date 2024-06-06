@@ -25,14 +25,14 @@ __decorate([
     __metadata("design:type", user_model_1.default)
 ], React.prototype, "user", void 0);
 __decorate([
-    (0, typeorm_1.ManyToOne)(() => post_model_1.default, (post) => post.postReacts),
+    (0, typeorm_1.ManyToOne)(() => post_model_1.default, (post) => post.postReacts, { onDelete: "CASCADE", onUpdate: "CASCADE" }),
     __metadata("design:type", post_model_1.default)
 ], React.prototype, "post", void 0);
 __decorate([
     (0, typeorm_1.Column)({
         type: "enum",
         enum: ["LIKE", "SAD", "HAHA", "WOW", "LOVE", "ANGRY", "NONE"],
-        default: "NONE",
+        default: "LiKE",
     }),
     __metadata("design:type", String)
 ], React.prototype, "emotion", void 0);

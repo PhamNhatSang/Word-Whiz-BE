@@ -20,11 +20,11 @@ const typeorm_1 = require("typeorm");
 let Comment = class Comment extends baseModel_1.BaseModel {
 };
 __decorate([
-    (0, typeorm_1.ManyToOne)(() => user_model_1.default, (user) => user.myComments),
+    (0, typeorm_1.ManyToOne)(() => user_model_1.default, (user) => user.myComments, { onDelete: "CASCADE" }),
     __metadata("design:type", user_model_1.default)
 ], Comment.prototype, "user", void 0);
 __decorate([
-    (0, typeorm_1.ManyToOne)(() => post_model_1.default, (post) => post.postComments),
+    (0, typeorm_1.ManyToOne)(() => post_model_1.default, (post) => post.postComments, { onDelete: "CASCADE" }),
     __metadata("design:type", post_model_1.default)
 ], Comment.prototype, "post", void 0);
 __decorate([

@@ -18,10 +18,11 @@ const user_model_1 = __importDefault(require("./user.model"));
 const comment_model_1 = __importDefault(require("./comment.model"));
 const react_model_1 = __importDefault(require("./react.model"));
 const typeorm_1 = require("typeorm");
+const course_model_1 = __importDefault(require("./course.model"));
 let Post = class Post extends baseModel_1.BaseModel {
 };
 __decorate([
-    (0, typeorm_1.ManyToOne)(() => user_model_1.default, (user) => user.myPosts),
+    (0, typeorm_1.ManyToOne)(() => user_model_1.default, (user) => user.myPosts, { onDelete: "CASCADE" }),
     __metadata("design:type", user_model_1.default)
 ], Post.prototype, "owner", void 0);
 __decorate([
@@ -33,13 +34,28 @@ __decorate([
     __metadata("design:type", String)
 ], Post.prototype, "image", void 0);
 __decorate([
-    (0, typeorm_1.OneToMany)(() => comment_model_1.default, (comment) => comment.post, { nullable: true }),
+    (0, typeorm_1.OneToMany)(() => comment_model_1.default, (comment) => comment.post, { nullable: true, cascade: true }),
     __metadata("design:type", Array)
 ], Post.prototype, "postComments", void 0);
 __decorate([
-    (0, typeorm_1.OneToMany)(() => react_model_1.default, (react) => react.post),
+    (0, typeorm_1.OneToMany)(() => react_model_1.default, (react) => react.post, { nullable: true, cascade: true }),
     __metadata("design:type", Array)
 ], Post.prototype, "postReacts", void 0);
+__decorate([
+    (0, typeorm_1.ManyToMany)(() => course_model_1.default, (cousre) => cousre.addedPosts, { nullable: true }),
+    (0, typeorm_1.JoinTable)({
+        name: "post_courses",
+        joinColumn: {
+            name: "post_id",
+            referencedColumnName: "id",
+        },
+        inverseJoinColumn: {
+            name: "course_id",
+            referencedColumnName: "id",
+        },
+    }),
+    __metadata("design:type", Array)
+], Post.prototype, "courses", void 0);
 Post = __decorate([
     (0, typeorm_1.Entity)()
 ], Post);

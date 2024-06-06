@@ -39,7 +39,7 @@ export default class User extends BaseModel {
   @OneToMany(() => Course,(course)=>course.owner,{nullable:true})
   myCourses: Course[];
   
-  @OneToMany(() => Post,(post)=>post.owner,{nullable:true})
+  @OneToMany(() => Post,(post)=>post.owner,{nullable:true,cascade:true})
   myPosts: Post[];
 
   @OneToMany(()=>CourseRate,(courseRate)=>courseRate.user,{nullable:true})

@@ -62,7 +62,7 @@ __decorate([
     __metadata("design:type", Array)
 ], User.prototype, "myCourses", void 0);
 __decorate([
-    (0, typeorm_1.OneToMany)(() => post_model_1.default, (post) => post.owner, { nullable: true }),
+    (0, typeorm_1.OneToMany)(() => post_model_1.default, (post) => post.owner, { nullable: true, cascade: true }),
     __metadata("design:type", Array)
 ], User.prototype, "myPosts", void 0);
 __decorate([
