@@ -49,10 +49,10 @@ export default class HomeService extends BaseService {
     });
 
     const courseData = await Promise.all(coursePromises);
-    courseData.sort((a, b) => {
+    const courseResult =courseData.sort((a, b) => {
       return b.avg_rate - a.avg_rate;
-    }).slice(0, 5);
-    return courseData;
+    })
+    return courseResult.slice(0, 5);
   };
 
   getNewCourse = async () => {

@@ -53,10 +53,10 @@ class HomeService extends base_service_1.BaseService {
                 };
             }));
             const courseData = yield Promise.all(coursePromises);
-            courseData.sort((a, b) => {
+            const courseResult = courseData.sort((a, b) => {
                 return b.avg_rate - a.avg_rate;
-            }).slice(0, 5);
-            return courseData;
+            });
+            return courseResult.slice(0, 5);
         });
         this.getNewCourse = () => __awaiter(this, void 0, void 0, function* () {
             const course = yield this.manager
