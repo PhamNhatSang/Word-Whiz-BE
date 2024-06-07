@@ -14,7 +14,7 @@ export default class Post extends BaseModel {
   @Column({ type: "text" })
   content: string;
 
-  @Column()
+  @Column({ type: "text", nullable: true})
   image: string;
 
   @OneToMany(() => Comment, (comment) => comment.post, { nullable: true, cascade: true})

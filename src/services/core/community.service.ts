@@ -64,22 +64,27 @@ export default class CommunityService extends BaseService {
         PostItem.courses=[];
     }
 
+    let imageUrl = null;
+    if(file){
     const buffer = await sharp(file.buffer)
       .resize({ height: 800, width: 1080, fit: "contain" })
       .toBuffer();
     const mimetype = file.mimetype;
     const response =  await uploadFile(buffer, mimetype);
     PostItem.image = response;
-    const imageUrl = await getObjectSignedUrl(response);
+     imageUrl = await getObjectSignedUrl(response);
+    }
     const postData = await this.manager.save(PostItem);
     const courseData = postData.courses.map((course) => {
       return { courseId: course.id, courseName: course.title };
     });
+
+    const avatarUrl =  await getObjectSignedUrl(user.avatar);
     return {
         content: postData.content,
       postId: postData.id,
       userId: postData.owner.id,
-      userAvatar: postData.owner.avatar,
+      userAvatar: avatarUrl,
       userName: postData.owner.name,
       imageUrl: imageUrl,
       courses: courseData,

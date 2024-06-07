@@ -69,22 +69,26 @@ class CommunityService extends base_service_1.BaseService {
             else {
                 PostItem.courses = [];
             }
-            const buffer = yield (0, sharp_1.default)(file.buffer)
-                .resize({ height: 800, width: 1080, fit: "contain" })
-                .toBuffer();
-            const mimetype = file.mimetype;
-            const response = yield (0, s3_1.uploadFile)(buffer, mimetype);
-            PostItem.image = response;
-            const imageUrl = yield (0, s3_2.getObjectSignedUrl)(response);
+            let imageUrl = null;
+            if (file) {
+                const buffer = yield (0, sharp_1.default)(file.buffer)
+                    .resize({ height: 800, width: 1080, fit: "contain" })
+                    .toBuffer();
+                const mimetype = file.mimetype;
+                const response = yield (0, s3_1.uploadFile)(buffer, mimetype);
+                PostItem.image = response;
+                imageUrl = yield (0, s3_2.getObjectSignedUrl)(response);
+            }
             const postData = yield this.manager.save(PostItem);
             const courseData = postData.courses.map((course) => {
                 return { courseId: course.id, courseName: course.title };
             });
+            const avatarUrl = yield (0, s3_2.getObjectSignedUrl)(user.avatar);
             return {
                 content: postData.content,
                 postId: postData.id,
                 userId: postData.owner.id,
-                userAvatar: postData.owner.avatar,
+                userAvatar: avatarUrl,
                 userName: postData.owner.name,
                 imageUrl: imageUrl,
                 courses: courseData,
