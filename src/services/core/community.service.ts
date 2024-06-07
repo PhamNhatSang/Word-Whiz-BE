@@ -19,12 +19,15 @@ export default class CommunityService extends BaseService {
     const allPosts = await this.manager.find(Post, { relations: {courses:true,owner:true,postReacts:{user:true}} });
     
     const allPostPromises = allPosts.map(async (post) => {
-      const image = await getObjectSignedUrl(post.image);
-      console.log(post.postReacts);
+      let imageUrl = null;
+      if(post.image)
+       imageUrl = await getObjectSignedUrl(post.image);
       const isLiked = post.postReacts.some(react => react.user.id === userId && react.emotion === Emotion.LIKE);
       const courseData = post.courses.map((course) => {
         return { courseId: course.id, courseName: course.title };
       });
+      if(post.owner.avatar)
+      post.owner.avatar = await getObjectSignedUrl(post.owner.avatar);
       
       return {
         content: post.content,
@@ -32,7 +35,7 @@ export default class CommunityService extends BaseService {
         userId: post.owner.id,
         userName: post.owner.name,
         userAvatar: post.owner.avatar,
-        imageUrl: image,
+        imageUrl: imageUrl,
         courses: courseData,
         isLiked: isLiked,
       };

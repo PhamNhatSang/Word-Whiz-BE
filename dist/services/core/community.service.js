@@ -31,19 +31,22 @@ class CommunityService extends base_service_1.BaseService {
         return __awaiter(this, void 0, void 0, function* () {
             const allPosts = yield this.manager.find(post_model_1.default, { relations: { courses: true, owner: true, postReacts: { user: true } } });
             const allPostPromises = allPosts.map((post) => __awaiter(this, void 0, void 0, function* () {
-                const image = yield (0, s3_2.getObjectSignedUrl)(post.image);
-                console.log(post.postReacts);
+                let imageUrl = null;
+                if (post.image)
+                    imageUrl = yield (0, s3_2.getObjectSignedUrl)(post.image);
                 const isLiked = post.postReacts.some(react => react.user.id === userId && react.emotion === Emotion_1.Emotion.LIKE);
                 const courseData = post.courses.map((course) => {
                     return { courseId: course.id, courseName: course.title };
                 });
+                if (post.owner.avatar)
+                    post.owner.avatar = yield (0, s3_2.getObjectSignedUrl)(post.owner.avatar);
                 return {
                     content: post.content,
                     postId: post.id,
                     userId: post.owner.id,
                     userName: post.owner.name,
                     userAvatar: post.owner.avatar,
-                    imageUrl: image,
+                    imageUrl: imageUrl,
                     courses: courseData,
                     isLiked: isLiked,
                 };
