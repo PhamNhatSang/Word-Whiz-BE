@@ -13,6 +13,6 @@ export default class CourseRate extends BaseModel {
   @ManyToOne(() => User, (user) => user.courseRate)
   user: User;
   
-  @Column({ type: "float", default: 1})
+  @Column({type:'float', default: 1})
   rate: number;
 }

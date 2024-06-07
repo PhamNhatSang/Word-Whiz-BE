@@ -29,35 +29,33 @@ class HomeService extends base_service_1.BaseService {
             return course;
         });
         this.getTopCourse = () => __awaiter(this, void 0, void 0, function* () {
-            const course = yield this.manager
-                .createQueryBuilder(course_model_1.default, "course")
-                .leftJoin("course.courseRate", "courseRate") // Assuming you have a courseRates relationship
-                .leftJoinAndSelect("course.owner", "owner")
-                .leftJoin("course.words", "word") // Join with words relation
-                .select([
-                "course.id",
-                "course.title as title", // Add other course fields as needed
-                "course.accessiblity as accessiblity",
-                "owner.id", // Select owner fields
-                "owner.name",
-                "owner.email",
-                "owner.avatar",
-            ])
-                .where("course.accessiblity = :accessiblity", {
-                accessiblity: Accessiblity_1.Accessiblity.PUBLIC,
-            })
-                .addSelect("AVG(courseRate.rate)", "avgrate")
-                .addSelect("COUNT(word.id)", "terms") // Count items in words relation and alias it as terms
-                .groupBy("course.id, owner.id")
-                .orderBy("avgrate", "DESC")
-                .limit(5)
-                .getRawMany();
+            const course = yield this.manager.find(course_model_1.default, {
+                where: { accessiblity: Accessiblity_1.Accessiblity.PUBLIC },
+                relations: ["owner", "words", "courseRate"],
+            });
             const coursePromises = course.map((course) => __awaiter(this, void 0, void 0, function* () {
-                const imageUrl = yield (0, s3_1.getObjectSignedUrl)(course === null || course === void 0 ? void 0 : course.owner_avatar);
-                course.owner_avatar = imageUrl;
-                return course;
+                let avgRate = 0;
+                if (course.courseRate.length > 0)
+                    avgRate =
+                        course.courseRate.reduce((acc, rate) => acc + rate.rate, 0) /
+                            course.courseRate.length;
+                const terms = course.words.length;
+                const imageUrl = yield (0, s3_1.getObjectSignedUrl)(course.owner.avatar);
+                return {
+                    course_id: course.id,
+                    title: course.title,
+                    owner_id: course.owner.id,
+                    owner_name: course.owner.name,
+                    owner_avatar: imageUrl,
+                    owner_email: course.owner.email,
+                    terms,
+                    avg_rate: avgRate,
+                };
             }));
             const courseData = yield Promise.all(coursePromises);
+            courseData.sort((a, b) => {
+                return b.avg_rate - a.avg_rate;
+            }).slice(0, 5);
             return courseData;
         });
         this.getNewCourse = () => __awaiter(this, void 0, void 0, function* () {
@@ -108,20 +106,20 @@ class HomeService extends base_service_1.BaseService {
         });
         this.getContinueCourse = (userId) => __awaiter(this, void 0, void 0, function* () {
             const course = yield this.manager
-                .createQueryBuilder(course_model_1.default, 'course')
+                .createQueryBuilder(course_model_1.default, "course")
                 .select([
-                'course.id',
-                'course.title as title',
-                'owner.id as owner_id',
-                'owner.name as owner_name',
-                'owner.avatar as owner_avatar',
-                'COUNT(word.id) as terms',
-                'learning.lastWordIndex',
+                "course.id",
+                "course.title as title",
+                "owner.id as owner_id",
+                "owner.name as owner_name",
+                "owner.avatar as owner_avatar",
+                "COUNT(word.id) as terms",
+                "learning.lastWordIndex",
             ])
-                .innerJoin('course.owner', 'owner')
-                .leftJoin('course.words', 'word')
-                .innerJoin('course.learnings', 'learning', 'learning.user.id = :learnerId', { learnerId: userId })
-                .groupBy('course.id, owner.id, learning.lastWordIndex')
+                .innerJoin("course.owner", "owner")
+                .leftJoin("course.words", "word")
+                .innerJoin("course.learnings", "learning", "learning.user.id = :learnerId", { learnerId: userId })
+                .groupBy("course.id, owner.id, learning.lastWordIndex")
                 .getRawMany();
             const coursePromises = course.map((course) => __awaiter(this, void 0, void 0, function* () {
                 const imageUrl = yield (0, s3_1.getObjectSignedUrl)(course === null || course === void 0 ? void 0 : course.owner_avatar);

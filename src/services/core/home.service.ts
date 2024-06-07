@@ -21,40 +21,37 @@ export default class HomeService extends BaseService {
   };
 
   getTopCourse = async () => {
-    const course = await this.manager
-      .createQueryBuilder(Course, "course")
-      .leftJoin("course.courseRate", "courseRate") // Assuming you have a courseRates relationship
-      .leftJoinAndSelect("course.owner", "owner")
-      .leftJoin("course.words", "word") // Join with words relation
+    const course = await this.manager.find(Course, {
+      where: { accessiblity: Accessiblity.PUBLIC },
+      relations: ["owner", "words", "courseRate"],
+    });
 
-      .select([
-        "course.id",
-        "course.title as title", // Add other course fields as needed
-        "course.accessiblity as accessiblity",
-        "owner.id", // Select owner fields
-        "owner.name",
-        "owner.email",
-        "owner.avatar",
-      ])
-      .where("course.accessiblity = :accessiblity", {
-        accessiblity: Accessiblity.PUBLIC,
-      })
-      .addSelect("AVG(courseRate.rate)", "avgrate")
-      .addSelect("COUNT(word.id)", "terms") // Count items in words relation and alias it as terms
+    const coursePromises = course.map(async (course) => {
+      let avgRate = 0;
+      if (course.courseRate.length > 0)
+        avgRate =
+          course.courseRate.reduce((acc, rate) => acc + rate.rate, 0) /
+          course.courseRate.length;
 
-      .groupBy("course.id, owner.id")
-      .orderBy("avgrate", "DESC")
+      const terms = course.words.length;
+      const imageUrl = await getObjectSignedUrl(course.owner.avatar);
 
-      .limit(5)
-      .getRawMany();
+      return {
+        course_id: course.id,
+        title: course.title,
+        owner_id: course.owner.id,
+        owner_name: course.owner.name,
+        owner_avatar: imageUrl,
+        owner_email: course.owner.email,
+        terms,
+        avg_rate: avgRate,
+      };
+    });
 
-      const coursePromises = course.map(async (course) => {
-        const imageUrl = await getObjectSignedUrl(course?.owner_avatar as string);
-        course.owner_avatar = imageUrl;
-        return course;
-      }
-      )
-      const courseData = await Promise.all(coursePromises);
+    const courseData = await Promise.all(coursePromises);
+    courseData.sort((a, b) => {
+      return b.avg_rate - a.avg_rate;
+    }).slice(0, 5);
     return courseData;
   };
 
@@ -83,13 +80,12 @@ export default class HomeService extends BaseService {
       .limit(5)
       .getRawMany();
 
-      const coursePromises = course.map(async (course) => {
-        const imageUrl = await getObjectSignedUrl(course?.owner_avatar as string);
-        course.owner_avatar = imageUrl;
-        return course;
-      }
-      )
-      const courseData = await Promise.all(coursePromises);
+    const coursePromises = course.map(async (course) => {
+      const imageUrl = await getObjectSignedUrl(course?.owner_avatar as string);
+      course.owner_avatar = imageUrl;
+      return course;
+    });
+    const courseData = await Promise.all(coursePromises);
     return courseData;
   };
 
@@ -112,36 +108,37 @@ export default class HomeService extends BaseService {
     user.courseImports.push(course);
 
     await this.manager.getRepository(User).save(user);
-   
   };
 
   getContinueCourse = async (userId: number) => {
     const course = await this.manager
-    .createQueryBuilder(Course, 'course')
-    .select([
-      'course.id',
-      'course.title as title',
-      'owner.id as owner_id',
-      'owner.name as owner_name',
-      'owner.avatar as owner_avatar',
-      'COUNT(word.id) as terms',
-      'learning.lastWordIndex',
-    ])
-    .innerJoin('course.owner', 'owner')
-    .leftJoin('course.words', 'word')
-    .innerJoin('course.learnings', 'learning', 'learning.user.id = :learnerId', {learnerId: userId })
-    .groupBy('course.id, owner.id, learning.lastWordIndex')
-    .getRawMany();
+      .createQueryBuilder(Course, "course")
+      .select([
+        "course.id",
+        "course.title as title",
+        "owner.id as owner_id",
+        "owner.name as owner_name",
+        "owner.avatar as owner_avatar",
+        "COUNT(word.id) as terms",
+        "learning.lastWordIndex",
+      ])
+      .innerJoin("course.owner", "owner")
+      .leftJoin("course.words", "word")
+      .innerJoin(
+        "course.learnings",
+        "learning",
+        "learning.user.id = :learnerId",
+        { learnerId: userId }
+      )
+      .groupBy("course.id, owner.id, learning.lastWordIndex")
+      .getRawMany();
 
     const coursePromises = course.map(async (course) => {
       const imageUrl = await getObjectSignedUrl(course?.owner_avatar as string);
       course.owner_avatar = imageUrl;
       return course;
-    }
-    )
+    });
     const courseData = await Promise.all(coursePromises);
     return courseData;
-
-
-    }
+  };
 }
