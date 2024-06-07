@@ -53,6 +53,7 @@ export default class RankingService extends BaseService {
     });
 
     const userData = await Promise.all(userPromises);
-    return userData.slice(0, 20);
+    const userResult = userData.sort((a, b) => b.totalScore - a.totalScore);
+    return userResult.slice(0, 20);
   }
 }

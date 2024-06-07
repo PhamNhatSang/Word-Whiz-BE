@@ -61,7 +61,8 @@ class RankingService extends base_service_1.BaseService {
                 };
             }));
             const userData = yield Promise.all(userPromises);
-            return userData.slice(0, 20);
+            const userResult = userData.sort((a, b) => b.totalScore - a.totalScore);
+            return userResult.slice(0, 20);
         });
     }
 }
