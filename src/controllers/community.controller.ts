@@ -1,4 +1,3 @@
-import { BaseController } from "./baseController";
 import { UploadMidleware } from "../middlewares/upload.middleware";
 import AuthMiddleware from "../middlewares/auth.middleware";
 import {
@@ -16,9 +15,10 @@ import CommunityService from "../services/core/community.service";
 @UseBefore(AuthMiddleware)
 @UseBefore(UploadMidleware)
 @Controller("/community")
-export default class CommunityController extends BaseController<CommunityService> {
+export default class CommunityController  {
+  private communityService: CommunityService;
   constructor() {
-    super(new CommunityService());
+    this.communityService = new CommunityService();
   }
 
   @Post("/post")
@@ -31,7 +31,7 @@ export default class CommunityController extends BaseController<CommunityService
         : [];
 
       const content = req.body.content;
-      const result = await this.service.createPost(
+      const result = await this.communityService.createPost(
         parseInt(userId),
         listCourseId,
         file,
@@ -51,7 +51,7 @@ export default class CommunityController extends BaseController<CommunityService
       const userId = req.body.currentUserData.id;
       const postId = req.body.postId;
       const content = req.body.content;
-      const result = await this.service.createComment(
+      const result = await this.communityService.createComment(
         parseInt(userId),
         parseInt(postId),
         content
@@ -68,7 +68,7 @@ export default class CommunityController extends BaseController<CommunityService
       const userId = req.body.currentUserData.id;
       const postId = req.params.id;
       const isLiked = req.body.isLiked;
-      const result = await this.service.reactPost(parseInt(userId),isLiked, parseInt(postId));
+      const result = await this.communityService.reactPost(parseInt(userId),isLiked, parseInt(postId));
       return res.send(result);
     } catch (error) {
       console.log(error);
@@ -80,7 +80,7 @@ export default class CommunityController extends BaseController<CommunityService
   async getCommunities(@Req() req: Request, @Res() res: Response) {
     try {
       const userId = req.body.currentUserData.id;
-      const result = await this.service.getCommunities(parseInt(userId));
+      const result = await this.communityService.getCommunities(parseInt(userId));
       return res.send(result);
     } catch (error) {
       console.log(error);
@@ -91,7 +91,7 @@ export default class CommunityController extends BaseController<CommunityService
   async getComments(@Req() req: Request, @Res() res: Response) {
     try {
       const postId = req.params.id;
-      const result = await this.service.getComments(parseInt(postId));
+      const result = await this.communityService.getComments(parseInt(postId));
       return res.send(result);
     } catch (error) {
       return res.status(400).send(error);

@@ -1,12 +1,7 @@
 import { BaseService } from "../base/base.service";
 import Course from "../../models/course.model";
 import User from "../../models/user.model";
-import { Repository } from "typeorm";
-import { database } from "../../database";
-import Learning from "../../models/learning.model";
-import Word from "../../models/word.model";
 import Group from "../../models/group.model";
-import { isIn } from "class-validator";
 import { getObjectSignedUrl } from "../../s3";
 export default class LibraryService extends BaseService {
   constructor() {

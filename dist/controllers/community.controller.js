@@ -24,14 +24,13 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
     return (mod && mod.__esModule) ? mod : { "default": mod };
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-const baseController_1 = require("./baseController");
 const upload_middleware_1 = require("../middlewares/upload.middleware");
 const auth_middleware_1 = __importDefault(require("../middlewares/auth.middleware"));
 const routing_controllers_1 = require("routing-controllers");
 const community_service_1 = __importDefault(require("../services/core/community.service"));
-let CommunityController = class CommunityController extends baseController_1.BaseController {
+let CommunityController = class CommunityController {
     constructor() {
-        super(new community_service_1.default());
+        this.communityService = new community_service_1.default();
     }
     createPost(req, res) {
         return __awaiter(this, void 0, void 0, function* () {
@@ -42,7 +41,7 @@ let CommunityController = class CommunityController extends baseController_1.Bas
                     ? req.body.listCourseId.split(",").map((id) => parseInt(id))
                     : [];
                 const content = req.body.content;
-                const result = yield this.service.createPost(parseInt(userId), listCourseId, file, content);
+                const result = yield this.communityService.createPost(parseInt(userId), listCourseId, file, content);
                 console.log(result);
                 return res.send(result);
             }
@@ -58,7 +57,7 @@ let CommunityController = class CommunityController extends baseController_1.Bas
                 const userId = req.body.currentUserData.id;
                 const postId = req.body.postId;
                 const content = req.body.content;
-                const result = yield this.service.createComment(parseInt(userId), parseInt(postId), content);
+                const result = yield this.communityService.createComment(parseInt(userId), parseInt(postId), content);
                 return res.send(result);
             }
             catch (error) {
@@ -72,7 +71,7 @@ let CommunityController = class CommunityController extends baseController_1.Bas
                 const userId = req.body.currentUserData.id;
                 const postId = req.params.id;
                 const isLiked = req.body.isLiked;
-                const result = yield this.service.reactPost(parseInt(userId), isLiked, parseInt(postId));
+                const result = yield this.communityService.reactPost(parseInt(userId), isLiked, parseInt(postId));
                 return res.send(result);
             }
             catch (error) {
@@ -85,7 +84,7 @@ let CommunityController = class CommunityController extends baseController_1.Bas
         return __awaiter(this, void 0, void 0, function* () {
             try {
                 const userId = req.body.currentUserData.id;
-                const result = yield this.service.getCommunities(parseInt(userId));
+                const result = yield this.communityService.getCommunities(parseInt(userId));
                 return res.send(result);
             }
             catch (error) {
@@ -98,7 +97,7 @@ let CommunityController = class CommunityController extends baseController_1.Bas
         return __awaiter(this, void 0, void 0, function* () {
             try {
                 const postId = req.params.id;
-                const result = yield this.service.getComments(parseInt(postId));
+                const result = yield this.communityService.getComments(parseInt(postId));
                 return res.send(result);
             }
             catch (error) {

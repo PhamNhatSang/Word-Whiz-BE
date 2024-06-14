@@ -1,13 +1,13 @@
-import { BaseController } from "./baseController";
 import { Controller, Delete, Get, Post, Put, Req, Res } from "routing-controllers";
 import { Request, Response } from "express";
 import LearningService from "../services/core/learning.service";
 import Learning from "./../models/learning.model";
 import { Answer } from "../type/DefineType";
 @Controller("/learning")
-export default class LearningController extends BaseController<LearningService> {
+export default class LearningController {
+    private learningService: LearningService;
     constructor() {
-        super(new LearningService());
+        this.learningService = new LearningService();
     }
 
 
@@ -17,7 +17,7 @@ export default class LearningController extends BaseController<LearningService> 
         try {
             const userId = req.body.currentUserData.id;
             const courseId = req.params.id;
-            const result = await this.service.getOrCreateFLashCardLearningByUserId(parseInt(userId), parseInt(courseId));
+            const result = await this.learningService.getOrCreateFLashCardLearningByUserId(parseInt(userId), parseInt(courseId));
             return res.send(result);
         } catch (error) {
             return res.status(400).send(error);
@@ -29,7 +29,7 @@ export default class LearningController extends BaseController<LearningService> 
         try {
             const learnId = req.body.learnId;
             const lastWordIndex = req.body.lastWordIndex;
-            await this.service.updateLearning(parseInt(learnId), parseInt(lastWordIndex));
+            await this.learningService.updateLearning(parseInt(learnId), parseInt(lastWordIndex));
             return res.send("Learning flashcard successfully");
         } catch (error) {
             return res.status(400).send(error);
@@ -41,7 +41,7 @@ export default class LearningController extends BaseController<LearningService> 
         try {
             const userId = req.body.currentUserData.id;
             const courseId = req.params.id;
-            const result = await this.service.createTest(parseInt(userId), parseInt(courseId));
+            const result = await this.learningService.createTest(parseInt(userId), parseInt(courseId));
             return res.send(result);
         } catch (error) {
             console.log(error);
@@ -54,7 +54,7 @@ export default class LearningController extends BaseController<LearningService> 
         try {
 
             const testId = req.params.id;
-            const result = await this.service.submitTest(parseInt(testId));
+            const result = await this.learningService.submitTest(parseInt(testId));
             return res.send(result);
         } catch (error) {
             console.log(error);
@@ -67,7 +67,7 @@ export default class LearningController extends BaseController<LearningService> 
         try {
             const testItemId = req.body.testItemId;
             const userAnswer = req.body.userAnswer;
-            const result = await this.service.updateTestItem(parseInt(testItemId), userAnswer);
+            const result = await this.learningService.updateTestItem(parseInt(testItemId), userAnswer);
             return res.send(result);
         } catch (error) {
             console.log(error);

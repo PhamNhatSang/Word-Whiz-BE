@@ -24,21 +24,18 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
     return (mod && mod.__esModule) ? mod : { "default": mod };
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-const baseController_1 = require("./baseController");
 const routing_controllers_1 = require("routing-controllers");
 const home_service_1 = __importDefault(require("../services/core/home.service"));
-const courseDetail_service_1 = __importDefault(require("../services/core/courseDetail.service"));
-let HomeController = class HomeController extends baseController_1.BaseController {
+let HomeController = class HomeController {
     constructor() {
-        super(new home_service_1.default());
-        this.courseDetailService = new courseDetail_service_1.default();
+        this.homeService = new home_service_1.default();
     }
     getHome(req, res) {
         return __awaiter(this, void 0, void 0, function* () {
             try {
-                const topCourse = yield this.service.getTopCourse();
-                const newCourse = yield this.service.getNewCourse();
-                const continueCourse = yield this.service.getContinueCourse(req.body.currentUserData.id);
+                const topCourse = yield this.homeService.getTopCourse();
+                const newCourse = yield this.homeService.getNewCourse();
+                const continueCourse = yield this.homeService.getContinueCourse(req.body.currentUserData.id);
                 return res.send({ topCourse, newCourse, continueCourse });
             }
             catch (error) {
@@ -50,7 +47,7 @@ let HomeController = class HomeController extends baseController_1.BaseControlle
         return __awaiter(this, void 0, void 0, function* () {
             try {
                 const title = req.query.title;
-                const course = this.service.getCourseByTitle(title);
+                const course = this.homeService.getCourseByTitle(title);
                 return res.send(course);
             }
             catch (error) {
@@ -63,7 +60,7 @@ let HomeController = class HomeController extends baseController_1.BaseControlle
             try {
                 const userId = req.body.currentUserData.id;
                 const courseId = req.params.id;
-                yield this.service.importCourse(userId, parseInt(courseId));
+                yield this.homeService.importCourse(userId, parseInt(courseId));
                 return res.send("Import course successfully");
             }
             catch (error) {

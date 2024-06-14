@@ -1,12 +1,9 @@
-import { manager } from "./../../database";
 import Course from "../../models/course.model";
 import User from "../../models/user.model";
-import { Like, Repository } from "typeorm";
-import { database } from "../../database";
+import { Like } from "typeorm";
 import { BaseService } from "../base/base.service";
 import { Accessiblity } from "../../enum/Accessiblity";
 import ExistData from "../../exceptions/ExistData";
-import Learning from "../../models/learning.model";
 import { getObjectSignedUrl } from "../../s3";
 export default class HomeService extends BaseService {
   constructor() {

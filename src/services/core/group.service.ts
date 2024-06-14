@@ -1,8 +1,7 @@
 import { BaseService } from "../base/base.service";
 import Group from "../../models/group.model";
-import { In, Repository } from "typeorm";
+import { In } from "typeorm";
 import User from "../../models/user.model";
-import { database } from "../../database";
 import ExistData from "../../exceptions/ExistData";
 import Course from "../../models/course.model";
 import { getObjectSignedUrl } from "../../s3";

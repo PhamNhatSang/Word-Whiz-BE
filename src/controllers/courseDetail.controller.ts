@@ -1,4 +1,3 @@
-import { BaseController } from "./baseController";
 import {
   Controller,
   Delete,
@@ -13,16 +12,17 @@ import Course from "../models/course.model";
 import CourseDetailService from "../services/core/courseDetail.service";
 import Word from "../models/word.model";
 @Controller("/course")
-export default class CourseDetailController extends BaseController<CourseDetailService> {
+export default class CourseDetailController {
+  courseDetailService: CourseDetailService;
   constructor() {
-    super(new CourseDetailService());
+    this.courseDetailService = new CourseDetailService();
   }
   @Get("/:id")
   async getCourseDetail(@Req() req: Request, @Res() res: Response) {
     try {
       const courseId = req.params.id;
       const userId = req.body.currentUserData.id;
-      const result = await this.service.getCourseDetail(parseInt(userId),parseInt(courseId));
+      const result = await this.courseDetailService.getCourseDetail(parseInt(userId),parseInt(courseId));
       return res.send(result);
     } catch (error) {
       return res.status(400).send(error);
@@ -33,7 +33,7 @@ export default class CourseDetailController extends BaseController<CourseDetailS
     try {
       const courseId = req.body.courseId;
       const words = req.body.words as Word[];
-      await this.service.createWord(parseInt(courseId), words);
+      await this.courseDetailService.createWord(parseInt(courseId), words);
       return res.send("Add word successfully");
     } catch (error) {
       console.log(error);
@@ -45,7 +45,7 @@ export default class CourseDetailController extends BaseController<CourseDetailS
   async deleteWord(@Req() req: Request, @Res() res: Response) {
     try {
       const wordId = req.params.id;
-      const deleteWordId = await this.service.delete(Word,parseInt(wordId));
+      const deleteWordId = await this.courseDetailService.delete(Word,parseInt(wordId));
       return res.send(deleteWordId);
     } catch (error) {
       return res.status(400).send(error);
@@ -56,7 +56,7 @@ export default class CourseDetailController extends BaseController<CourseDetailS
   async updateCourse(@Req() req: Request, @Res() res: Response) {
     try {
       const course = req.body.course as Course;
-      const wordUpdated = await this.service.updateCourse(course);
+      const wordUpdated = await this.courseDetailService.updateCourse(course);
       return res.send(wordUpdated);
     } catch (error) {
       return res.status(400).send(error);
@@ -68,7 +68,7 @@ export default class CourseDetailController extends BaseController<CourseDetailS
       const courseId = req.params.id;
       const userId = req.body.currentUserData.id;
       const rate = req.body.rate;
-      await this.service.rateCourse(parseInt(userId), parseInt(courseId), rate);
+      await this.courseDetailService.rateCourse(parseInt(userId), parseInt(courseId), rate);
       return res.send("Rate course successfully");
     } catch (error) {
       return res.status(400).send(error);

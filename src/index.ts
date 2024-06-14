@@ -1,7 +1,5 @@
-import { QueryRunner } from 'typeorm';
 import 'reflect-metadata';
 import {  useExpressServer } from 'routing-controllers';
-import Post from './models/post.model';
 import bodyParser from 'body-parser';
 import path from 'path';
 import dotenv from 'dotenv';

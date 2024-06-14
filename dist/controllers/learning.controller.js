@@ -24,19 +24,18 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
     return (mod && mod.__esModule) ? mod : { "default": mod };
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-const baseController_1 = require("./baseController");
 const routing_controllers_1 = require("routing-controllers");
 const learning_service_1 = __importDefault(require("../services/core/learning.service"));
-let LearningController = class LearningController extends baseController_1.BaseController {
+let LearningController = class LearningController {
     constructor() {
-        super(new learning_service_1.default());
+        this.learningService = new learning_service_1.default();
     }
     getFlashcard(req, res) {
         return __awaiter(this, void 0, void 0, function* () {
             try {
                 const userId = req.body.currentUserData.id;
                 const courseId = req.params.id;
-                const result = yield this.service.getOrCreateFLashCardLearningByUserId(parseInt(userId), parseInt(courseId));
+                const result = yield this.learningService.getOrCreateFLashCardLearningByUserId(parseInt(userId), parseInt(courseId));
                 return res.send(result);
             }
             catch (error) {
@@ -49,7 +48,7 @@ let LearningController = class LearningController extends baseController_1.BaseC
             try {
                 const learnId = req.body.learnId;
                 const lastWordIndex = req.body.lastWordIndex;
-                yield this.service.updateLearning(parseInt(learnId), parseInt(lastWordIndex));
+                yield this.learningService.updateLearning(parseInt(learnId), parseInt(lastWordIndex));
                 return res.send("Learning flashcard successfully");
             }
             catch (error) {
@@ -62,7 +61,7 @@ let LearningController = class LearningController extends baseController_1.BaseC
             try {
                 const userId = req.body.currentUserData.id;
                 const courseId = req.params.id;
-                const result = yield this.service.createTest(parseInt(userId), parseInt(courseId));
+                const result = yield this.learningService.createTest(parseInt(userId), parseInt(courseId));
                 return res.send(result);
             }
             catch (error) {
@@ -75,7 +74,7 @@ let LearningController = class LearningController extends baseController_1.BaseC
         return __awaiter(this, void 0, void 0, function* () {
             try {
                 const testId = req.params.id;
-                const result = yield this.service.submitTest(parseInt(testId));
+                const result = yield this.learningService.submitTest(parseInt(testId));
                 return res.send(result);
             }
             catch (error) {
@@ -89,7 +88,7 @@ let LearningController = class LearningController extends baseController_1.BaseC
             try {
                 const testItemId = req.body.testItemId;
                 const userAnswer = req.body.userAnswer;
-                const result = yield this.service.updateTestItem(parseInt(testItemId), userAnswer);
+                const result = yield this.learningService.updateTestItem(parseInt(testItemId), userAnswer);
                 return res.send(result);
             }
             catch (error) {

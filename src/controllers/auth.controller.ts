@@ -1,5 +1,4 @@
 import User from "../models/user.model";
-import { BaseController } from "./baseController";
 import {
   generateAccessToken,
   generateRefreshToken,
@@ -20,18 +19,19 @@ import bcrypt from "bcrypt";
 import { Payload } from "../type/DefineType";
 
 @JsonController("/auth")
-export default class Authcontroller extends BaseController< AuthService> {
+export default class Authcontroller {
+  private authService: AuthService; 
   constructor() {
-    super(new AuthService());
+    this.authService = new AuthService();
   }
   @Post("/register")
   async register(@Req() req: Request, @Res() res: Response) {
-    const user = await this.service.getByEmail(req.body.email);
+    const user = await this.authService.getByEmail(req.body.email);
     if (user) {
       throw new BadRequestError("User already exists");
     }
     const hash = bcrypt.hashSync(req.body.password, 10);
-    const newUser = await this.service.create(User,{
+    const newUser = await this.authService.create(User,{
       name: req.body.name,
       email: req.body.email,
       password: hash,
@@ -42,7 +42,7 @@ export default class Authcontroller extends BaseController< AuthService> {
 
   @Post("/login")
   async login(@Req() req: Request, @Res() res: Response) {
-    const user = await this.service.getByEmail(req.body.email);
+    const user = await this.authService.getByEmail(req.body.email);
 
     if (!user) {
       throw new UnauthorizedError("Invalid email or password");
@@ -63,7 +63,7 @@ export default class Authcontroller extends BaseController< AuthService> {
       role: user.role,
     } as Payload);
     user.refeshToken = refreshToken;
-    await this.service.update(User,user);
+    await this.authService.update(User,user);
     return res.send({ accessToken, refreshToken });
   }
 
@@ -78,7 +78,7 @@ export default class Authcontroller extends BaseController< AuthService> {
         refreshToken,
         process.env.REFRESH_SECRET_KEY
       ) as Payload;
-      const user = await this.service.getById(User,payload.id);
+      const user = await this.authService.getById(User,payload.id);
 
       if (!user || user.refeshToken !== refreshToken) {
         throw new BadRequestError("Invalid refresh token");

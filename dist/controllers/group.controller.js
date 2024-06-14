@@ -24,17 +24,16 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
     return (mod && mod.__esModule) ? mod : { "default": mod };
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-const baseController_1 = require("./baseController");
 const routing_controllers_1 = require("routing-controllers");
 const group_service_1 = __importDefault(require("../services/core/group.service"));
-let GroupController = class GroupController extends baseController_1.BaseController {
+let GroupController = class GroupController {
     constructor() {
-        super(new group_service_1.default());
+        this.groupService = new group_service_1.default();
     }
     getListGroup(req, res) {
         return __awaiter(this, void 0, void 0, function* () {
             try {
-                const result = yield this.service.getAllGroup(parseInt(req.body.currentUserData.id));
+                const result = yield this.groupService.getAllGroup(parseInt(req.body.currentUserData.id));
                 return res.send(result);
             }
             catch (error) {
@@ -47,7 +46,7 @@ let GroupController = class GroupController extends baseController_1.BaseControl
         return __awaiter(this, void 0, void 0, function* () {
             try {
                 const groupId = req.params.id;
-                const result = yield this.service.getGroupDetail(parseInt(groupId));
+                const result = yield this.groupService.getGroupDetail(parseInt(groupId));
                 return res.send(result);
             }
             catch (error) {
@@ -60,7 +59,7 @@ let GroupController = class GroupController extends baseController_1.BaseControl
             try {
                 const group = req.body;
                 const userId = req.body.currentUserData.id;
-                yield this.service.createGroup(parseInt(userId), group);
+                yield this.groupService.createGroup(parseInt(userId), group);
                 return res.send("Create group successfully");
             }
             catch (error) {
@@ -73,7 +72,7 @@ let GroupController = class GroupController extends baseController_1.BaseControl
             try {
                 const userId = req.body.currentUserData.id;
                 const groupId = req.params.id;
-                yield this.service.deleteGroup(parseInt(userId), parseInt(groupId));
+                yield this.groupService.deleteGroup(parseInt(userId), parseInt(groupId));
                 return res.send("Delete group successfully");
             }
             catch (error) {
@@ -86,7 +85,7 @@ let GroupController = class GroupController extends baseController_1.BaseControl
             try {
                 const groupId = req.body.groupId;
                 const emails = req.body.emails;
-                const group = yield this.service.addStudent(parseInt(groupId), emails);
+                const group = yield this.groupService.addStudent(parseInt(groupId), emails);
                 return res.send(group);
             }
             catch (error) {
@@ -101,7 +100,7 @@ let GroupController = class GroupController extends baseController_1.BaseControl
                 const groupId = req.body.groupId;
                 const email = req.body.email;
                 console.log(email, groupId);
-                const group = yield this.service.removeStudent(parseInt(groupId), email);
+                const group = yield this.groupService.removeStudent(parseInt(groupId), email);
                 return res.send(group);
             }
             catch (error) {
@@ -115,7 +114,7 @@ let GroupController = class GroupController extends baseController_1.BaseControl
                 const userId = req.body.currentUserData.id;
                 const groupId = req.body.groupId;
                 const courseId = req.body.courseId;
-                const group = yield this.service.addCourseToGroup(parseInt(groupId), parseInt(userId), parseInt(courseId));
+                const group = yield this.groupService.addCourseToGroup(parseInt(groupId), parseInt(userId), parseInt(courseId));
                 return res.send(group);
             }
             catch (error) {
@@ -128,7 +127,7 @@ let GroupController = class GroupController extends baseController_1.BaseControl
             try {
                 const groupId = req.body.groupId;
                 const courseId = req.body.courseId;
-                const courseIdDelete = yield this.service.removeCourseFromGroup(parseInt(groupId), parseInt(courseId));
+                const courseIdDelete = yield this.groupService.removeCourseFromGroup(parseInt(groupId), parseInt(courseId));
                 return res.send(courseIdDelete);
             }
             catch (error) {

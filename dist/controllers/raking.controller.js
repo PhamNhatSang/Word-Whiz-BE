@@ -26,15 +26,14 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
 Object.defineProperty(exports, "__esModule", { value: true });
 const routing_controllers_1 = require("routing-controllers");
 const ranking_services_1 = __importDefault(require("../services/core/ranking.services"));
-const baseController_1 = require("./baseController");
-let Ranking = class Ranking extends baseController_1.BaseController {
+let Ranking = class Ranking {
     constructor() {
-        super(new ranking_services_1.default());
+        this.rankingService = new ranking_services_1.default();
     }
     getRanking(req, res) {
         return __awaiter(this, void 0, void 0, function* () {
             try {
-                const result = yield this.service.getTopRanking();
+                const result = yield this.rankingService.getTopRanking();
                 return res.send(result);
             }
             catch (error) {

@@ -24,20 +24,19 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
     return (mod && mod.__esModule) ? mod : { "default": mod };
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-const baseController_1 = require("./baseController");
 const routing_controllers_1 = require("routing-controllers");
 const courseDetail_service_1 = __importDefault(require("../services/core/courseDetail.service"));
 const word_model_1 = __importDefault(require("../models/word.model"));
-let CourseDetailController = class CourseDetailController extends baseController_1.BaseController {
+let CourseDetailController = class CourseDetailController {
     constructor() {
-        super(new courseDetail_service_1.default());
+        this.courseDetailService = new courseDetail_service_1.default();
     }
     getCourseDetail(req, res) {
         return __awaiter(this, void 0, void 0, function* () {
             try {
                 const courseId = req.params.id;
                 const userId = req.body.currentUserData.id;
-                const result = yield this.service.getCourseDetail(parseInt(userId), parseInt(courseId));
+                const result = yield this.courseDetailService.getCourseDetail(parseInt(userId), parseInt(courseId));
                 return res.send(result);
             }
             catch (error) {
@@ -50,7 +49,7 @@ let CourseDetailController = class CourseDetailController extends baseController
             try {
                 const courseId = req.body.courseId;
                 const words = req.body.words;
-                yield this.service.createWord(parseInt(courseId), words);
+                yield this.courseDetailService.createWord(parseInt(courseId), words);
                 return res.send("Add word successfully");
             }
             catch (error) {
@@ -63,7 +62,7 @@ let CourseDetailController = class CourseDetailController extends baseController
         return __awaiter(this, void 0, void 0, function* () {
             try {
                 const wordId = req.params.id;
-                const deleteWordId = yield this.service.delete(word_model_1.default, parseInt(wordId));
+                const deleteWordId = yield this.courseDetailService.delete(word_model_1.default, parseInt(wordId));
                 return res.send(deleteWordId);
             }
             catch (error) {
@@ -75,7 +74,7 @@ let CourseDetailController = class CourseDetailController extends baseController
         return __awaiter(this, void 0, void 0, function* () {
             try {
                 const course = req.body.course;
-                const wordUpdated = yield this.service.updateCourse(course);
+                const wordUpdated = yield this.courseDetailService.updateCourse(course);
                 return res.send(wordUpdated);
             }
             catch (error) {
@@ -89,7 +88,7 @@ let CourseDetailController = class CourseDetailController extends baseController
                 const courseId = req.params.id;
                 const userId = req.body.currentUserData.id;
                 const rate = req.body.rate;
-                yield this.service.rateCourse(parseInt(userId), parseInt(courseId), rate);
+                yield this.courseDetailService.rateCourse(parseInt(userId), parseInt(courseId), rate);
                 return res.send("Rate course successfully");
             }
             catch (error) {

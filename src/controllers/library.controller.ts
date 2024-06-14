@@ -1,19 +1,19 @@
-import { BaseController } from "./baseController";
 import { Controller, Delete, Get, Post, Req, Res } from "routing-controllers";
 import { Request, Response } from "express";
 import Course from "../models/course.model";
 import LibraryService from "../services/core/library.service";
 @Controller("/library")
-export default class HomeController extends BaseController<LibraryService> {
+export default class HomeController {
+  private libraryService: LibraryService;
   constructor() {
-    super(new LibraryService());
+    this.libraryService = new LibraryService();
   }
 
   @Get("/")
   async getLibrary(@Req() req: Request, @Res() res: Response) {
     try {
       const userId = req.body.currentUserData.id;
-      const result = await this.service.getAllCourse(parseInt(userId));
+      const result = await this.libraryService.getAllCourse(parseInt(userId));
       return res.send(result);
     } catch (error) {
       return res.status(400).send(error);
@@ -26,7 +26,7 @@ export default class HomeController extends BaseController<LibraryService> {
       const userId = req.body.currentUserData.id;
 
       const course = req.body as Course;
-      await this.service.createCourse(parseInt(userId), course);
+      await this.libraryService.createCourse(parseInt(userId), course);
       return res.send("Create course successfully");
     } catch (error) {
       return res.status(400).send(error);
@@ -38,7 +38,7 @@ export default class HomeController extends BaseController<LibraryService> {
     try {
       const userId = req.body.currentUserData.id;
       const courseId = req.params.id;
-      await this.service.deleteCourse(parseInt(userId), parseInt(courseId));
+      await this.libraryService.deleteCourse(parseInt(userId), parseInt(courseId));
       return res.send("Delete course successfully");
     } catch (error) {
       return res.status(400).send(error);
@@ -50,7 +50,7 @@ export default class HomeController extends BaseController<LibraryService> {
     try {
       const userId = req.body.currentUserData.id;
       const title = req.query.title;
-      const result = this.service.getCourseByTitle(userId, title as string);
+      const result = this.libraryService.getCourseByTitle(userId, title as string);
       return res.send(result);
     } catch (error) {
       return res.status(400).send(error);
@@ -62,7 +62,7 @@ export default class HomeController extends BaseController<LibraryService> {
     try {
       const userId = req.body.currentUserData.id;
       const groupId = req.params.id;
-      const result = await this.service.getListCourseToAddGroup(parseInt(userId), parseInt(groupId));
+      const result = await this.libraryService.getListCourseToAddGroup(parseInt(userId), parseInt(groupId));
       return res.send(result);
     } catch (error) {
       return res.status(400).send(error);
@@ -73,7 +73,7 @@ export default class HomeController extends BaseController<LibraryService> {
   async getCourseAddPost(@Req() req: Request, @Res() res: Response) {
     try {
       const userId = req.body.currentUserData.id;
-      const result = await this.service.getListCourseToAddPost(parseInt(userId));
+      const result = await this.libraryService.getListCourseToAddPost(parseInt(userId));
       return res.send(result);
     } catch (error) {
       return res.status(400).send(error);

@@ -1,4 +1,3 @@
-import { test } from "node:test";
 import User from "../../models/user.model";
 import Learning from "../../models/learning.model";
 import { BaseService } from "../base/base.service";
@@ -6,7 +5,6 @@ import Course from "../../models/course.model";
 import Test from "../../models/test.model";
 import { shuffleArray } from "../../utils/shuffle";
 import TestItem from "../../models/testItem.model";
-import { Answer } from "../../type/DefineType";
 export default class LearningService extends BaseService {
   constructor() {
     super();
@@ -57,13 +55,15 @@ export default class LearningService extends BaseService {
       where: { user: { id: userId }, course: { id: courseId }, isDone: false },
       relations: ["testItems"],
     });
-    const course = await this.manager.findOne(Course, {
-      where: { id: courseId },
-      relations: ["words"],
-    });
-    const user = await this.manager.findOne(User, { where: { id: userId } });
+   
 
     if (!test) {
+
+      const course = await this.manager.findOne(Course, {
+        where: { id: courseId },
+        relations: ["words"],
+      });
+      const user = await this.manager.findOne(User, { where: { id: userId } });
       const listWord = course.words;
       const listTestItem = course.words.map((word) => {
         const testItem = new TestItem();
@@ -99,7 +99,7 @@ export default class LearningService extends BaseService {
       return item;
     });
     test.testItems.sort((a, b) => a.id - b.id);
-    const testData = { ...test, courseName: course.title };
+    const testData = { ...test, courseName: test.course.title };
     delete testData.user;
     delete testData.course;
     return testData;

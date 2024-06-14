@@ -66,12 +66,12 @@ class LearningService extends base_service_1.BaseService {
                 where: { user: { id: userId }, course: { id: courseId }, isDone: false },
                 relations: ["testItems"],
             });
-            const course = yield this.manager.findOne(course_model_1.default, {
-                where: { id: courseId },
-                relations: ["words"],
-            });
-            const user = yield this.manager.findOne(user_model_1.default, { where: { id: userId } });
             if (!test) {
+                const course = yield this.manager.findOne(course_model_1.default, {
+                    where: { id: courseId },
+                    relations: ["words"],
+                });
+                const user = yield this.manager.findOne(user_model_1.default, { where: { id: userId } });
                 const listWord = course.words;
                 const listTestItem = course.words.map((word) => {
                     const testItem = new testItem_model_1.default();
@@ -105,7 +105,7 @@ class LearningService extends base_service_1.BaseService {
                 return item;
             });
             test.testItems.sort((a, b) => a.id - b.id);
-            const testData = Object.assign(Object.assign({}, test), { courseName: course.title });
+            const testData = Object.assign(Object.assign({}, test), { courseName: test.course.title });
             delete testData.user;
             delete testData.course;
             return testData;

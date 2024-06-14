@@ -24,18 +24,17 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
     return (mod && mod.__esModule) ? mod : { "default": mod };
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-const baseController_1 = require("./baseController");
 const routing_controllers_1 = require("routing-controllers");
 const library_service_1 = __importDefault(require("../services/core/library.service"));
-let HomeController = class HomeController extends baseController_1.BaseController {
+let HomeController = class HomeController {
     constructor() {
-        super(new library_service_1.default());
+        this.libraryService = new library_service_1.default();
     }
     getLibrary(req, res) {
         return __awaiter(this, void 0, void 0, function* () {
             try {
                 const userId = req.body.currentUserData.id;
-                const result = yield this.service.getAllCourse(parseInt(userId));
+                const result = yield this.libraryService.getAllCourse(parseInt(userId));
                 return res.send(result);
             }
             catch (error) {
@@ -48,7 +47,7 @@ let HomeController = class HomeController extends baseController_1.BaseControlle
             try {
                 const userId = req.body.currentUserData.id;
                 const course = req.body;
-                yield this.service.createCourse(parseInt(userId), course);
+                yield this.libraryService.createCourse(parseInt(userId), course);
                 return res.send("Create course successfully");
             }
             catch (error) {
@@ -61,7 +60,7 @@ let HomeController = class HomeController extends baseController_1.BaseControlle
             try {
                 const userId = req.body.currentUserData.id;
                 const courseId = req.params.id;
-                yield this.service.deleteCourse(parseInt(userId), parseInt(courseId));
+                yield this.libraryService.deleteCourse(parseInt(userId), parseInt(courseId));
                 return res.send("Delete course successfully");
             }
             catch (error) {
@@ -74,7 +73,7 @@ let HomeController = class HomeController extends baseController_1.BaseControlle
             try {
                 const userId = req.body.currentUserData.id;
                 const title = req.query.title;
-                const result = this.service.getCourseByTitle(userId, title);
+                const result = this.libraryService.getCourseByTitle(userId, title);
                 return res.send(result);
             }
             catch (error) {
@@ -87,7 +86,7 @@ let HomeController = class HomeController extends baseController_1.BaseControlle
             try {
                 const userId = req.body.currentUserData.id;
                 const groupId = req.params.id;
-                const result = yield this.service.getListCourseToAddGroup(parseInt(userId), parseInt(groupId));
+                const result = yield this.libraryService.getListCourseToAddGroup(parseInt(userId), parseInt(groupId));
                 return res.send(result);
             }
             catch (error) {
@@ -99,7 +98,7 @@ let HomeController = class HomeController extends baseController_1.BaseControlle
         return __awaiter(this, void 0, void 0, function* () {
             try {
                 const userId = req.body.currentUserData.id;
-                const result = yield this.service.getListCourseToAddPost(parseInt(userId));
+                const result = yield this.libraryService.getListCourseToAddPost(parseInt(userId));
                 return res.send(result);
             }
             catch (error) {
