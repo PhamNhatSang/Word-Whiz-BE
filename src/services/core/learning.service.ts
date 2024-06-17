@@ -53,7 +53,7 @@ export default class LearningService extends BaseService {
   async createTest(userId: number, courseId: number) {
     let test = await this.manager.findOne(Test, {
       where: { user: { id: userId }, course: { id: courseId }, isDone: false },
-      relations: ["testItems"],
+      relations: ["testItems", "course"],
     });
    
 
@@ -95,6 +95,7 @@ export default class LearningService extends BaseService {
     }
 
     test.testItems = test.testItems.map((item) => {
+       
       delete item.correct_answer;
       return item;
     });
