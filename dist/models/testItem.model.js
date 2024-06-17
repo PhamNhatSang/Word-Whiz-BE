@@ -16,12 +16,13 @@ require("reflect-metadata");
 const test_model_1 = __importDefault(require("./test.model"));
 const typeorm_1 = require("typeorm");
 const baseModel_1 = require("./baseModel");
+const word_model_1 = __importDefault(require("./word.model"));
 let TestItem = class TestItem extends baseModel_1.BaseModel {
 };
 __decorate([
-    (0, typeorm_1.Column)({ type: "text" }),
-    __metadata("design:type", String)
-], TestItem.prototype, "question", void 0);
+    (0, typeorm_1.ManyToOne)(() => word_model_1.default, (word) => word.testItems, { onDelete: 'CASCADE', onUpdate: 'CASCADE' }),
+    __metadata("design:type", word_model_1.default)
+], TestItem.prototype, "word", void 0);
 __decorate([
     (0, typeorm_1.Column)({ type: "text" }),
     __metadata("design:type", String)
@@ -38,10 +39,6 @@ __decorate([
     (0, typeorm_1.Column)({ type: "text" }),
     __metadata("design:type", String)
 ], TestItem.prototype, "option_4", void 0);
-__decorate([
-    (0, typeorm_1.Column)({ type: "text", name: 'correct_answer' }),
-    __metadata("design:type", String)
-], TestItem.prototype, "correct_answer", void 0);
 __decorate([
     (0, typeorm_1.Column)({ type: "text", name: 'user_answer', nullable: true, default: '' }),
     __metadata("design:type", String)

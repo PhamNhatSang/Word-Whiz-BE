@@ -86,8 +86,7 @@ class LearningService extends base_service_1.BaseService {
                         word.definition,
                     ];
                     const shuffledOptions = (0, shuffle_1.shuffleArray)(options);
-                    testItem.question = word.term;
-                    testItem.correct_answer = word.definition;
+                    testItem.word = word;
                     testItem.option_1 = shuffledOptions[0];
                     testItem.option_2 = shuffledOptions[1];
                     testItem.option_3 = shuffledOptions[2];
@@ -100,14 +99,16 @@ class LearningService extends base_service_1.BaseService {
                 testCreate.testItems = listTestItem;
                 test = yield this.manager.getRepository(test_model_1.default).save(testCreate);
             }
-            test.testItems = test.testItems.map((item) => {
-                delete item.correct_answer;
-                return item;
+            const listTestItem = test.testItems.map((item) => {
+                const itemData = Object.assign(Object.assign({}, item), { question: item.word.term });
+                delete itemData.word;
+                return itemData;
             });
-            test.testItems.sort((a, b) => a.id - b.id);
-            const testData = Object.assign(Object.assign({}, test), { courseName: test.course.title });
-            delete testData.user;
+            listTestItem.sort((a, b) => a.id - b.id);
+            const testData = Object.assign(Object.assign({}, test), { listTestItems: listTestItem, courseName: test.course.title });
             delete testData.course;
+            delete testData.user;
+            delete testData.testItems;
             return testData;
         });
     }
@@ -115,11 +116,11 @@ class LearningService extends base_service_1.BaseService {
         return __awaiter(this, void 0, void 0, function* () {
             const test = yield this.manager.findOne(test_model_1.default, {
                 where: { id: testId },
-                relations: ["testItems"],
+                relations: { testItems: { word: true } },
             });
             let scorePass = 0;
             test.testItems.forEach((item) => {
-                if (item.user_answer === item.correct_answer) {
+                if (item.user_answer === item.word.definition) {
                     scorePass += 100;
                 }
             });
@@ -129,6 +130,11 @@ class LearningService extends base_service_1.BaseService {
             const numberOfCorrectAnswer = scorePass / 100;
             const numberOfWrong = test.testItems.length - numberOfCorrectAnswer;
             const percentage = parseFloat(((numberOfCorrectAnswer / test.testItems.length) * 100).toFixed(2));
+            const listTestItem = testResult.testItems.map((item) => {
+                const itemData = Object.assign(Object.assign({}, item), { question: item.word.term, correct_answer: item.word.definition });
+                delete itemData.word;
+                return itemData;
+            });
             return {
                 overall: {
                     numberOfCorrectAnswer,
@@ -136,7 +142,7 @@ class LearningService extends base_service_1.BaseService {
                     percentage,
                     score: scorePass,
                 },
-                testItems: testResult.testItems.sort((a, b) => a.id - b.id)
+                listTestItems: listTestItem.sort((a, b) => a.id - b.id)
             };
         });
     }

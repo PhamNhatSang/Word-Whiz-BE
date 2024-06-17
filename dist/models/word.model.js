@@ -16,12 +16,17 @@ require("reflect-metadata");
 const baseModel_1 = require("./baseModel");
 const course_model_1 = __importDefault(require("./course.model"));
 const typeorm_1 = require("typeorm");
+const testItem_model_1 = __importDefault(require("./testItem.model"));
 let Word = class Word extends baseModel_1.BaseModel {
 };
 __decorate([
     (0, typeorm_1.ManyToOne)(() => course_model_1.default, (course) => course.words, { onDelete: 'CASCADE', onUpdate: 'CASCADE' }),
     __metadata("design:type", course_model_1.default)
 ], Word.prototype, "course", void 0);
+__decorate([
+    (0, typeorm_1.OneToMany)(() => testItem_model_1.default, (testItem) => testItem.word, { nullable: true, cascade: true }),
+    __metadata("design:type", Array)
+], Word.prototype, "testItems", void 0);
 __decorate([
     (0, typeorm_1.Column)(),
     __metadata("design:type", String)

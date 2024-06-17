@@ -3,12 +3,14 @@ import "reflect-metadata";
 import Test from "./test.model";
 import { Entity, Column, ManyToOne } from "typeorm";
 import { BaseModel } from "./baseModel";
+import Word from "./word.model";
 @Entity()
 export default class TestItem extends BaseModel {
   
-  @Column({ type: "text" })
-  question: string;
-
+  
+  @ManyToOne(() => Word, (word) => word.testItems,{onDelete:'CASCADE',onUpdate:'CASCADE'})
+  word: Word;
+  
   @Column({ type: "text" })
   option_1: string;
 
@@ -21,9 +23,7 @@ export default class TestItem extends BaseModel {
   @Column({ type: "text" })
   option_4: string;
 
-  @Column({ type: "text" ,name:'correct_answer'})
-  correct_answer: string;
-
+ 
 
   @Column({ type: "text" ,name:'user_answer',nullable:true,default:''})
   user_answer: string;

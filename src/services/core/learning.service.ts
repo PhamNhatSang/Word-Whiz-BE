@@ -79,8 +79,7 @@ export default class LearningService extends BaseService {
         ];
         const shuffledOptions = shuffleArray(options);
 
-        testItem.question = word.term;
-        testItem.correct_answer = word.definition;
+        testItem.word = word
         testItem.option_1 = shuffledOptions[0];
         testItem.option_2 = shuffledOptions[1];
         testItem.option_3 = shuffledOptions[2];
@@ -94,26 +93,29 @@ export default class LearningService extends BaseService {
       test = await this.manager.getRepository(Test).save(testCreate);
     }
 
-    test.testItems = test.testItems.map((item) => {
+    const listTestItem = test.testItems.map((item) => {
        
-      delete item.correct_answer;
-      return item;
+      const itemData = { ...item, question: item.word.term };
+      delete itemData.word;
+      return itemData;
     });
-    test.testItems.sort((a, b) => a.id - b.id);
-    const testData = { ...test, courseName: test.course.title };
-    delete testData.user;
+    listTestItem.sort((a, b) => a.id - b.id);
+    const testData = { ...test,listTestItems:listTestItem, courseName: test.course.title };
     delete testData.course;
+    delete testData.user;
+    delete testData.testItems;
+   
     return testData;
   }
 
   async submitTest(testId: number) {
     const test = await this.manager.findOne(Test, {
       where: { id: testId },
-      relations: ["testItems"],
+      relations: {testItems:{word:true}},
     });
     let scorePass = 0;
     test.testItems.forEach((item) => {
-      if (item.user_answer === item.correct_answer) {
+      if (item.user_answer === item.word.definition) {
         scorePass += 100;
       }
     });
@@ -125,6 +127,11 @@ export default class LearningService extends BaseService {
     const percentage = parseFloat(
       ((numberOfCorrectAnswer / test.testItems.length) * 100).toFixed(2)
     );
+    const listTestItem = testResult.testItems.map((item) => {
+      const itemData = { ...item, question: item.word.term, correct_answer: item.word.definition};
+      delete itemData.word;
+      return itemData;
+    })
     return {
       overall: {
         numberOfCorrectAnswer,
@@ -132,7 +139,7 @@ export default class LearningService extends BaseService {
         percentage,
         score: scorePass,
       },
-      testItems: testResult.testItems.sort((a, b) => a.id - b.id)
+      listTestItems: listTestItem.sort((a, b) => a.id - b.id)
     };
   }
 }
