@@ -53,7 +53,7 @@ export default class LearningService extends BaseService {
   async createTest(userId: number, courseId: number) {
     let test = await this.manager.findOne(Test, {
       where: { user: { id: userId }, course: { id: courseId }, isDone: false },
-      relations: ["testItems", "course"],
+      relations: { testItems: { word: true }, course: true },
     });
    
 
