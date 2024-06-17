@@ -99,13 +99,13 @@ class LearningService extends base_service_1.BaseService {
                 testCreate.testItems = listTestItem;
                 test = yield this.manager.getRepository(test_model_1.default).save(testCreate);
             }
-            const listTestItem = test.testItems.map((item) => {
+            const listTestItems = test.testItems.map((item) => {
                 const itemData = Object.assign(Object.assign({}, item), { question: item.word.term });
                 delete itemData.word;
                 return itemData;
             });
-            listTestItem.sort((a, b) => a.id - b.id);
-            const testData = Object.assign(Object.assign({}, test), { listTestItems: listTestItem, courseName: test.course.title });
+            listTestItems.sort((a, b) => a.id - b.id);
+            const testData = Object.assign(Object.assign({}, test), { listTestItems: listTestItems, courseName: test.course.title });
             delete testData.course;
             delete testData.user;
             delete testData.testItems;

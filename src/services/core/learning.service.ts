@@ -93,14 +93,14 @@ export default class LearningService extends BaseService {
       test = await this.manager.getRepository(Test).save(testCreate);
     }
 
-    const listTestItem = test.testItems.map((item) => {
+    const listTestItems = test.testItems.map((item) => {
        
       const itemData = { ...item, question: item.word.term };
       delete itemData.word;
       return itemData;
     });
-    listTestItem.sort((a, b) => a.id - b.id);
-    const testData = { ...test,listTestItems:listTestItem, courseName: test.course.title };
+    listTestItems.sort((a, b) => a.id - b.id);
+    const testData = { ...test,listTestItems:listTestItems, courseName: test.course.title };
     delete testData.course;
     delete testData.user;
     delete testData.testItems;
