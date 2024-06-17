@@ -9,7 +9,7 @@ export default class RankingService extends BaseService {
 
   async getTopRanking() {
     const users = await this.manager.find(User, {
-      relations: ["myTests", "learnings"],
+      relations:{myTests:{course:true},learnings:{course:true}},
     });
 
     const userPromises = users.map(async (user) => {

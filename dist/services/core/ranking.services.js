@@ -22,7 +22,7 @@ class RankingService extends base_service_1.BaseService {
     getTopRanking() {
         return __awaiter(this, void 0, void 0, function* () {
             const users = yield this.manager.find(user_model_1.default, {
-                relations: ["myTests", "learnings"],
+                relations: { myTests: { course: true }, learnings: { course: true } },
             });
             const userPromises = users.map((user) => __awaiter(this, void 0, void 0, function* () {
                 let courseLearned = [
