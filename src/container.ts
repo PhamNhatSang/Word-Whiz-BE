@@ -6,6 +6,8 @@ import CourseDetailService from './services/core/courseDetail.service';
 import AuthService from './services/auth/auth.service';
 import HomeService from './services/core/home.service';
 import LearningService from './services/core/learning.service';
+import UserManagementService from './services/admin/userManagement.service';
+import PostManagementService from './services/admin/postManagement.service';
 export const Container = {
     authService: new AuthService(),
     communityService: new CommunityService(),
@@ -14,6 +16,8 @@ export const Container = {
     rankingService: new RankingService(),
     courseDetailService: new CourseDetailService(),
     homeService: new HomeService(),
-    learningService: new LearningService()
+    learningService: new LearningService(),
+    userManagementService: new UserManagementService(),
+    postManagementService: new PostManagementService()
 
 };

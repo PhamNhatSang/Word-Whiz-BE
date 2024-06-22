@@ -12,6 +12,8 @@ const courseDetail_service_1 = __importDefault(require("./services/core/courseDe
 const auth_service_1 = __importDefault(require("./services/auth/auth.service"));
 const home_service_1 = __importDefault(require("./services/core/home.service"));
 const learning_service_1 = __importDefault(require("./services/core/learning.service"));
+const userManagement_service_1 = __importDefault(require("./services/admin/userManagement.service"));
+const postManagement_service_1 = __importDefault(require("./services/admin/postManagement.service"));
 exports.Container = {
     authService: new auth_service_1.default(),
     communityService: new community_service_1.default(),
@@ -20,6 +22,8 @@ exports.Container = {
     rankingService: new ranking_services_1.default(),
     courseDetailService: new courseDetail_service_1.default(),
     homeService: new home_service_1.default(),
-    learningService: new learning_service_1.default()
+    learningService: new learning_service_1.default(),
+    userManagementService: new userManagement_service_1.default(),
+    postManagementService: new postManagement_service_1.default()
 };
 //# sourceMappingURL=container.js.map

@@ -46,5 +46,10 @@ export function InjectLearningService(target: any, propertyKey: string) {
         value: Container.learningService
     });
 }
+export function InjectUserManagementService(target: any, propertyKey: string) {
+    Object.defineProperty(target, propertyKey, {
+        value: Container.userManagementService
+    });
+}
 
 

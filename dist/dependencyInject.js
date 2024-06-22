@@ -1,6 +1,6 @@
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.InjectLearningService = exports.InjectHomeService = exports.InjectCourseDetailService = exports.InjectRankingService = exports.InjectLibraryService = exports.InjectGroupService = exports.InjectCommunityService = exports.InjectAuthService = void 0;
+exports.InjectUserManagementService = exports.InjectLearningService = exports.InjectHomeService = exports.InjectCourseDetailService = exports.InjectRankingService = exports.InjectLibraryService = exports.InjectGroupService = exports.InjectCommunityService = exports.InjectAuthService = void 0;
 const container_1 = require("./container");
 function InjectAuthService(target, propertyKey) {
     Object.defineProperty(target, propertyKey, {
@@ -50,4 +50,10 @@ function InjectLearningService(target, propertyKey) {
     });
 }
 exports.InjectLearningService = InjectLearningService;
+function InjectUserManagementService(target, propertyKey) {
+    Object.defineProperty(target, propertyKey, {
+        value: container_1.Container.userManagementService
+    });
+}
+exports.InjectUserManagementService = InjectUserManagementService;
 //# sourceMappingURL=dependencyInject.js.map

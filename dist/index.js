@@ -29,6 +29,13 @@ app.use(body_parser_1.default.urlencoded({ extended: true }));
     routePrefix: '/api',
     controllers: [path_1.default.join(__dirname + '/controllers/*.controller.{js,ts}')],
     middlewares: [path_1.default.join(__dirname + '/middlewares/*.middleware.{js,ts}')],
+    authorizationChecker: (action, roles) => __awaiter(void 0, void 0, void 0, function* () {
+        const userData = action.request.body.currentUserData;
+        if (userData.role === roles[0]) {
+            return true;
+        }
+        return false;
+    })
 });
 app.listen(port, () => __awaiter(void 0, void 0, void 0, function* () {
     yield database_1.database.initialize();
