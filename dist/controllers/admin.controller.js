@@ -27,6 +27,7 @@ Object.defineProperty(exports, "__esModule", { value: true });
 const routing_controllers_1 = require("routing-controllers");
 const dependencyInject_1 = require("../dependencyInject");
 const userManagement_service_1 = __importDefault(require("../services/admin/userManagement.service"));
+const postManagement_service_1 = __importDefault(require("../services/admin/postManagement.service"));
 let Authcontroller = class Authcontroller {
     getAllInfor(page, results, res) {
         return __awaiter(this, void 0, void 0, function* () {
@@ -52,10 +53,35 @@ let Authcontroller = class Authcontroller {
             }
         });
     }
-    deleteUser(id, res) {
+    deleteUser(req, res) {
         return __awaiter(this, void 0, void 0, function* () {
             try {
-                const result = yield this.userManagerService.deleteUser(id);
+                const id = req.params.id;
+                const result = yield this.userManagerService.deleteUser(parseInt(id));
+                return res.send(result);
+            }
+            catch (error) {
+                return res.status(400).send(error);
+            }
+        });
+    }
+    getAllPosts(page, results, res) {
+        return __awaiter(this, void 0, void 0, function* () {
+            try {
+                const result = yield this.postManagementService.getAllPost(page, results);
+                return res.send(result);
+            }
+            catch (error) {
+                console.log(error);
+                return res.status(400).send(error);
+            }
+        });
+    }
+    deletePost(req, res) {
+        return __awaiter(this, void 0, void 0, function* () {
+            try {
+                const id = req.params.id;
+                const result = yield this.postManagementService.deletePost(parseInt(id));
                 return res.send(result);
             }
             catch (error) {
@@ -69,8 +95,12 @@ __decorate([
     __metadata("design:type", userManagement_service_1.default)
 ], Authcontroller.prototype, "userManagerService", void 0);
 __decorate([
+    dependencyInject_1.InjectPostManagementService,
+    __metadata("design:type", postManagement_service_1.default)
+], Authcontroller.prototype, "postManagementService", void 0);
+__decorate([
     (0, routing_controllers_1.Authorized)("ADMIN"),
-    (0, routing_controllers_1.Get)("/user-infor"),
+    (0, routing_controllers_1.Get)("/users"),
     __param(0, (0, routing_controllers_1.QueryParam)("page")),
     __param(1, (0, routing_controllers_1.QueryParam)("results")),
     __param(2, (0, routing_controllers_1.Res)()),
@@ -80,7 +110,7 @@ __decorate([
 ], Authcontroller.prototype, "getAllInfor", null);
 __decorate([
     (0, routing_controllers_1.Authorized)("ADMIN"),
-    (0, routing_controllers_1.Put)("/update-user"),
+    (0, routing_controllers_1.Put)("/user"),
     __param(0, (0, routing_controllers_1.Req)()),
     __param(1, (0, routing_controllers_1.Res)()),
     __metadata("design:type", Function),
@@ -89,13 +119,32 @@ __decorate([
 ], Authcontroller.prototype, "updateUser", null);
 __decorate([
     (0, routing_controllers_1.Authorized)("ADMIN"),
-    (0, routing_controllers_1.Delete)("/delete-user"),
-    __param(0, (0, routing_controllers_1.QueryParam)("id")),
+    (0, routing_controllers_1.Delete)("/user/:id"),
+    __param(0, (0, routing_controllers_1.Req)()),
     __param(1, (0, routing_controllers_1.Res)()),
     __metadata("design:type", Function),
-    __metadata("design:paramtypes", [Number, Object]),
+    __metadata("design:paramtypes", [Object, Object]),
     __metadata("design:returntype", Promise)
 ], Authcontroller.prototype, "deleteUser", null);
+__decorate([
+    (0, routing_controllers_1.Authorized)("ADMIN"),
+    (0, routing_controllers_1.Get)("/posts"),
+    __param(0, (0, routing_controllers_1.QueryParam)("page")),
+    __param(1, (0, routing_controllers_1.QueryParam)("results")),
+    __param(2, (0, routing_controllers_1.Res)()),
+    __metadata("design:type", Function),
+    __metadata("design:paramtypes", [Number, Number, Object]),
+    __metadata("design:returntype", Promise)
+], Authcontroller.prototype, "getAllPosts", null);
+__decorate([
+    (0, routing_controllers_1.Authorized)("ADMIN"),
+    (0, routing_controllers_1.Delete)("/post/:id"),
+    __param(0, (0, routing_controllers_1.Req)()),
+    __param(1, (0, routing_controllers_1.Res)()),
+    __metadata("design:type", Function),
+    __metadata("design:paramtypes", [Object, Object]),
+    __metadata("design:returntype", Promise)
+], Authcontroller.prototype, "deletePost", null);
 Authcontroller = __decorate([
     (0, routing_controllers_1.Controller)("/admin")
 ], Authcontroller);

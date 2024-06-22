@@ -52,4 +52,10 @@ export function InjectUserManagementService(target: any, propertyKey: string) {
     });
 }
 
+export function InjectPostManagementService(target: any, propertyKey: string) {
+    Object.defineProperty(target, propertyKey, {
+        value: Container.postManagementService
+    });
+}
+
 
