@@ -30,10 +30,8 @@ const routing_controllers_1 = require("routing-controllers");
 const auth_service_1 = __importDefault(require("../services/auth/auth.service"));
 const jsonwebtoken_1 = __importDefault(require("jsonwebtoken"));
 const bcrypt_1 = __importDefault(require("bcrypt"));
+const dependencyInject_1 = require("../dependencyInject");
 let Authcontroller = class Authcontroller {
-    constructor() {
-        this.authService = new auth_service_1.default();
-    }
     register(req, res) {
         return __awaiter(this, void 0, void 0, function* () {
             const user = yield this.authService.getByEmail(req.body.email);
@@ -75,6 +73,34 @@ let Authcontroller = class Authcontroller {
             return res.send({ accessToken, refreshToken });
         });
     }
+    adminLogin(req, res) {
+        return __awaiter(this, void 0, void 0, function* () {
+            const user = yield this.authService.getByEmail(req.body.email);
+            if (!user) {
+                throw new routing_controllers_1.UnauthorizedError("Invalid email or password");
+            }
+            const isValidPass = bcrypt_1.default.compareSync(req.body.password, user.password);
+            if (!isValidPass) {
+                throw new routing_controllers_1.UnauthorizedError("Invalid email or password");
+            }
+            if (user.role !== "ADMIN") {
+                throw new routing_controllers_1.UnauthorizedError("Cannot access this route");
+            }
+            const accessToken = yield (0, generateTokens_1.generateAccessToken)({
+                id: user.id,
+                email: user.email,
+                role: user.role,
+            });
+            const refreshToken = yield (0, generateTokens_1.generateRefreshToken)({
+                id: user.id,
+                email: user.email,
+                role: user.role,
+            });
+            user.refeshToken = refreshToken;
+            yield this.authService.update(user_model_1.default, user);
+            return res.send({ accessToken, refreshToken });
+        });
+    }
     refresh(req, res) {
         return __awaiter(this, void 0, void 0, function* () {
             const refreshToken = req.body.refreshToken;
@@ -100,6 +126,10 @@ let Authcontroller = class Authcontroller {
     }
 };
 __decorate([
+    dependencyInject_1.InjectAuthService,
+    __metadata("design:type", auth_service_1.default)
+], Authcontroller.prototype, "authService", void 0);
+__decorate([
     (0, routing_controllers_1.Post)("/register"),
     __param(0, (0, routing_controllers_1.Req)()),
     __param(1, (0, routing_controllers_1.Res)()),
@@ -116,6 +146,14 @@ __decorate([
     __metadata("design:returntype", Promise)
 ], Authcontroller.prototype, "login", null);
 __decorate([
+    (0, routing_controllers_1.Post)("/admin/login"),
+    __param(0, (0, routing_controllers_1.Req)()),
+    __param(1, (0, routing_controllers_1.Res)()),
+    __metadata("design:type", Function),
+    __metadata("design:paramtypes", [Object, Object]),
+    __metadata("design:returntype", Promise)
+], Authcontroller.prototype, "adminLogin", null);
+__decorate([
     (0, routing_controllers_1.Get)("/refresh"),
     __param(0, (0, routing_controllers_1.Req)()),
     __param(1, (0, routing_controllers_1.Res)()),
@@ -124,8 +162,7 @@ __decorate([
     __metadata("design:returntype", Promise)
 ], Authcontroller.prototype, "refresh", null);
 Authcontroller = __decorate([
-    (0, routing_controllers_1.JsonController)("/auth"),
-    __metadata("design:paramtypes", [])
+    (0, routing_controllers_1.JsonController)("/auth")
 ], Authcontroller);
 exports.default = Authcontroller;
 //# sourceMappingURL=auth.controller.js.map

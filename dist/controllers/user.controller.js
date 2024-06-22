@@ -27,18 +27,20 @@ Object.defineProperty(exports, "__esModule", { value: true });
 require("reflect-metadata");
 const routing_controllers_1 = require("routing-controllers");
 const auth_service_1 = __importDefault(require("../services/auth/auth.service"));
+const dependencyInject_1 = require("../dependencyInject");
 let UserController = class UserController {
-    constructor() {
-        this.userService = new auth_service_1.default();
-    }
     getCurrentUser(req, res) {
         return __awaiter(this, void 0, void 0, function* () {
             const currentUserId = req.body.currentUserData.id;
-            const user = yield this.userService.getAllInfor(currentUserId);
+            const user = yield this.authService.getAllInfor(currentUserId);
             return res.send(user);
         });
     }
 };
+__decorate([
+    dependencyInject_1.InjectAuthService,
+    __metadata("design:type", auth_service_1.default)
+], UserController.prototype, "authService", void 0);
 __decorate([
     (0, routing_controllers_1.Get)("/.me"),
     __param(0, (0, routing_controllers_1.Req)()),
@@ -48,8 +50,7 @@ __decorate([
     __metadata("design:returntype", Promise)
 ], UserController.prototype, "getCurrentUser", null);
 UserController = __decorate([
-    (0, routing_controllers_1.JsonController)(),
-    __metadata("design:paramtypes", [])
+    (0, routing_controllers_1.JsonController)()
 ], UserController);
 exports.default = UserController;
 //# sourceMappingURL=user.controller.js.map

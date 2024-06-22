@@ -26,10 +26,8 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
 Object.defineProperty(exports, "__esModule", { value: true });
 const routing_controllers_1 = require("routing-controllers");
 const group_service_1 = __importDefault(require("../services/core/group.service"));
+const dependencyInject_1 = require("../dependencyInject");
 let GroupController = class GroupController {
-    constructor() {
-        this.groupService = new group_service_1.default();
-    }
     getListGroup(req, res) {
         return __awaiter(this, void 0, void 0, function* () {
             try {
@@ -137,6 +135,10 @@ let GroupController = class GroupController {
     }
 };
 __decorate([
+    dependencyInject_1.InjectGroupService,
+    __metadata("design:type", group_service_1.default)
+], GroupController.prototype, "groupService", void 0);
+__decorate([
     (0, routing_controllers_1.Get)("/"),
     __param(0, (0, routing_controllers_1.Req)()),
     __param(1, (0, routing_controllers_1.Res)()),
@@ -201,8 +203,7 @@ __decorate([
     __metadata("design:returntype", Promise)
 ], GroupController.prototype, "removeCourse", null);
 GroupController = __decorate([
-    (0, routing_controllers_1.Controller)("/group"),
-    __metadata("design:paramtypes", [])
+    (0, routing_controllers_1.Controller)("/group")
 ], GroupController);
 exports.default = GroupController;
 //# sourceMappingURL=group.controller.js.map

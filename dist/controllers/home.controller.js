@@ -26,10 +26,8 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
 Object.defineProperty(exports, "__esModule", { value: true });
 const routing_controllers_1 = require("routing-controllers");
 const home_service_1 = __importDefault(require("../services/core/home.service"));
+const dependencyInject_1 = require("../dependencyInject");
 let HomeController = class HomeController {
-    constructor() {
-        this.homeService = new home_service_1.default();
-    }
     getHome(req, res) {
         return __awaiter(this, void 0, void 0, function* () {
             try {
@@ -70,6 +68,10 @@ let HomeController = class HomeController {
     }
 };
 __decorate([
+    dependencyInject_1.InjectHomeService,
+    __metadata("design:type", home_service_1.default)
+], HomeController.prototype, "homeService", void 0);
+__decorate([
     (0, routing_controllers_1.Get)("/"),
     __param(0, (0, routing_controllers_1.Req)()),
     __param(1, (0, routing_controllers_1.Res)()),
@@ -94,8 +96,7 @@ __decorate([
     __metadata("design:returntype", Promise)
 ], HomeController.prototype, "importCourse", null);
 HomeController = __decorate([
-    (0, routing_controllers_1.Controller)("/home"),
-    __metadata("design:paramtypes", [])
+    (0, routing_controllers_1.Controller)("/home")
 ], HomeController);
 exports.default = HomeController;
 //# sourceMappingURL=home.controller.js.map

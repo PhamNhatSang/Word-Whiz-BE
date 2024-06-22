@@ -12,14 +12,14 @@ import {
 } from "routing-controllers";
 import { Request, Response } from "express";
 import CommunityService from "../services/core/community.service";
+import { InjectCommunityService } from "../dependencyInject";
 @UseBefore(AuthMiddleware)
 @UseBefore(UploadMidleware)
 @Controller("/community")
 export default class CommunityController  {
-  private communityService: CommunityService;
-  constructor() {
-    this.communityService = new CommunityService();
-  }
+  @InjectCommunityService
+  private communityService!: CommunityService;
+  
 
   @Post("/post")
   async createPost(@Req() req: Request, @Res() res: Response) {

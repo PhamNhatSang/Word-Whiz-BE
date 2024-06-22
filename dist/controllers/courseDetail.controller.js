@@ -27,10 +27,8 @@ Object.defineProperty(exports, "__esModule", { value: true });
 const routing_controllers_1 = require("routing-controllers");
 const courseDetail_service_1 = __importDefault(require("../services/core/courseDetail.service"));
 const word_model_1 = __importDefault(require("../models/word.model"));
+const dependencyInject_1 = require("../dependencyInject");
 let CourseDetailController = class CourseDetailController {
-    constructor() {
-        this.courseDetailService = new courseDetail_service_1.default();
-    }
     getCourseDetail(req, res) {
         return __awaiter(this, void 0, void 0, function* () {
             try {
@@ -98,6 +96,10 @@ let CourseDetailController = class CourseDetailController {
     }
 };
 __decorate([
+    dependencyInject_1.InjectCourseDetailService,
+    __metadata("design:type", courseDetail_service_1.default)
+], CourseDetailController.prototype, "courseDetailService", void 0);
+__decorate([
     (0, routing_controllers_1.Get)("/:id"),
     __param(0, (0, routing_controllers_1.Req)()),
     __param(1, (0, routing_controllers_1.Res)()),
@@ -138,8 +140,7 @@ __decorate([
     __metadata("design:returntype", Promise)
 ], CourseDetailController.prototype, "rateCourse", null);
 CourseDetailController = __decorate([
-    (0, routing_controllers_1.Controller)("/course"),
-    __metadata("design:paramtypes", [])
+    (0, routing_controllers_1.Controller)("/course")
 ], CourseDetailController);
 exports.default = CourseDetailController;
 //# sourceMappingURL=courseDetail.controller.js.map

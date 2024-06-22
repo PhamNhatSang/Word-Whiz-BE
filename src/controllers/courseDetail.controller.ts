@@ -11,12 +11,12 @@ import { Request, Response } from "express";
 import Course from "../models/course.model";
 import CourseDetailService from "../services/core/courseDetail.service";
 import Word from "../models/word.model";
+import { InjectCourseDetailService } from "../dependencyInject";
 @Controller("/course")
 export default class CourseDetailController {
-  courseDetailService: CourseDetailService;
-  constructor() {
-    this.courseDetailService = new CourseDetailService();
-  }
+  @InjectCourseDetailService
+  courseDetailService!: CourseDetailService;
+  
   @Get("/:id")
   async getCourseDetail(@Req() req: Request, @Res() res: Response) {
     try {

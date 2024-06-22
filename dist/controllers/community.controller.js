@@ -28,10 +28,8 @@ const upload_middleware_1 = require("../middlewares/upload.middleware");
 const auth_middleware_1 = __importDefault(require("../middlewares/auth.middleware"));
 const routing_controllers_1 = require("routing-controllers");
 const community_service_1 = __importDefault(require("../services/core/community.service"));
+const dependencyInject_1 = require("../dependencyInject");
 let CommunityController = class CommunityController {
-    constructor() {
-        this.communityService = new community_service_1.default();
-    }
     createPost(req, res) {
         return __awaiter(this, void 0, void 0, function* () {
             try {
@@ -107,6 +105,10 @@ let CommunityController = class CommunityController {
     }
 };
 __decorate([
+    dependencyInject_1.InjectCommunityService,
+    __metadata("design:type", community_service_1.default)
+], CommunityController.prototype, "communityService", void 0);
+__decorate([
     (0, routing_controllers_1.Post)("/post"),
     __param(0, (0, routing_controllers_1.Req)()),
     __param(1, (0, routing_controllers_1.Res)()),
@@ -149,8 +151,7 @@ __decorate([
 CommunityController = __decorate([
     (0, routing_controllers_1.UseBefore)(auth_middleware_1.default),
     (0, routing_controllers_1.UseBefore)(upload_middleware_1.UploadMidleware),
-    (0, routing_controllers_1.Controller)("/community"),
-    __metadata("design:paramtypes", [])
+    (0, routing_controllers_1.Controller)("/community")
 ], CommunityController);
 exports.default = CommunityController;
 //# sourceMappingURL=community.controller.js.map

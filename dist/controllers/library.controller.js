@@ -26,10 +26,8 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
 Object.defineProperty(exports, "__esModule", { value: true });
 const routing_controllers_1 = require("routing-controllers");
 const library_service_1 = __importDefault(require("../services/core/library.service"));
-let HomeController = class HomeController {
-    constructor() {
-        this.libraryService = new library_service_1.default();
-    }
+const dependencyInject_1 = require("../dependencyInject");
+let LibraryController = class LibraryController {
     getLibrary(req, res) {
         return __awaiter(this, void 0, void 0, function* () {
             try {
@@ -108,13 +106,17 @@ let HomeController = class HomeController {
     }
 };
 __decorate([
+    dependencyInject_1.InjectLibraryService,
+    __metadata("design:type", library_service_1.default)
+], LibraryController.prototype, "libraryService", void 0);
+__decorate([
     (0, routing_controllers_1.Get)("/"),
     __param(0, (0, routing_controllers_1.Req)()),
     __param(1, (0, routing_controllers_1.Res)()),
     __metadata("design:type", Function),
     __metadata("design:paramtypes", [Object, Object]),
     __metadata("design:returntype", Promise)
-], HomeController.prototype, "getLibrary", null);
+], LibraryController.prototype, "getLibrary", null);
 __decorate([
     (0, routing_controllers_1.Post)("/course"),
     __param(0, (0, routing_controllers_1.Req)()),
@@ -122,7 +124,7 @@ __decorate([
     __metadata("design:type", Function),
     __metadata("design:paramtypes", [Object, Object]),
     __metadata("design:returntype", Promise)
-], HomeController.prototype, "createCourse", null);
+], LibraryController.prototype, "createCourse", null);
 __decorate([
     (0, routing_controllers_1.Delete)("/course/:id"),
     __param(0, (0, routing_controllers_1.Req)()),
@@ -130,7 +132,7 @@ __decorate([
     __metadata("design:type", Function),
     __metadata("design:paramtypes", [Object, Object]),
     __metadata("design:returntype", Promise)
-], HomeController.prototype, "deleteCourse", null);
+], LibraryController.prototype, "deleteCourse", null);
 __decorate([
     (0, routing_controllers_1.Get)("/search"),
     __param(0, (0, routing_controllers_1.Req)()),
@@ -138,7 +140,7 @@ __decorate([
     __metadata("design:type", Function),
     __metadata("design:paramtypes", [Object, Object]),
     __metadata("design:returntype", Promise)
-], HomeController.prototype, "searchCourse", null);
+], LibraryController.prototype, "searchCourse", null);
 __decorate([
     (0, routing_controllers_1.Get)("/course-add-group/:id"),
     __param(0, (0, routing_controllers_1.Req)()),
@@ -146,7 +148,7 @@ __decorate([
     __metadata("design:type", Function),
     __metadata("design:paramtypes", [Object, Object]),
     __metadata("design:returntype", Promise)
-], HomeController.prototype, "getCourseAddGroup", null);
+], LibraryController.prototype, "getCourseAddGroup", null);
 __decorate([
     (0, routing_controllers_1.Get)("/course-add-post"),
     __param(0, (0, routing_controllers_1.Req)()),
@@ -154,10 +156,9 @@ __decorate([
     __metadata("design:type", Function),
     __metadata("design:paramtypes", [Object, Object]),
     __metadata("design:returntype", Promise)
-], HomeController.prototype, "getCourseAddPost", null);
-HomeController = __decorate([
-    (0, routing_controllers_1.Controller)("/library"),
-    __metadata("design:paramtypes", [])
-], HomeController);
-exports.default = HomeController;
+], LibraryController.prototype, "getCourseAddPost", null);
+LibraryController = __decorate([
+    (0, routing_controllers_1.Controller)("/library")
+], LibraryController);
+exports.default = LibraryController;
 //# sourceMappingURL=library.controller.js.map

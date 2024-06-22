@@ -26,10 +26,8 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
 Object.defineProperty(exports, "__esModule", { value: true });
 const routing_controllers_1 = require("routing-controllers");
 const ranking_services_1 = __importDefault(require("../services/core/ranking.services"));
+const dependencyInject_1 = require("../dependencyInject");
 let Ranking = class Ranking {
-    constructor() {
-        this.rankingService = new ranking_services_1.default();
-    }
     getRanking(req, res) {
         return __awaiter(this, void 0, void 0, function* () {
             try {
@@ -44,6 +42,10 @@ let Ranking = class Ranking {
     }
 };
 __decorate([
+    dependencyInject_1.InjectRankingService,
+    __metadata("design:type", ranking_services_1.default)
+], Ranking.prototype, "rankingService", void 0);
+__decorate([
     (0, routing_controllers_1.Get)("/top"),
     __param(0, (0, routing_controllers_1.Req)()),
     __param(1, (0, routing_controllers_1.Res)()),
@@ -52,8 +54,7 @@ __decorate([
     __metadata("design:returntype", Promise)
 ], Ranking.prototype, "getRanking", null);
 Ranking = __decorate([
-    (0, routing_controllers_1.Controller)("/ranking"),
-    __metadata("design:paramtypes", [])
+    (0, routing_controllers_1.Controller)("/ranking")
 ], Ranking);
 exports.default = Ranking;
 //# sourceMappingURL=raking.controller.js.map

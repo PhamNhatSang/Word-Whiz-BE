@@ -3,13 +3,12 @@ import { Request, Response } from "express";
 import Course from "../models/course.model";
 import HomeService from "../services/core/home.service";
 import CourseDetailService from "../services/core/courseDetail.service";
+import { InjectHomeService } from "../dependencyInject";
 @Controller("/home")
 export default class HomeController {
-
-  private homeService: HomeService;
-  constructor() {
-    this.homeService = new HomeService();
-  }
+  @InjectHomeService
+  private homeService!: HomeService;
+  
   @Get("/")
   async getHome(@Req() req: Request, @Res() res: Response) {
     try {

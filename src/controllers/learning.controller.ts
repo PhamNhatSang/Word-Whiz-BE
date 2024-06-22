@@ -3,12 +3,12 @@ import { Request, Response } from "express";
 import LearningService from "../services/core/learning.service";
 import Learning from "./../models/learning.model";
 import { Answer } from "../type/DefineType";
+import { InjectLearningService } from "../dependencyInject";
 @Controller("/learning")
 export default class LearningController {
-    private learningService: LearningService;
-    constructor() {
-        this.learningService = new LearningService();
-    }
+    @InjectLearningService
+    private learningService!: LearningService;
+    
 
 
 

@@ -17,13 +17,14 @@ import { Request, Response } from "express";
 import jwt from "jsonwebtoken";
 import bcrypt from "bcrypt";
 import { Payload } from "../type/DefineType";
+import { InjectAuthService } from "../dependencyInject";
 
 @JsonController("/auth")
 export default class Authcontroller {
-  private authService: AuthService; 
-  constructor() {
-    this.authService = new AuthService();
-  }
+
+  @InjectAuthService
+  private authService!: AuthService; 
+ 
   @Post("/register")
   async register(@Req() req: Request, @Res() res: Response) {
     const user = await this.authService.getByEmail(req.body.email);
@@ -51,6 +52,36 @@ export default class Authcontroller {
     const isValidPass = bcrypt.compareSync(req.body.password, user.password);
     if (!isValidPass) {
       throw new UnauthorizedError("Invalid email or password");
+    }
+    const accessToken = await generateAccessToken({
+      id: user.id,
+      email: user.email,
+      role: user.role,
+    } as Payload);
+    const refreshToken = await generateRefreshToken({
+      id: user.id,
+      email: user.email,
+      role: user.role,
+    } as Payload);
+    user.refeshToken = refreshToken;
+    await this.authService.update(User,user);
+    return res.send({ accessToken, refreshToken });
+  }
+
+  @Post("/admin/login")
+  async adminLogin(@Req() req: Request, @Res() res: Response) {
+    const user = await this.authService.getByEmail(req.body.email);
+
+    if (!user) {
+      throw new UnauthorizedError("Invalid email or password");
+    }
+
+    const isValidPass = bcrypt.compareSync(req.body.password, user.password);
+    if (!isValidPass) {
+      throw new UnauthorizedError("Invalid email or password");
+    }
+    if (user.role !== "ADMIN") {
+      throw new UnauthorizedError("Cannot access this route");
     }
     const accessToken = await generateAccessToken({
       id: user.id,

@@ -26,10 +26,8 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
 Object.defineProperty(exports, "__esModule", { value: true });
 const routing_controllers_1 = require("routing-controllers");
 const learning_service_1 = __importDefault(require("../services/core/learning.service"));
+const dependencyInject_1 = require("../dependencyInject");
 let LearningController = class LearningController {
-    constructor() {
-        this.learningService = new learning_service_1.default();
-    }
     getFlashcard(req, res) {
         return __awaiter(this, void 0, void 0, function* () {
             try {
@@ -99,6 +97,10 @@ let LearningController = class LearningController {
     }
 };
 __decorate([
+    dependencyInject_1.InjectLearningService,
+    __metadata("design:type", learning_service_1.default)
+], LearningController.prototype, "learningService", void 0);
+__decorate([
     (0, routing_controllers_1.Get)("/flashcard/:id"),
     __param(0, (0, routing_controllers_1.Req)()),
     __param(1, (0, routing_controllers_1.Res)()),
@@ -139,8 +141,7 @@ __decorate([
     __metadata("design:returntype", Promise)
 ], LearningController.prototype, "updateTestItem", null);
 LearningController = __decorate([
-    (0, routing_controllers_1.Controller)("/learning"),
-    __metadata("design:paramtypes", [])
+    (0, routing_controllers_1.Controller)("/learning")
 ], LearningController);
 exports.default = LearningController;
 //# sourceMappingURL=learning.controller.js.map

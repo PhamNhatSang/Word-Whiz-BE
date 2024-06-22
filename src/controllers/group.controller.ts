@@ -10,14 +10,13 @@ import {
 import { Request, Response } from "express";
 import Group from "../models/group.model";
 import GroupService from "../services/core/group.service";
-import { group } from "console";
+import { InjectGroupService } from "../dependencyInject";
 @Controller("/group")
 export default class GroupController  {
-  private groupService: GroupService;
+  @InjectGroupService
+  private groupService!: GroupService;
 
-  constructor() {
-    this.groupService = new GroupService();
-  }
+ 
 
   @Get("/")
   async getListGroup(@Req() req: Request, @Res() res: Response) {

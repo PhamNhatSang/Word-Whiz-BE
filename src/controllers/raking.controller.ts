@@ -1,12 +1,12 @@
 import { Controller, Get, Req, Res } from "routing-controllers";
 import RankingService from "../services/core/ranking.services";
 import { Request,Response } from "express";
+import { InjectRankingService } from "../dependencyInject";
 @Controller("/ranking")
 export default class Ranking  {
-    private rankingService: RankingService;
-    constructor() {
-        this.rankingService = new RankingService();
-    }
+    @InjectRankingService
+    private rankingService!: RankingService;
+    
 
     @Get("/top")
     async getRanking(@Req() req: Request, @Res() res: Response) {

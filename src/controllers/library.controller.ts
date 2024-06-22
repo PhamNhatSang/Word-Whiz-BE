@@ -2,12 +2,13 @@ import { Controller, Delete, Get, Post, Req, Res } from "routing-controllers";
 import { Request, Response } from "express";
 import Course from "../models/course.model";
 import LibraryService from "../services/core/library.service";
+import { InjectLibraryService } from "../dependencyInject";
 @Controller("/library")
-export default class HomeController {
-  private libraryService: LibraryService;
-  constructor() {
-    this.libraryService = new LibraryService();
-  }
+export default class LibraryController {
+
+  @InjectLibraryService
+  private libraryService!: LibraryService;
+  
 
   @Get("/")
   async getLibrary(@Req() req: Request, @Res() res: Response) {
