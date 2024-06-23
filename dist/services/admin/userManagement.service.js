@@ -16,6 +16,7 @@ require("reflect-metadata");
 const base_service_1 = require("../base/base.service");
 const user_model_1 = __importDefault(require("../../models/user.model"));
 const s3_1 = require("../../s3");
+const s3_2 = require("../../s3");
 class UserManagementService extends base_service_1.BaseService {
     constructor() {
         super();
@@ -42,8 +43,14 @@ class UserManagementService extends base_service_1.BaseService {
             };
         });
     }
-    updateUser(userData) {
+    updateUser(userData, file) {
         return __awaiter(this, void 0, void 0, function* () {
+            if (file) {
+                if (userData.avatar) {
+                    yield (0, s3_2.deleteFile)(userData.avatar);
+                }
+                userData.avatar = yield (0, s3_2.uploadFile)(file.buffer, file.mimetype);
+            }
             yield this.manager.update(user_model_1.default, userData.id, userData);
         });
     }

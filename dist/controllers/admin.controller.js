@@ -28,6 +28,8 @@ const routing_controllers_1 = require("routing-controllers");
 const dependencyInject_1 = require("../dependencyInject");
 const userManagement_service_1 = __importDefault(require("../services/admin/userManagement.service"));
 const postManagement_service_1 = __importDefault(require("../services/admin/postManagement.service"));
+const upload_middleware_1 = require("../middlewares/upload.middleware");
+const auth_middleware_1 = __importDefault(require("../middlewares/auth.middleware"));
 let Authcontroller = class Authcontroller {
     getAllInfor(page, results, res) {
         return __awaiter(this, void 0, void 0, function* () {
@@ -38,14 +40,15 @@ let Authcontroller = class Authcontroller {
             catch (error) {
                 console.log(error);
                 return res.status(400).send(error);
-                2;
             }
         });
     }
     updateUser(req, res) {
         return __awaiter(this, void 0, void 0, function* () {
             try {
-                const result = yield this.userManagerService.updateUser(req.body);
+                const file = req.file;
+                let userData = { id: req.body.id, name: req.body.name, email: req.body.email, role: req.body.role };
+                const result = yield this.userManagerService.updateUser(userData, file);
                 return res.send(result);
             }
             catch (error) {
@@ -146,6 +149,8 @@ __decorate([
     __metadata("design:returntype", Promise)
 ], Authcontroller.prototype, "deletePost", null);
 Authcontroller = __decorate([
+    (0, routing_controllers_1.UseBefore)(upload_middleware_1.UploadMidleware),
+    (0, routing_controllers_1.UseBefore)(auth_middleware_1.default),
     (0, routing_controllers_1.Controller)("/admin")
 ], Authcontroller);
 exports.default = Authcontroller;

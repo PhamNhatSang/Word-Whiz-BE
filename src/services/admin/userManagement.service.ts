@@ -2,6 +2,8 @@ import "reflect-metadata";
 import { BaseService } from "../base/base.service";
 import User from "../../models/user.model";
 import { getObjectSignedUrl } from "../../s3";
+import { deleteFile,uploadFile } from "../../s3";
+
 export default class UserManagementService extends BaseService{
 
     constructor(){
@@ -30,7 +32,14 @@ export default class UserManagementService extends BaseService{
             }
     }
 
-    async updateUser(userData: User) {
+    async updateUser(userData: User,file:Express.Multer.File) {
+      if(file){
+        if(userData.avatar){
+            await deleteFile(userData.avatar);
+        }
+        userData.avatar = await uploadFile(file.buffer, file.mimetype);
+      }
+
         await this.manager.update(User, userData.id, userData);
     }
 
