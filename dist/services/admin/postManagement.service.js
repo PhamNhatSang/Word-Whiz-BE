@@ -32,8 +32,10 @@ class PostManagementService extends base_service_1.BaseService {
                 },
             });
             const postPromises = posts.map((post) => __awaiter(this, void 0, void 0, function* () {
-                const image = yield (0, s3_1.getObjectSignedUrl)(post === null || post === void 0 ? void 0 : post.image);
-                post.image = image;
+                if (post.image) {
+                    const image = yield (0, s3_1.getObjectSignedUrl)(post === null || post === void 0 ? void 0 : post.image);
+                    post.image = image;
+                }
                 const postData = (Object.assign(Object.assign({}, post), { ownerName: post.owner.name, ownerEmail: post.owner.email }));
                 delete postData.owner;
                 return postData;

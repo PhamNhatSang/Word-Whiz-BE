@@ -19,8 +19,10 @@ export default class PostManagementService extends BaseService{
           },
         });
         const postPromises = posts.map(async (post) => {
+          if (post.image) {
             const image = await getObjectSignedUrl(post?.image);
             post.image = image;
+          }
             const postData =({...post,ownerName:post.owner.name,ownerEmail:post.owner.email});
             delete postData.owner;
                     
