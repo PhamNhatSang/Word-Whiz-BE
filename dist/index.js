@@ -31,6 +31,7 @@ app.use(body_parser_1.default.urlencoded({ extended: true }));
     middlewares: [path_1.default.join(__dirname + '/middlewares/*.middleware.{js,ts}')],
     authorizationChecker: (action, roles) => __awaiter(void 0, void 0, void 0, function* () {
         const userData = action.request.body.currentUserData;
+        console.log(userData);
         if (userData.role === roles[0]) {
             return true;
         }

@@ -149,8 +149,8 @@ __decorate([
     __metadata("design:returntype", Promise)
 ], Authcontroller.prototype, "deletePost", null);
 Authcontroller = __decorate([
-    (0, routing_controllers_1.UseBefore)(upload_middleware_1.UploadMidleware),
     (0, routing_controllers_1.UseBefore)(auth_middleware_1.default),
+    (0, routing_controllers_1.UseBefore)(upload_middleware_1.UploadMidleware),
     (0, routing_controllers_1.Controller)("/admin")
 ], Authcontroller);
 exports.default = Authcontroller;

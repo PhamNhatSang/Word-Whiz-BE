@@ -20,6 +20,7 @@ useExpressServer(app,{
   middlewares: [path.join(__dirname + '/middlewares/*.middleware.{js,ts}')],
   authorizationChecker: async (action, roles) => {
   const userData =action.request.body.currentUserData
+  console.log(userData)
   if(userData.role === roles[0]){
     return true
 

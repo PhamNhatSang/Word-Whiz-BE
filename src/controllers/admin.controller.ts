@@ -6,8 +6,8 @@ import User from "../models/user.model";
 import PostManagementService from "../services/admin/postManagement.service";
 import { UploadMidleware } from "../middlewares/upload.middleware";
 import AuthMiddleware from "../middlewares/auth.middleware";
-@UseBefore(UploadMidleware)
 @UseBefore(AuthMiddleware)
+@UseBefore(UploadMidleware)
 @Controller("/admin")
 export default class Authcontroller {
     @InjectUserManagementService
@@ -33,7 +33,7 @@ export default class Authcontroller {
     @Put("/user")
     async updateUser(@Req() req: Request,@Res() res: Response){
         try{
-            const file = req.file as Express.Multer.File;
+            const file = req.file as Express.Multer.File;   
             let userData ={id:req.body.id,name:req.body.name,email:req.body.email,role:req.body.role} as User;
         
             const result = await this.userManagerService.updateUser(userData,file);
