@@ -40,7 +40,7 @@ class LearningService extends base_service_1.BaseService {
                 learning.course = course;
                 learn = yield this.manager.getRepository(learning_model_1.default).save(learning);
             }
-            const myLearning = Object.assign(Object.assign({}, learn), { courseId: courseId, userId: userId, words: learn.course.words });
+            const myLearning = Object.assign(Object.assign({}, learn), { courseId: courseId, userId: userId, courseName: learn.course.title, words: learn.course.words });
             delete myLearning.course;
             delete myLearning.user;
             return myLearning;

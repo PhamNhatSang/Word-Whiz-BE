@@ -31,6 +31,7 @@ export default class LearningService extends BaseService {
       ...learn,
       courseId: courseId,
       userId: userId,
+      courseName: learn.course.title,
       words: learn.course.words,
     };
     delete myLearning.course;
