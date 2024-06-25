@@ -15,8 +15,8 @@ export default class AuthService extends BaseService{
    
     async getAllInfor(id:number): Promise<User | null> {
         const user = await this.manager.findOne(User,{ where: { id }, relations:{myGroups:true,myCourses:true,addedGroups:true}});
-        const avatar = await getObjectSignedUrl(user.avatar);
-        user.avatar = avatar;
+        if(user.avatar)
+            user.avatar = await getObjectSignedUrl(user.avatar);
         return user;
     }
     

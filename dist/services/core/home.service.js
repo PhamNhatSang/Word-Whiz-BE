@@ -39,8 +39,10 @@ class HomeService extends base_service_1.BaseService {
                     avgRate =
                         course.courseRate.reduce((acc, rate) => acc + rate.rate, 0) /
                             course.courseRate.length;
+                let imageUrl = null;
                 const terms = course.words.length;
-                const imageUrl = yield (0, s3_1.getObjectSignedUrl)(course.owner.avatar);
+                if (course.owner.avatar)
+                    imageUrl = yield (0, s3_1.getObjectSignedUrl)(course.owner.avatar);
                 return {
                     course_id: course.id,
                     title: course.title,
@@ -82,7 +84,9 @@ class HomeService extends base_service_1.BaseService {
                 .limit(5)
                 .getRawMany();
             const coursePromises = course.map((course) => __awaiter(this, void 0, void 0, function* () {
-                const imageUrl = yield (0, s3_1.getObjectSignedUrl)(course === null || course === void 0 ? void 0 : course.owner_avatar);
+                let imageUrl = null;
+                if (course.avatar)
+                    imageUrl = yield (0, s3_1.getObjectSignedUrl)(course.avatar);
                 course.owner_avatar = imageUrl;
                 return course;
             }));
@@ -122,7 +126,9 @@ class HomeService extends base_service_1.BaseService {
                 .groupBy("course.id, owner.id, learning.lastWordIndex")
                 .getRawMany();
             const coursePromises = course.map((course) => __awaiter(this, void 0, void 0, function* () {
-                const imageUrl = yield (0, s3_1.getObjectSignedUrl)(course === null || course === void 0 ? void 0 : course.owner_avatar);
+                let imageUrl = null;
+                if (course.owner_avatar)
+                    imageUrl = yield (0, s3_1.getObjectSignedUrl)(course.owner_avatar);
                 course.owner_avatar = imageUrl;
                 return course;
             }));

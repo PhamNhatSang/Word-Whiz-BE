@@ -29,9 +29,10 @@ export default class HomeService extends BaseService {
         avgRate =
           course.courseRate.reduce((acc, rate) => acc + rate.rate, 0) /
           course.courseRate.length;
-
+      let imageUrl = null;
       const terms = course.words.length;
-      const imageUrl = await getObjectSignedUrl(course.owner.avatar);
+      if(course.owner.avatar)
+       imageUrl = await getObjectSignedUrl(course.owner.avatar);
 
       return {
         course_id: course.id,
@@ -78,7 +79,9 @@ export default class HomeService extends BaseService {
       .getRawMany();
 
     const coursePromises = course.map(async (course) => {
-      const imageUrl = await getObjectSignedUrl(course?.owner_avatar as string);
+      let imageUrl = null;
+      if(course.avatar)
+       imageUrl = await getObjectSignedUrl(course.avatar);
       course.owner_avatar = imageUrl;
       return course;
     });
@@ -131,7 +134,9 @@ export default class HomeService extends BaseService {
       .getRawMany();
 
     const coursePromises = course.map(async (course) => {
-      const imageUrl = await getObjectSignedUrl(course?.owner_avatar as string);
+      let imageUrl = null;
+      if(course.owner_avatar)
+       imageUrl = await getObjectSignedUrl(course.owner_avatar);
       course.owner_avatar = imageUrl;
       return course;
     });

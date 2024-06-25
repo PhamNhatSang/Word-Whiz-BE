@@ -28,8 +28,8 @@ class AuthService extends base_service_1.BaseService {
     getAllInfor(id) {
         return __awaiter(this, void 0, void 0, function* () {
             const user = yield this.manager.findOne(user_model_1.default, { where: { id }, relations: { myGroups: true, myCourses: true, addedGroups: true } });
-            const avatar = yield (0, s3_1.getObjectSignedUrl)(user.avatar);
-            user.avatar = avatar;
+            if (user.avatar)
+                user.avatar = yield (0, s3_1.getObjectSignedUrl)(user.avatar);
             return user;
         });
     }
