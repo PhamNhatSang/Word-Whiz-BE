@@ -13,10 +13,10 @@ export default class Test extends BaseModel {
   @Column({ type: "boolean",default:false,name:'is_done'} )
   isDone: boolean;
 
-  @ManyToOne(() => User, (user)=> user.myTests,{nullable:true})
+  @ManyToOne(() => User, (user)=> user.myTests,{nullable:true,onDelete:'CASCADE',onUpdate:'CASCADE'})
   user: User;
 
-  @ManyToOne(()=>Course,(course)=>course.tests,{nullable:true})
+  @ManyToOne(()=>Course,(course)=>course.tests,{nullable:true,onDelete:'CASCADE',onUpdate:'CASCADE'})
   course:Course;
   
   @OneToMany(() => TestItem, (testItem) => testItem.test, { nullable: true,cascade:true })

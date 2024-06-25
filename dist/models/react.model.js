@@ -21,7 +21,7 @@ const typeorm_1 = require("typeorm");
 let React = class React extends baseModel_1.BaseModel {
 };
 __decorate([
-    (0, typeorm_1.ManyToOne)(() => user_model_1.default, (user) => user.myReacts),
+    (0, typeorm_1.ManyToOne)(() => user_model_1.default, (user) => user.myReacts, { onDelete: "CASCADE", onUpdate: "CASCADE" }),
     __metadata("design:type", user_model_1.default)
 ], React.prototype, "user", void 0);
 __decorate([

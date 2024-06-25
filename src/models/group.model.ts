@@ -18,7 +18,7 @@ export default class Group extends BaseModel {
   @Column({nullable: true,name:"group_code"})
   code: string;
 
-  @ManyToOne(() => User, (user) => user.myGroups)
+  @ManyToOne(() => User, (user) => user.myGroups,{onDelete:'CASCADE',onUpdate:'CASCADE'})
   owner: User;
 
   @ManyToMany(() => User, (user) => user.addedGroups ,{nullable:true,cascade:true})

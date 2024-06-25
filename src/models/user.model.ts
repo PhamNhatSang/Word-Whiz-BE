@@ -31,36 +31,38 @@ export default class User extends BaseModel {
 
   @Column({nullable:true})
   refeshToken: string;
+
   @Column({nullable:true})
   avatar: string;
-  @OneToMany(() => Group,(group)=>group.owner,{nullable:true})
+
+  @OneToMany(() => Group,(group)=>group.owner,{nullable:true,cascade:true})
   myGroups: Group[];
 
-  @OneToMany(() => Course,(course)=>course.owner,{nullable:true})
-  myCourses: Course[];
+  @OneToMany(() => Course,(course)=>course.owner,{nullable:true,cascade:true})
+  myCourses: Course[];  
   
   @OneToMany(() => Post,(post)=>post.owner,{nullable:true,cascade:true})
   myPosts: Post[];
 
-  @OneToMany(()=>CourseRate,(courseRate)=>courseRate.user,{nullable:true})
+  @OneToMany(()=>CourseRate,(courseRate)=>courseRate.user,{nullable:true,cascade:true})
   courseRate:CourseRate[]
 
-  @OneToMany(()=>Comment,(comment)=>comment.user,{nullable:true})
+  @OneToMany(()=>Comment,(comment)=>comment.user,{nullable:true,cascade:true})
   myComments:Comment[]
 
-  @OneToMany(()=>React,(react)=>react.user,{nullable:true})
+  @OneToMany(()=>React,(react)=>react.user,{nullable:true,cascade:true})
   myReacts:React[]
 
-  @OneToMany(()=>Test,(test)=>test.user,{nullable:true})
+  @OneToMany(()=>Test,(test)=>test.user,{nullable:true,cascade:true})
   myTests:Test[]
 
-  @ManyToMany(()=>Course,(course)=>course.userImporteds,{nullable:true})
+  @ManyToMany(()=>Course,(course)=>course.userImporteds,{nullable:true,cascade:true})
   courseImports:Course[]
 
   @ManyToMany(() => Group, (group) => group.students, { nullable: true })
   addedGroups: Group[];
   
-  @OneToMany(() => Learning, (learning) => learning.user, { nullable: true})
+  @OneToMany(() => Learning, (learning) => learning.user, { nullable: true,cascade:true})
   learnings: Learning[];
 
   

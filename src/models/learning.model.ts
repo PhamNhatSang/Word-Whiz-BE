@@ -16,7 +16,7 @@ import User from "./user.model";
 import Course from "./course.model";
 @Entity()
 export default class Learning extends BaseModel {
-  @ManyToOne(() => User, (user) => user.learnings)
+  @ManyToOne(() => User, (user) => user.learnings,{onDelete:'CASCADE',onUpdate:'CASCADE'})
   @JoinColumn({ name: "user_id"})
   user: User;
 

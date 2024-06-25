@@ -26,7 +26,7 @@ const post_model_1 = __importDefault(require("./post.model"));
 let Course = class Course extends baseModel_1.BaseModel {
 };
 __decorate([
-    (0, typeorm_1.ManyToOne)(() => user_model_1.default, (user) => user.myCourses),
+    (0, typeorm_1.ManyToOne)(() => user_model_1.default, (user) => user.myCourses, { onDelete: "CASCADE", onUpdate: "CASCADE" }),
     __metadata("design:type", user_model_1.default)
 ], Course.prototype, "owner", void 0);
 __decorate([
@@ -46,15 +46,15 @@ __decorate([
     __metadata("design:type", Array)
 ], Course.prototype, "words", void 0);
 __decorate([
-    (0, typeorm_1.OneToMany)(() => test_model_1.default, (test) => test.course, { nullable: true }),
+    (0, typeorm_1.OneToMany)(() => test_model_1.default, (test) => test.course, { nullable: true, cascade: true }),
     __metadata("design:type", Array)
 ], Course.prototype, "tests", void 0);
 __decorate([
-    (0, typeorm_1.OneToMany)(() => courseRate_model_1.default, (courseRate) => courseRate.course, { nullable: true }),
+    (0, typeorm_1.OneToMany)(() => courseRate_model_1.default, (courseRate) => courseRate.course, { nullable: true, cascade: true }),
     __metadata("design:type", Array)
 ], Course.prototype, "courseRate", void 0);
 __decorate([
-    (0, typeorm_1.OneToMany)(() => learning_model_1.default, (learning) => learning.course, { nullable: true }),
+    (0, typeorm_1.OneToMany)(() => learning_model_1.default, (learning) => learning.course, { nullable: true, cascade: true }),
     __metadata("design:type", Array)
 ], Course.prototype, "learnings", void 0);
 __decorate([
@@ -66,7 +66,7 @@ __decorate([
     __metadata("design:type", Array)
 ], Course.prototype, "addedPosts", void 0);
 __decorate([
-    (0, typeorm_1.ManyToMany)(() => user_model_1.default, (user) => user.courseImports, { nullable: true, cascade: true }),
+    (0, typeorm_1.ManyToMany)(() => user_model_1.default, (user) => user.courseImports, { nullable: true, onDelete: "CASCADE", onUpdate: "CASCADE" }),
     (0, typeorm_1.JoinTable)({
         name: "course_imports", // table name for the junction table of this relation
         joinColumn: {

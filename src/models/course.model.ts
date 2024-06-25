@@ -24,7 +24,7 @@ import Post from './post.model'
 
 @Entity()
 export default class Course extends BaseModel {
-  @ManyToOne(() => User, (user) => user.myCourses)
+  @ManyToOne(() => User, (user) => user.myCourses, { onDelete: "CASCADE",onUpdate:"CASCADE" })
   owner: User;
 
   @Column()
@@ -39,12 +39,12 @@ export default class Course extends BaseModel {
   @OneToMany(() => Word, (word) => word.course, { nullable: true,cascade:true})
   words: Word[];
 
-  @OneToMany(() => Test, (test) => test.course, { nullable: true })
+  @OneToMany(() => Test, (test) => test.course, { nullable: true,cascade:true })
   tests: Test[];
   
-  @OneToMany(() => CourseRate, (courseRate) => courseRate.course,{nullable:true})
+  @OneToMany(() => CourseRate, (courseRate) => courseRate.course,{nullable:true,cascade:true})
   courseRate: CourseRate[];
-  @OneToMany(() => Learning, (learning) => learning.course, { nullable: true })
+  @OneToMany(() => Learning, (learning) => learning.course, { nullable: true,cascade:true })
   learnings: Learning[];
   @ManyToMany(() => Group, (group) => group.courses, { nullable: true })
   addedGroups: Group[];
@@ -53,7 +53,7 @@ export default class Course extends BaseModel {
   addedPosts: Post[];
 
 
-  @ManyToMany(() => User, (user) => user.courseImports, { nullable: true,cascade:true })
+  @ManyToMany(() => User, (user) => user.courseImports, { nullable: true,onDelete:"CASCADE",onUpdate:"CASCADE"})
   @JoinTable({
     name: "course_imports", // table name for the junction table of this relation
     joinColumn: {
@@ -66,6 +66,7 @@ export default class Course extends BaseModel {
         name: "user_id",
         referencedColumnName: "id"
     }
+    
     
 })
   userImporteds: User[];

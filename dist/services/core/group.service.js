@@ -137,7 +137,6 @@ class GroupService extends base_service_1.BaseService {
             });
             user.myGroups = user.myGroups.filter((group) => group.id !== groupId);
             yield this.manager.delete(group_model_1.default, groupId);
-            yield this.manager.save(user);
         });
     }
     addStudent(groupId, email) {

@@ -56,6 +56,23 @@ class UserManagementService extends base_service_1.BaseService {
     }
     deleteUser(id) {
         return __awaiter(this, void 0, void 0, function* () {
+            const userDelete = yield this.manager.findOne(user_model_1.default, { where: { id: id }, relations: { myPosts: true, myCourses: true } });
+            userDelete.courseImports = [];
+            yield this.manager.save(userDelete);
+            const userList = yield this.manager.find(user_model_1.default, { where: { id: id }, relations: { courseImports: true } });
+            const userPromises = userList.map((user) => {
+                user.courseImports = user.courseImports.filter(data => !user.myCourses.includes(data));
+                return user;
+            });
+            yield this.manager.save(userPromises);
+            if (userDelete.avatar)
+                yield (0, s3_2.deleteFile)(userDelete.avatar);
+            const posts = userDelete.myPosts.map((post) => __awaiter(this, void 0, void 0, function* () {
+                if (post.image)
+                    yield (0, s3_2.deleteFile)(post.image);
+                return post;
+            }));
+            Promise.all(posts);
             yield this.manager.delete(user_model_1.default, id);
         });
     }

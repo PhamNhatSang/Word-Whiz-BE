@@ -127,7 +127,6 @@ export default class GroupService extends BaseService {
     });
     user.myGroups = user.myGroups.filter((group) => group.id !== groupId);
     await this.manager.delete(Group, groupId);
-    await this.manager.save(user);
   }
 
   async addStudent(groupId: number, email: string[]) {

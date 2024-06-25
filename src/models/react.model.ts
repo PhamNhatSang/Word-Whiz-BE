@@ -7,7 +7,7 @@ import { Emotion } from "../enum/Emotion";
 import { Entity, ManyToOne, Column } from "typeorm";
 @Entity()
 export default class React extends BaseModel {
-  @ManyToOne(() => User, (user) => user.myReacts)
+  @ManyToOne(() => User, (user) => user.myReacts, { onDelete: "CASCADE" ,onUpdate:"CASCADE"})
   user: User;
 
   @ManyToOne(() => Post, (post) => post.postReacts, { onDelete: "CASCADE" ,onUpdate:"CASCADE"})

@@ -20,11 +20,11 @@ const typeorm_1 = require("typeorm");
 let CourseRate = class CourseRate extends baseModel_1.BaseModel {
 };
 __decorate([
-    (0, typeorm_1.ManyToOne)(() => course_model_1.default, (course) => course.courseRate),
+    (0, typeorm_1.ManyToOne)(() => course_model_1.default, (course) => course.courseRate, { onDelete: "CASCADE", onUpdate: "CASCADE" }),
     __metadata("design:type", course_model_1.default)
 ], CourseRate.prototype, "course", void 0);
 __decorate([
-    (0, typeorm_1.ManyToOne)(() => user_model_1.default, (user) => user.courseRate),
+    (0, typeorm_1.ManyToOne)(() => user_model_1.default, (user) => user.courseRate, { onDelete: "CASCADE", onUpdate: "CASCADE" }),
     __metadata("design:type", user_model_1.default)
 ], CourseRate.prototype, "user", void 0);
 __decorate([

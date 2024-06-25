@@ -44,6 +44,30 @@ export default class UserManagementService extends BaseService{
     }
 
     async deleteUser(id: number) {
+         const userDelete = await this.manager.findOne(User,{where:{id:id},relations:{myPosts:true,myCourses:true}});
+         userDelete.courseImports=[];
+         await this.manager.save(userDelete);
+         const userList = await this.manager.find(User,{where:{id:id},relations:{courseImports:true}});
+          const userPromises = userList.map((user) => {
+              user.courseImports= user.courseImports.filter(data => !user.myCourses.includes(data))
+              return user;
+            }
+            );
+            await this.manager.save(userPromises)
+
+          if(userDelete.avatar)
+            await deleteFile(userDelete.avatar);
+
+          const posts =userDelete.myPosts.map(async (post) => {
+
+            if(post.image)
+              await deleteFile(post.image);
+            return post;
+          }
+          );
+
+          Promise.all(posts);
+
         await this.manager.delete(User, id);
     }
 

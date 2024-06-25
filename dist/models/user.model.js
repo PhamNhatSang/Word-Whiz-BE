@@ -54,11 +54,11 @@ __decorate([
     __metadata("design:type", String)
 ], User.prototype, "avatar", void 0);
 __decorate([
-    (0, typeorm_1.OneToMany)(() => group_model_1.default, (group) => group.owner, { nullable: true }),
+    (0, typeorm_1.OneToMany)(() => group_model_1.default, (group) => group.owner, { nullable: true, cascade: true }),
     __metadata("design:type", Array)
 ], User.prototype, "myGroups", void 0);
 __decorate([
-    (0, typeorm_1.OneToMany)(() => course_model_1.default, (course) => course.owner, { nullable: true }),
+    (0, typeorm_1.OneToMany)(() => course_model_1.default, (course) => course.owner, { nullable: true, cascade: true }),
     __metadata("design:type", Array)
 ], User.prototype, "myCourses", void 0);
 __decorate([
@@ -66,23 +66,23 @@ __decorate([
     __metadata("design:type", Array)
 ], User.prototype, "myPosts", void 0);
 __decorate([
-    (0, typeorm_1.OneToMany)(() => courseRate_model_1.default, (courseRate) => courseRate.user, { nullable: true }),
+    (0, typeorm_1.OneToMany)(() => courseRate_model_1.default, (courseRate) => courseRate.user, { nullable: true, cascade: true }),
     __metadata("design:type", Array)
 ], User.prototype, "courseRate", void 0);
 __decorate([
-    (0, typeorm_1.OneToMany)(() => comment_model_1.default, (comment) => comment.user, { nullable: true }),
+    (0, typeorm_1.OneToMany)(() => comment_model_1.default, (comment) => comment.user, { nullable: true, cascade: true }),
     __metadata("design:type", Array)
 ], User.prototype, "myComments", void 0);
 __decorate([
-    (0, typeorm_1.OneToMany)(() => react_model_1.default, (react) => react.user, { nullable: true }),
+    (0, typeorm_1.OneToMany)(() => react_model_1.default, (react) => react.user, { nullable: true, cascade: true }),
     __metadata("design:type", Array)
 ], User.prototype, "myReacts", void 0);
 __decorate([
-    (0, typeorm_1.OneToMany)(() => test_model_1.default, (test) => test.user, { nullable: true }),
+    (0, typeorm_1.OneToMany)(() => test_model_1.default, (test) => test.user, { nullable: true, cascade: true }),
     __metadata("design:type", Array)
 ], User.prototype, "myTests", void 0);
 __decorate([
-    (0, typeorm_1.ManyToMany)(() => course_model_1.default, (course) => course.userImporteds, { nullable: true }),
+    (0, typeorm_1.ManyToMany)(() => course_model_1.default, (course) => course.userImporteds, { nullable: true, cascade: true }),
     __metadata("design:type", Array)
 ], User.prototype, "courseImports", void 0);
 __decorate([
@@ -90,7 +90,7 @@ __decorate([
     __metadata("design:type", Array)
 ], User.prototype, "addedGroups", void 0);
 __decorate([
-    (0, typeorm_1.OneToMany)(() => learning_model_1.default, (learning) => learning.user, { nullable: true }),
+    (0, typeorm_1.OneToMany)(() => learning_model_1.default, (learning) => learning.user, { nullable: true, cascade: true }),
     __metadata("design:type", Array)
 ], User.prototype, "learnings", void 0);
 User = __decorate([

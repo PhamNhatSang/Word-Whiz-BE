@@ -32,7 +32,7 @@ __decorate([
     __metadata("design:type", String)
 ], Group.prototype, "code", void 0);
 __decorate([
-    (0, typeorm_1.ManyToOne)(() => user_model_1.default, (user) => user.myGroups),
+    (0, typeorm_1.ManyToOne)(() => user_model_1.default, (user) => user.myGroups, { onDelete: 'CASCADE', onUpdate: 'CASCADE' }),
     __metadata("design:type", user_model_1.default)
 ], Group.prototype, "owner", void 0);
 __decorate([

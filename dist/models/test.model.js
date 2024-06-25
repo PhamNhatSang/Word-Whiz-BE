@@ -29,11 +29,11 @@ __decorate([
     __metadata("design:type", Boolean)
 ], Test.prototype, "isDone", void 0);
 __decorate([
-    (0, typeorm_1.ManyToOne)(() => user_model_1.default, (user) => user.myTests, { nullable: true }),
+    (0, typeorm_1.ManyToOne)(() => user_model_1.default, (user) => user.myTests, { nullable: true, onDelete: 'CASCADE', onUpdate: 'CASCADE' }),
     __metadata("design:type", user_model_1.default)
 ], Test.prototype, "user", void 0);
 __decorate([
-    (0, typeorm_1.ManyToOne)(() => course_model_1.default, (course) => course.tests, { nullable: true }),
+    (0, typeorm_1.ManyToOne)(() => course_model_1.default, (course) => course.tests, { nullable: true, onDelete: 'CASCADE', onUpdate: 'CASCADE' }),
     __metadata("design:type", course_model_1.default)
 ], Test.prototype, "course", void 0);
 __decorate([

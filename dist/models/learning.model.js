@@ -20,7 +20,7 @@ const course_model_1 = __importDefault(require("./course.model"));
 let Learning = class Learning extends baseModel_1.BaseModel {
 };
 __decorate([
-    (0, typeorm_1.ManyToOne)(() => user_model_1.default, (user) => user.learnings),
+    (0, typeorm_1.ManyToOne)(() => user_model_1.default, (user) => user.learnings, { onDelete: 'CASCADE', onUpdate: 'CASCADE' }),
     (0, typeorm_1.JoinColumn)({ name: "user_id" }),
     __metadata("design:type", user_model_1.default)
 ], Learning.prototype, "user", void 0);
