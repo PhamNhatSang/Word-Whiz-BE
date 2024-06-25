@@ -79,10 +79,8 @@ export default class HomeService extends BaseService {
       .getRawMany();
 
     const coursePromises = course.map(async (course) => {
-      let imageUrl = null;
-      if(course.avatar)
-       imageUrl = await getObjectSignedUrl(course.avatar);
-      course.owner_avatar = imageUrl;
+      if(course.owner_avatar)
+        course.owner_avatar = await getObjectSignedUrl(course.avatar);
       return course;
     });
     const courseData = await Promise.all(coursePromises);

@@ -84,10 +84,8 @@ class HomeService extends base_service_1.BaseService {
                 .limit(5)
                 .getRawMany();
             const coursePromises = course.map((course) => __awaiter(this, void 0, void 0, function* () {
-                let imageUrl = null;
-                if (course.avatar)
-                    imageUrl = yield (0, s3_1.getObjectSignedUrl)(course.avatar);
-                course.owner_avatar = imageUrl;
+                if (course.owner_avatar)
+                    course.owner_avatar = yield (0, s3_1.getObjectSignedUrl)(course.avatar);
                 return course;
             }));
             const courseData = yield Promise.all(coursePromises);
