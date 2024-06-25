@@ -66,7 +66,7 @@ export default class HomeService extends BaseService {
         "owner.id", // Select owner fields
         "owner.name",
         "owner.email",
-        "owner.avatar",
+        "owner.avatar as owner_avatar",
       ])
       .where("course.accessiblity = :accessiblity", {
         accessiblity: Accessiblity.PUBLIC,
@@ -80,7 +80,7 @@ export default class HomeService extends BaseService {
 
     const coursePromises = course.map(async (course) => {
       if(course.owner_avatar)
-        course.owner_avatar = await getObjectSignedUrl(course.avatar);
+        course.owner_avatar = await getObjectSignedUrl(course.owner_avatar);
       return course;
     });
     const courseData = await Promise.all(coursePromises);

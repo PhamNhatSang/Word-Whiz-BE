@@ -72,7 +72,7 @@ class HomeService extends base_service_1.BaseService {
                 "owner.id", // Select owner fields
                 "owner.name",
                 "owner.email",
-                "owner.avatar",
+                "owner.avatar as owner_avatar",
             ])
                 .where("course.accessiblity = :accessiblity", {
                 accessiblity: Accessiblity_1.Accessiblity.PUBLIC,
@@ -85,7 +85,7 @@ class HomeService extends base_service_1.BaseService {
                 .getRawMany();
             const coursePromises = course.map((course) => __awaiter(this, void 0, void 0, function* () {
                 if (course.owner_avatar)
-                    course.owner_avatar = yield (0, s3_1.getObjectSignedUrl)(course.avatar);
+                    course.owner_avatar = yield (0, s3_1.getObjectSignedUrl)(course.owner_avatar);
                 return course;
             }));
             const courseData = yield Promise.all(coursePromises);
