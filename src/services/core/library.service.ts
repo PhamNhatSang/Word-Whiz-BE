@@ -27,8 +27,8 @@ export default class LibraryService extends BaseService {
       .groupBy("course.id, owner.id")
       .getRawMany();
       const myCoursePromises = myCourses.map(async (course) => {
-        const imageUrl = await getObjectSignedUrl(course?.owner_avatar as string);
-        course.owner_avatar = imageUrl;
+        if(course.owner_avatar)
+          course.owner_avatar = await getObjectSignedUrl(course?.owner_avatar as string);
         return course;
       }
       )
@@ -54,8 +54,9 @@ export default class LibraryService extends BaseService {
       .groupBy("course.id, owner.id")
       .getRawMany();
       const importCoursePromises = importCourses.map(async (course) => {
-        const imageUrl = await getObjectSignedUrl(course?.owner_avatar as string);
-        course.owner_avatar = imageUrl;
+        if(course.owner_avatar)
+          course.owner_avatar = await getObjectSignedUrl(course?.owner_avatar as string);
+        
         return course;
       }
       )

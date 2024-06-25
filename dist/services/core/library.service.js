@@ -39,8 +39,8 @@ class LibraryService extends base_service_1.BaseService {
                 .groupBy("course.id, owner.id")
                 .getRawMany();
             const myCoursePromises = myCourses.map((course) => __awaiter(this, void 0, void 0, function* () {
-                const imageUrl = yield (0, s3_1.getObjectSignedUrl)(course === null || course === void 0 ? void 0 : course.owner_avatar);
-                course.owner_avatar = imageUrl;
+                if (course.owner_avatar)
+                    course.owner_avatar = yield (0, s3_1.getObjectSignedUrl)(course === null || course === void 0 ? void 0 : course.owner_avatar);
                 return course;
             }));
             const myCourseData = yield Promise.all(myCoursePromises);
@@ -63,8 +63,8 @@ class LibraryService extends base_service_1.BaseService {
                 .groupBy("course.id, owner.id")
                 .getRawMany();
             const importCoursePromises = importCourses.map((course) => __awaiter(this, void 0, void 0, function* () {
-                const imageUrl = yield (0, s3_1.getObjectSignedUrl)(course === null || course === void 0 ? void 0 : course.owner_avatar);
-                course.owner_avatar = imageUrl;
+                if (course.owner_avatar)
+                    course.owner_avatar = yield (0, s3_1.getObjectSignedUrl)(course === null || course === void 0 ? void 0 : course.owner_avatar);
                 return course;
             }));
             const importCourseData = yield Promise.all(importCoursePromises);
