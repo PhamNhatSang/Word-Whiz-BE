@@ -149,4 +149,8 @@ export default class CommunityService extends BaseService {
     }
 
   }
+
+  async deletePost(postId: number) {
+    await this.manager.delete(Post, { id: postId });
+  }
 }

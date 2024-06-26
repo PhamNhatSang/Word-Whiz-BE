@@ -98,4 +98,15 @@ export default class CommunityController  {
     }
   }
 
+  @Delete("/post/:id")
+  async deletePost(@Req() req: Request, @Res() res: Response) {
+    try {
+      const postId = req.params.id;
+      const result = await this.communityService.deletePost(parseInt(postId));
+      return res.send(result);
+    } catch (error) {
+      return res.status(400).send(error);
+    }
+  }
+
 }

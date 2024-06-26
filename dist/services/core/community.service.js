@@ -156,6 +156,11 @@ class CommunityService extends base_service_1.BaseService {
             }
         });
     }
+    deletePost(postId) {
+        return __awaiter(this, void 0, void 0, function* () {
+            yield this.manager.delete(post_model_1.default, { id: postId });
+        });
+    }
 }
 exports.default = CommunityService;
 //# sourceMappingURL=community.service.js.map
