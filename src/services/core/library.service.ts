@@ -17,6 +17,7 @@ export default class LibraryService extends BaseService {
         "course.id",
         "course.title as title",
         "course.description as description",
+        "course.language as language",
         "course.accessiblity as accessiblity",
         "owner.id",
         "owner.name",
