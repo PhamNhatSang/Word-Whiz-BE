@@ -19,6 +19,7 @@ const user_model_1 = __importDefault(require("../../models/user.model"));
 const ExistData_1 = __importDefault(require("../../exceptions/ExistData"));
 const course_model_1 = __importDefault(require("../../models/course.model"));
 const s3_1 = require("../../s3");
+const shuffle_1 = require("../../utils/shuffle");
 class GroupService extends base_service_1.BaseService {
     constructor() {
         super();
@@ -124,6 +125,7 @@ class GroupService extends base_service_1.BaseService {
                 where: { id: userId },
                 relations: ["myGroups"],
             });
+            group.code = "#" + (0, shuffle_1.generateRandomCode)(7, group.id);
             user.myGroups.push(group);
             yield this.manager.save(user);
             group.owner = user;

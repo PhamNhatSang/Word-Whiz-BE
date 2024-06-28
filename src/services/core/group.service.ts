@@ -5,6 +5,7 @@ import User from "../../models/user.model";
 import ExistData from "../../exceptions/ExistData";
 import Course from "../../models/course.model";
 import { getObjectSignedUrl } from "../../s3";
+import { generateRandomCode } from "../../utils/shuffle";
 export default class GroupService extends BaseService {
   constructor() {
     super();
@@ -116,6 +117,7 @@ export default class GroupService extends BaseService {
       where: { id: userId },
       relations: ["myGroups"],
     });
+    group.code = "#"+generateRandomCode(7,group.id);
     user.myGroups.push(group);
     await this.manager.save(user);
     group.owner = user;
