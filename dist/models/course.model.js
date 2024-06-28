@@ -42,6 +42,10 @@ __decorate([
     __metadata("design:type", String)
 ], Course.prototype, "accessiblity", void 0);
 __decorate([
+    (0, typeorm_1.Column)({ type: "text" }),
+    __metadata("design:type", String)
+], Course.prototype, "language", void 0);
+__decorate([
     (0, typeorm_1.OneToMany)(() => word_model_1.default, (word) => word.course, { nullable: true, cascade: true }),
     __metadata("design:type", Array)
 ], Course.prototype, "words", void 0);

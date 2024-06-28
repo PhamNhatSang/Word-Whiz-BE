@@ -36,11 +36,16 @@ export default class Course extends BaseModel {
   @Column({ type: "enum", enum: ["PUBLIC", "PRIVATE"], default: "PUBLIC" })
   accessiblity: Accessiblity;
 
+  @Column({ type: "text"})
+  language: string;
+
   @OneToMany(() => Word, (word) => word.course, { nullable: true,cascade:true})
   words: Word[];
 
   @OneToMany(() => Test, (test) => test.course, { nullable: true,cascade:true })
   tests: Test[];
+
+
   
   @OneToMany(() => CourseRate, (courseRate) => courseRate.course,{nullable:true,cascade:true})
   courseRate: CourseRate[];

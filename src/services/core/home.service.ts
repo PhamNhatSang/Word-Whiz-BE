@@ -37,6 +37,7 @@ export default class HomeService extends BaseService {
       return {
         course_id: course.id,
         title: course.title,
+        language:course.language,
         owner_id: course.owner.id,
         owner_name: course.owner.name,
         owner_avatar: imageUrl,
@@ -63,6 +64,8 @@ export default class HomeService extends BaseService {
         "course.id",
         "course.title as title", // Add other course fields as needed
         "course.accessiblity as accessiblity",
+        "course.language as language",
+
         "owner.id", // Select owner fields
         "owner.name",
         "owner.email",
@@ -114,6 +117,7 @@ export default class HomeService extends BaseService {
       .select([
         "course.id",
         "course.title as title",
+        "course.language as language",
         "owner.id as owner_id",
         "owner.name as owner_name",
         "owner.avatar as owner_avatar",

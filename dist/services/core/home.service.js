@@ -46,6 +46,7 @@ class HomeService extends base_service_1.BaseService {
                 return {
                     course_id: course.id,
                     title: course.title,
+                    language: course.language,
                     owner_id: course.owner.id,
                     owner_name: course.owner.name,
                     owner_avatar: imageUrl,
@@ -69,6 +70,7 @@ class HomeService extends base_service_1.BaseService {
                 "course.id",
                 "course.title as title", // Add other course fields as needed
                 "course.accessiblity as accessiblity",
+                "course.language as language",
                 "owner.id", // Select owner fields
                 "owner.name",
                 "owner.email",
@@ -112,6 +114,7 @@ class HomeService extends base_service_1.BaseService {
                 .select([
                 "course.id",
                 "course.title as title",
+                "course.language as language",
                 "owner.id as owner_id",
                 "owner.name as owner_name",
                 "owner.avatar as owner_avatar",
