@@ -38,7 +38,7 @@ let CourseDetailController = class CourseDetailController {
                 return res.send(result);
             }
             catch (error) {
-                if (error.message === "Course does not exist") {
+                if (error.message === "Course is not exist") {
                     return res.status(404).send(error);
                 }
                 return res.status(400).send(error);
