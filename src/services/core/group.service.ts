@@ -102,8 +102,8 @@ export default class GroupService extends BaseService {
       .getRawMany();
       
       const studentPromises = students.map(async (student) => {
-        const imageUrl = await getObjectSignedUrl(student?.student_avatar as string);
-        student.student_avatar = imageUrl;
+        if(student.student_avatar)
+          student.student_avatar= await getObjectSignedUrl(student.student_avatar as string);
         return student;
       }
       )

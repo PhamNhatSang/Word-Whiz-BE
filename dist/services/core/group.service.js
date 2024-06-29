@@ -111,8 +111,8 @@ class GroupService extends base_service_1.BaseService {
             ])
                 .getRawMany();
             const studentPromises = students.map((student) => __awaiter(this, void 0, void 0, function* () {
-                const imageUrl = yield (0, s3_1.getObjectSignedUrl)(student === null || student === void 0 ? void 0 : student.student_avatar);
-                student.student_avatar = imageUrl;
+                if (student.student_avatar)
+                    student.student_avatar = yield (0, s3_1.getObjectSignedUrl)(student.student_avatar);
                 return student;
             }));
             const studentData = yield Promise.all(studentPromises);
