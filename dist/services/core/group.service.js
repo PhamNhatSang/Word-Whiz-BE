@@ -56,8 +56,21 @@ class GroupService extends base_service_1.BaseService {
             return groupData;
         });
     }
-    getGroupDetail(groupId) {
+    getGroupDetail(userId, groupId) {
         return __awaiter(this, void 0, void 0, function* () {
+            const user = yield this.manager.findOne(user_model_1.default, {
+                where: { id: userId },
+                relations: ["myGroups", "addedGroups"]
+            });
+            const group = yield this.manager.findOne(group_model_1.default, {
+                where: { id: groupId },
+            });
+            if (!group) {
+                throw new ExistData_1.default("Group is not exist");
+            }
+            if (!user.myGroups.some((group) => group.id === groupId) && !user.addedGroups.some((group) => group.id === groupId)) {
+                throw new Error("Group is not exist in your list");
+            }
             const groupDetail = yield this.manager
                 .createQueryBuilder(group_model_1.default, "group")
                 .leftJoinAndSelect("group.owner", "owner")
@@ -116,7 +129,8 @@ class GroupService extends base_service_1.BaseService {
                 return student;
             }));
             const studentData = yield Promise.all(studentPromises);
-            return Object.assign(Object.assign({}, groupDetail), { courses: courseData, students: studentData });
+            const groupData = Object.assign(Object.assign({}, groupDetail), { courses: courseData, students: studentData });
+            return groupData;
         });
     }
     createGroup(userId, group) {

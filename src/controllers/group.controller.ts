@@ -35,7 +35,8 @@ export default class GroupController  {
   async getGroupDetail(@Req() req: Request, @Res() res: Response) {
     try {
       const groupId = req.params.id;
-      const result = await this.groupService.getGroupDetail(parseInt(groupId));
+      const userId = req.body.currentUserData.id;
+      const result = await this.groupService.getGroupDetail(parseInt(userId),parseInt(groupId));
       return res.send(result);
     } catch (error) {
       return res.status(400).send(error);

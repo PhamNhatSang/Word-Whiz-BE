@@ -42,7 +42,23 @@ export default class GroupService extends BaseService {
       const groupData = await Promise.all(groupPromises);
     return groupData;
   }
-  async getGroupDetail(groupId: number) {
+  async getGroupDetail(userId:number,groupId: number) {
+    const user = await this.manager.findOne(User, {
+      where: { id: userId },
+      relations: ["myGroups","addedGroups"]
+    });
+
+    const group = await this.manager.findOne(Group, {
+      where: { id: groupId },
+    });
+
+    if (!group) {
+      throw new ExistData("Group is not exist");
+    }
+    if(!user.myGroups.some((group) => group.id === groupId) && !user.addedGroups.some((group) => group.id === groupId)){
+      throw new Error("Group is not exist in your list");
+    }
+  
     const groupDetail = await this.manager
       .createQueryBuilder(Group, "group")
       .leftJoinAndSelect("group.owner", "owner")
@@ -108,8 +124,10 @@ export default class GroupService extends BaseService {
       }
       )
       const studentData = await Promise.all(studentPromises);
+      const groupData ={ ...groupDetail, courses: courseData,students:studentData };
 
-    return { ...groupDetail, courses: courseData,students:studentData };
+
+    return groupData;
   }
 
   async createGroup(userId: number, group: Group) {

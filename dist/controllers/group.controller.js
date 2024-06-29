@@ -44,7 +44,8 @@ let GroupController = class GroupController {
         return __awaiter(this, void 0, void 0, function* () {
             try {
                 const groupId = req.params.id;
-                const result = yield this.groupService.getGroupDetail(parseInt(groupId));
+                const userId = req.body.currentUserData.id;
+                const result = yield this.groupService.getGroupDetail(parseInt(userId), parseInt(groupId));
                 return res.send(result);
             }
             catch (error) {
