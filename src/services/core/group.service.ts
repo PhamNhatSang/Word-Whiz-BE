@@ -117,11 +117,10 @@ export default class GroupService extends BaseService {
       where: { id: userId },
       relations: ["myGroups"],
     });
-    group.code = "#"+generateRandomCode(7,group.id);
-    user.myGroups.push(group);
-    await this.manager.save(user);
     group.owner = user;
-    await this.manager.getRepository(Group).save(group);
+   const groupCreate= await this.manager.getRepository(Group).save(group);
+   groupCreate.code = "#"+generateRandomCode(7,groupCreate.id);
+    await this.manager.getRepository(Group).save(groupCreate);
   }
   async deleteGroup(userId: number, groupId: number): Promise<void> {
     const user = await this.manager.findOne(User, {

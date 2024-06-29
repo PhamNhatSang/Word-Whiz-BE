@@ -125,11 +125,10 @@ class GroupService extends base_service_1.BaseService {
                 where: { id: userId },
                 relations: ["myGroups"],
             });
-            group.code = "#" + (0, shuffle_1.generateRandomCode)(7, group.id);
-            user.myGroups.push(group);
-            yield this.manager.save(user);
             group.owner = user;
-            yield this.manager.getRepository(group_model_1.default).save(group);
+            const groupCreate = yield this.manager.getRepository(group_model_1.default).save(group);
+            groupCreate.code = "#" + (0, shuffle_1.generateRandomCode)(7, groupCreate.id);
+            yield this.manager.getRepository(group_model_1.default).save(groupCreate);
         });
     }
     deleteGroup(userId, groupId) {
