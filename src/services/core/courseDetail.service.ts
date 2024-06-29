@@ -15,6 +15,9 @@ export default class CourseDetailService extends BaseService {
         where: { id: courseId },
         relations: { owner: true, words: true },
         });
+        if (!course) {
+            throw new Error("Course is not exist");
+        }
        
         const user = await this.manager.findOne(User,{
         where: { id: userId },

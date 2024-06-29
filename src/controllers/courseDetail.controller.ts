@@ -25,6 +25,8 @@ export default class CourseDetailController {
       const result = await this.courseDetailService.getCourseDetail(parseInt(userId),parseInt(courseId));
       return res.send(result);
     } catch (error) {
+      console.log(error);
+
       return res.status(400).send(error);
     }
   }

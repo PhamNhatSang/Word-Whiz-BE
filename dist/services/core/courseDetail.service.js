@@ -27,6 +27,9 @@ class CourseDetailService extends base_service_1.BaseService {
                 where: { id: courseId },
                 relations: { owner: true, words: true },
             });
+            if (!course) {
+                throw new Error("Course is not exist");
+            }
             const user = yield this.manager.findOne(user_model_1.default, {
                 where: { id: userId },
                 relations: ["myCourses", "courseImports"],
