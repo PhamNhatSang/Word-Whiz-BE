@@ -42,21 +42,24 @@ export default class GroupService extends BaseService {
       const groupData = await Promise.all(groupPromises);
     return groupData;
   }
-  async getGroupDetail(userId:number,groupId: number) {
+  async getGroupDetail(userId: number, groupId: number) {
     const user = await this.manager.findOne(User, {
       where: { id: userId },
-      relations: ["myGroups","addedGroups"]
+      relations: ["myGroups", "addedGroups"],
     });
-
-    const group = await this.manager.findOne(Group, {
-      where: { id: groupId },
-    });
-
+  
+    const group = await this.manager.findOne(Group, { where: { id: groupId } });
+  
     if (!group) {
-      throw new ExistData("Group is not exist");
+      throw new ExistData("Group does not exist");
     }
-    if(!user.myGroups.some((group) => group.id === groupId) && !user.addedGroups.some((group) => group.id === groupId)){
-      throw new Error("Group is not exist in your list");
+  
+    const isGroupMember =
+      user.myGroups.some((group) => group.id === groupId) ||
+      user.addedGroups.some((group) => group.id === groupId);
+  
+    if (!isGroupMember) {
+      throw new Error("Group is not in your list");
     }
   
     const groupDetail = await this.manager
@@ -69,14 +72,16 @@ export default class GroupService extends BaseService {
         "owner.name",
         "owner.avatar",
         "group.groupDescription AS description",
-        "group.code AS code",    
+        "group.code AS code",
       ])
       .where("group.id = :groupId", { groupId })
       .getRawOne();
-
-      const onwerGroupAvatar = await getObjectSignedUrl(groupDetail?.owner_avatar as string);
-      groupDetail.owner_avatar = onwerGroupAvatar;
-    const course = await this.manager
+  
+    if (groupDetail?.owner_avatar) {
+      groupDetail.owner_avatar = await getObjectSignedUrl(groupDetail.owner_avatar);
+    }
+  
+    const courses = await this.manager
       .createQueryBuilder(Course, "course")
       .leftJoinAndSelect("course.owner", "owner")
       .leftJoinAndSelect("course.addedGroups", "groups")
@@ -93,19 +98,19 @@ export default class GroupService extends BaseService {
         "owner.avatar",
       ])
       .addSelect("COUNT(words.id)", "terms")
-      .groupBy("course.id, owner.id,groups.id")
-      .where("groups.id = :groupId", { groupId: groupId })
+      .groupBy("course.id, owner.id, groups.id")
+      .where("groups.id = :groupId", { groupId })
       .getRawMany();
-
-      const coursePromises = course.map(async (course) => {
-        const imageUrl = await getObjectSignedUrl(course?.owner_avatar as string);
-        course.owner_avatar = imageUrl;
+  
+    const courseData = await Promise.all(
+      courses.map(async (course) => {
+        if (course.owner_avatar) {
+          course.owner_avatar = await getObjectSignedUrl(course.owner_avatar);
+        }
         return course;
-      }
-      )
-      const courseData = await Promise.all(coursePromises);
-
-
+      })
+    );
+  
     const students = await this.manager
       .createQueryBuilder(User, "user")
       .leftJoinAndSelect("user.addedGroups", "group")
@@ -116,19 +121,23 @@ export default class GroupService extends BaseService {
         "user.avatar as student_avatar",
       ])
       .getRawMany();
-      
-      const studentPromises = students.map(async (student) => {
-        if(student.student_avatar)
-          student.student_avatar= await getObjectSignedUrl(student.student_avatar as string);
+  
+    const studentData = await Promise.all(
+      students.map(async (student) => {
+        if (student.student_avatar) {
+          student.student_avatar = await getObjectSignedUrl(student.student_avatar);
+        }
         return student;
-      }
-      )
-      const studentData = await Promise.all(studentPromises);
-      const groupData ={ ...groupDetail, courses: courseData,students:studentData };
-
-
-    return groupData;
+      })
+    );
+  
+    return {
+      ...groupDetail,
+      courses: courseData,
+      students: studentData,
+    };
   }
+  
 
   async createGroup(userId: number, group: Group) {
     const user = await this.manager.findOne(User, {

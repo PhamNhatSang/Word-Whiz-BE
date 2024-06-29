@@ -60,16 +60,16 @@ class GroupService extends base_service_1.BaseService {
         return __awaiter(this, void 0, void 0, function* () {
             const user = yield this.manager.findOne(user_model_1.default, {
                 where: { id: userId },
-                relations: ["myGroups", "addedGroups"]
+                relations: ["myGroups", "addedGroups"],
             });
-            const group = yield this.manager.findOne(group_model_1.default, {
-                where: { id: groupId },
-            });
+            const group = yield this.manager.findOne(group_model_1.default, { where: { id: groupId } });
             if (!group) {
-                throw new ExistData_1.default("Group is not exist");
+                throw new ExistData_1.default("Group does not exist");
             }
-            if (!user.myGroups.some((group) => group.id === groupId) && !user.addedGroups.some((group) => group.id === groupId)) {
-                throw new Error("Group is not exist in your list");
+            const isGroupMember = user.myGroups.some((group) => group.id === groupId) ||
+                user.addedGroups.some((group) => group.id === groupId);
+            if (!isGroupMember) {
+                throw new Error("Group is not in your list");
             }
             const groupDetail = yield this.manager
                 .createQueryBuilder(group_model_1.default, "group")
@@ -85,9 +85,10 @@ class GroupService extends base_service_1.BaseService {
             ])
                 .where("group.id = :groupId", { groupId })
                 .getRawOne();
-            const onwerGroupAvatar = yield (0, s3_1.getObjectSignedUrl)(groupDetail === null || groupDetail === void 0 ? void 0 : groupDetail.owner_avatar);
-            groupDetail.owner_avatar = onwerGroupAvatar;
-            const course = yield this.manager
+            if (groupDetail === null || groupDetail === void 0 ? void 0 : groupDetail.owner_avatar) {
+                groupDetail.owner_avatar = yield (0, s3_1.getObjectSignedUrl)(groupDetail.owner_avatar);
+            }
+            const courses = yield this.manager
                 .createQueryBuilder(course_model_1.default, "course")
                 .leftJoinAndSelect("course.owner", "owner")
                 .leftJoinAndSelect("course.addedGroups", "groups")
@@ -104,15 +105,15 @@ class GroupService extends base_service_1.BaseService {
                 "owner.avatar",
             ])
                 .addSelect("COUNT(words.id)", "terms")
-                .groupBy("course.id, owner.id,groups.id")
-                .where("groups.id = :groupId", { groupId: groupId })
+                .groupBy("course.id, owner.id, groups.id")
+                .where("groups.id = :groupId", { groupId })
                 .getRawMany();
-            const coursePromises = course.map((course) => __awaiter(this, void 0, void 0, function* () {
-                const imageUrl = yield (0, s3_1.getObjectSignedUrl)(course === null || course === void 0 ? void 0 : course.owner_avatar);
-                course.owner_avatar = imageUrl;
+            const courseData = yield Promise.all(courses.map((course) => __awaiter(this, void 0, void 0, function* () {
+                if (course.owner_avatar) {
+                    course.owner_avatar = yield (0, s3_1.getObjectSignedUrl)(course.owner_avatar);
+                }
                 return course;
-            }));
-            const courseData = yield Promise.all(coursePromises);
+            })));
             const students = yield this.manager
                 .createQueryBuilder(user_model_1.default, "user")
                 .leftJoinAndSelect("user.addedGroups", "group")
@@ -123,14 +124,13 @@ class GroupService extends base_service_1.BaseService {
                 "user.avatar as student_avatar",
             ])
                 .getRawMany();
-            const studentPromises = students.map((student) => __awaiter(this, void 0, void 0, function* () {
-                if (student.student_avatar)
+            const studentData = yield Promise.all(students.map((student) => __awaiter(this, void 0, void 0, function* () {
+                if (student.student_avatar) {
                     student.student_avatar = yield (0, s3_1.getObjectSignedUrl)(student.student_avatar);
+                }
                 return student;
-            }));
-            const studentData = yield Promise.all(studentPromises);
-            const groupData = Object.assign(Object.assign({}, groupDetail), { courses: courseData, students: studentData });
-            return groupData;
+            })));
+            return Object.assign(Object.assign({}, groupDetail), { courses: courseData, students: studentData });
         });
     }
     createGroup(userId, group) {
