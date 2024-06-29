@@ -49,6 +49,9 @@ let GroupController = class GroupController {
                 return res.send(result);
             }
             catch (error) {
+                if (error.message === "Group does not exist" || error.message === "Group is not in your list") {
+                    return res.status(404).send(error);
+                }
                 return res.status(400).send(error);
             }
         });

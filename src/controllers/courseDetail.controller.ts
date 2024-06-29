@@ -25,8 +25,9 @@ export default class CourseDetailController {
       const result = await this.courseDetailService.getCourseDetail(parseInt(userId),parseInt(courseId));
       return res.send(result);
     } catch (error) {
-      console.log(error);
-
+      if (error.message === "Course does not exist") {
+        return res.status(404).send(error);
+      }  
       return res.status(400).send(error);
     }
   }
