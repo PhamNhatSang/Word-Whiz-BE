@@ -48,8 +48,8 @@ class GroupService extends base_service_1.BaseService {
                 .addGroupBy("owner.id")
                 .getRawMany();
             const groupPromises = groups.map((group) => __awaiter(this, void 0, void 0, function* () {
-                const imageUrl = yield (0, s3_1.getObjectSignedUrl)(group === null || group === void 0 ? void 0 : group.owner_avatar);
-                group.owner_avatar = imageUrl;
+                if (group.owner_avatar)
+                    group.owner_avatar = yield (0, s3_1.getObjectSignedUrl)(group === null || group === void 0 ? void 0 : group.owner_avatar);
                 return group;
             }));
             const groupData = yield Promise.all(groupPromises);
@@ -170,9 +170,13 @@ class GroupService extends base_service_1.BaseService {
             }
             group.students.push(...userToAdd);
             yield this.manager.save(group);
-            return userToAdd.map((student) => {
+            const userDataToAdd = userToAdd.map((student) => __awaiter(this, void 0, void 0, function* () {
+                if (student.avatar)
+                    student.avatar = yield (0, s3_1.getObjectSignedUrl)(student.avatar);
                 return { student_email: student.email, student_name: student.name, student_avatar: student.avatar };
-            });
+            }));
+            const userDataReturn = yield Promise.all(userDataToAdd);
+            return userDataReturn;
         });
     }
     removeStudent(groupId, email) {
@@ -230,8 +234,8 @@ class GroupService extends base_service_1.BaseService {
                 .where("course.id = :courseId", { courseId: courseId })
                 .groupBy("course.id, owner.id")
                 .getRawOne();
-            const onwerCourseAvatar = yield (0, s3_1.getObjectSignedUrl)(addCourse === null || addCourse === void 0 ? void 0 : addCourse.owner_avatar);
-            addCourse.owner_avatar = onwerCourseAvatar;
+            if (addCourse.owner_avatar)
+                addCourse.owner_avatar = yield (0, s3_1.getObjectSignedUrl)(addCourse === null || addCourse === void 0 ? void 0 : addCourse.owner_avatar);
             return addCourse;
         });
     }

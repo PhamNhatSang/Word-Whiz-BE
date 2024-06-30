@@ -35,8 +35,8 @@ export default class GroupService extends BaseService {
       .getRawMany();
 
       const groupPromises = groups.map(async (group) => {
-        const imageUrl = await getObjectSignedUrl(group?.owner_avatar as string);
-        group.owner_avatar = imageUrl;
+        if(group.owner_avatar)
+        group.owner_avatar = await getObjectSignedUrl(group?.owner_avatar as string);
         return group;
       })
       const groupData = await Promise.all(groupPromises);
@@ -176,8 +176,13 @@ export default class GroupService extends BaseService {
 
      await this.manager.save(group);
       
-     return userToAdd.map((student) => {
+    const  userDataToAdd= userToAdd.map( async (student) => {
+      if(student.avatar)
+      student.avatar = await getObjectSignedUrl(student.avatar);
       return {student_email:student.email, student_name: student.name, student_avatar: student.avatar}; })
+
+    const userDataReturn = await Promise.all(userDataToAdd);
+    return userDataReturn;
 
   }
 
@@ -238,8 +243,8 @@ export default class GroupService extends BaseService {
     .where("course.id = :courseId", { courseId: courseId })
     .groupBy("course.id, owner.id")
     .getRawOne();
-     const onwerCourseAvatar = await getObjectSignedUrl(addCourse?.owner_avatar as string);
-      addCourse.owner_avatar = onwerCourseAvatar;
+    if(addCourse.owner_avatar)
+      addCourse.owner_avatar= await getObjectSignedUrl(addCourse?.owner_avatar as string);
     return addCourse;
     
   }
