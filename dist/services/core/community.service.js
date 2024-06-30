@@ -102,6 +102,8 @@ class CommunityService extends base_service_1.BaseService {
                 postId: postData.id,
                 userId: postData.owner.id,
                 userAvatar: avatarUrl,
+                numberOfLikes: 0,
+                numberOfComments: 0,
                 userName: postData.owner.name,
                 imageUrl: imageUrl,
                 courses: courseData,
