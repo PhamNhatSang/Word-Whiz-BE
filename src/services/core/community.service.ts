@@ -14,26 +14,35 @@ export default class CommunityService extends BaseService {
   constructor() {
     super();
   }
-
-  async getCommunities(userId: number) {
-    const allPosts = await this.manager.find(Post, { relations: {courses:true,owner:true,postReacts:{user:true}} });
-    
+  async getCommunities(userId: number, page: number = 1, limit: number = 5) {
+    const offset = (page - 1) * limit;
+  
+    const allPosts = await this.manager.find(Post, {
+      relations: { courses: true, owner: true, postReacts: { user: true }, postComments: true },
+      skip: offset,
+      take: limit
+    });
+  
     const allPostPromises = allPosts.map(async (post) => {
       let imageUrl = null;
-      if(post.image)
-       imageUrl = await getObjectSignedUrl(post.image);
+      if (post.image) {
+        imageUrl = await getObjectSignedUrl(post.image);
+      }
       const isLiked = post.postReacts.some(react => react.user.id === userId && react.emotion === Emotion.LIKE);
       const courseData = post.courses.map((course) => {
         return { courseId: course.id, courseName: course.title };
       });
-      if(post.owner.avatar)
-      post.owner.avatar = await getObjectSignedUrl(post.owner.avatar);
-      
+      if (post.owner.avatar) {
+        post.owner.avatar = await getObjectSignedUrl(post.owner.avatar);
+      }
+  
       return {
         content: post.content,
         postId: post.id,
         userId: post.owner.id,
         userName: post.owner.name,
+        numberOfLikes: post.postReacts.filter(react => react.emotion === Emotion.LIKE).length,
+        numberOfComments: post.postComments.length,
         userAvatar: post.owner.avatar,
         imageUrl: imageUrl,
         courses: courseData,
@@ -41,13 +50,12 @@ export default class CommunityService extends BaseService {
       };
     });
   
-    const resolvedPosts = await Promise.all(allPostPromises);
+    // Resolve all promises
+    const posts = await Promise.all(allPostPromises);
   
-    return resolvedPosts.sort((a, b) => {
-      return b.postId - a.postId;
-    })
-
+    return posts;
   }
+  
 
   async createPost(
     userId: number,
@@ -58,7 +66,8 @@ export default class CommunityService extends BaseService {
     const user = await this.manager.findOne(User, { where: { id: userId } });
     const course = await this.manager.find(Course, {
       where: { id: In(courseListId) },
-    }); // Replace 'In' with 'In'
+    }); 
+
     const PostItem = new Post();
     PostItem.owner = user;
     PostItem.content = content;
@@ -103,7 +112,9 @@ export default class CommunityService extends BaseService {
     comment.content = content;
     comment.post = post;
     await this.manager.save(comment);
-    const avatarUrl =  await getObjectSignedUrl(user.avatar);
+    let avatarUrl=null
+    if(user.avatar)
+     avatarUrl =  await getObjectSignedUrl(user.avatar);
     return {
       content: comment.content,
       commentId: comment.id,
@@ -119,7 +130,10 @@ export default class CommunityService extends BaseService {
       relations: ["user"],
     });
     const commentData= comments.map(async (comment) => {
-      const avatarUrl =  await getObjectSignedUrl(comment.user.avatar);
+      let avatarUrl=null
+      if(comment.user.avatar)
+       avatarUrl =  await getObjectSignedUrl(comment.user.avatar);
+
       return {
         content: comment.content,
         commentId: comment.id,
@@ -150,7 +164,47 @@ export default class CommunityService extends BaseService {
 
   }
 
-  async deletePost(postId: number) {
+  async deletePost(userId:number,postId: number) {
     await this.manager.delete(Post, { id: postId });
+
+    const offset = (1 - 1) * 5;
+  
+    const allPosts = await this.manager.find(Post, {
+      relations: { courses: true, owner: true, postReacts: { user: true }, postComments: true },
+      skip: offset,
+      take: 5
+    });
+  
+    const allPostPromises = allPosts.map(async (post) => {
+      let imageUrl = null;
+      if (post.image) {
+        imageUrl = await getObjectSignedUrl(post.image);
+      }
+      const isLiked = post.postReacts.some(react => react.user.id === userId && react.emotion === Emotion.LIKE);
+      const courseData = post.courses.map((course) => {
+        return { courseId: course.id, courseName: course.title };
+      });
+      if (post.owner.avatar) {
+        post.owner.avatar = await getObjectSignedUrl(post.owner.avatar);
+      }
+  
+      return {
+        content: post.content,
+        postId: post.id,
+        userId: post.owner.id,
+        userName: post.owner.name,
+        numberOfLikes: post.postReacts.filter(react => react.emotion === Emotion.LIKE).length,
+        numberOfComments: post.postComments.length,
+        userAvatar: post.owner.avatar,
+        imageUrl: imageUrl,
+        courses: courseData,
+        isLiked: isLiked,
+      };
+    });
+  
+    // Resolve all promises
+    const posts = await Promise.all(allPostPromises);
+  
+    return posts;
   }
 }

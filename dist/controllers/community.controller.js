@@ -78,11 +78,11 @@ let CommunityController = class CommunityController {
             }
         });
     }
-    getCommunities(req, res) {
+    getCommunities(page, req, res) {
         return __awaiter(this, void 0, void 0, function* () {
             try {
                 const userId = req.body.currentUserData.id;
-                const result = yield this.communityService.getCommunities(parseInt(userId));
+                const result = yield this.communityService.getCommunities(parseInt(userId), page);
                 return res.send(result);
             }
             catch (error) {
@@ -107,7 +107,8 @@ let CommunityController = class CommunityController {
         return __awaiter(this, void 0, void 0, function* () {
             try {
                 const postId = req.params.id;
-                const result = yield this.communityService.deletePost(parseInt(postId));
+                const userId = req.body.currentUserData.id;
+                const result = yield this.communityService.deletePost(parseInt(userId), parseInt(postId));
                 return res.send(result);
             }
             catch (error) {
@@ -146,10 +147,11 @@ __decorate([
 ], CommunityController.prototype, "likePost", null);
 __decorate([
     (0, routing_controllers_1.Get)("/"),
-    __param(0, (0, routing_controllers_1.Req)()),
-    __param(1, (0, routing_controllers_1.Res)()),
+    __param(0, (0, routing_controllers_1.QueryParam)("page")),
+    __param(1, (0, routing_controllers_1.Req)()),
+    __param(2, (0, routing_controllers_1.Res)()),
     __metadata("design:type", Function),
-    __metadata("design:paramtypes", [Object, Object]),
+    __metadata("design:paramtypes", [Number, Object, Object]),
     __metadata("design:returntype", Promise)
 ], CommunityController.prototype, "getCommunities", null);
 __decorate([

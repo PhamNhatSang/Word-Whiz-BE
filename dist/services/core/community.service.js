@@ -27,34 +27,42 @@ class CommunityService extends base_service_1.BaseService {
     constructor() {
         super();
     }
-    getCommunities(userId) {
-        return __awaiter(this, void 0, void 0, function* () {
-            const allPosts = yield this.manager.find(post_model_1.default, { relations: { courses: true, owner: true, postReacts: { user: true } } });
+    getCommunities(userId_1) {
+        return __awaiter(this, arguments, void 0, function* (userId, page = 1, limit = 5) {
+            const offset = (page - 1) * limit;
+            const allPosts = yield this.manager.find(post_model_1.default, {
+                relations: { courses: true, owner: true, postReacts: { user: true }, postComments: true },
+                skip: offset,
+                take: limit
+            });
             const allPostPromises = allPosts.map((post) => __awaiter(this, void 0, void 0, function* () {
                 let imageUrl = null;
-                if (post.image)
+                if (post.image) {
                     imageUrl = yield (0, s3_2.getObjectSignedUrl)(post.image);
+                }
                 const isLiked = post.postReacts.some(react => react.user.id === userId && react.emotion === Emotion_1.Emotion.LIKE);
                 const courseData = post.courses.map((course) => {
                     return { courseId: course.id, courseName: course.title };
                 });
-                if (post.owner.avatar)
+                if (post.owner.avatar) {
                     post.owner.avatar = yield (0, s3_2.getObjectSignedUrl)(post.owner.avatar);
+                }
                 return {
                     content: post.content,
                     postId: post.id,
                     userId: post.owner.id,
                     userName: post.owner.name,
+                    numberOfLikes: post.postReacts.filter(react => react.emotion === Emotion_1.Emotion.LIKE).length,
+                    numberOfComments: post.postComments.length,
                     userAvatar: post.owner.avatar,
                     imageUrl: imageUrl,
                     courses: courseData,
                     isLiked: isLiked,
                 };
             }));
-            const resolvedPosts = yield Promise.all(allPostPromises);
-            return resolvedPosts.sort((a, b) => {
-                return b.postId - a.postId;
-            });
+            // Resolve all promises
+            const posts = yield Promise.all(allPostPromises);
+            return posts;
         });
     }
     createPost(userId, courseListId, file, content) {
@@ -62,7 +70,7 @@ class CommunityService extends base_service_1.BaseService {
             const user = yield this.manager.findOne(user_model_1.default, { where: { id: userId } });
             const course = yield this.manager.find(course_model_1.default, {
                 where: { id: (0, typeorm_1.In)(courseListId) },
-            }); // Replace 'In' with 'In'
+            });
             const PostItem = new post_model_1.default();
             PostItem.owner = user;
             PostItem.content = content;
@@ -108,7 +116,9 @@ class CommunityService extends base_service_1.BaseService {
             comment.content = content;
             comment.post = post;
             yield this.manager.save(comment);
-            const avatarUrl = yield (0, s3_2.getObjectSignedUrl)(user.avatar);
+            let avatarUrl = null;
+            if (user.avatar)
+                avatarUrl = yield (0, s3_2.getObjectSignedUrl)(user.avatar);
             return {
                 content: comment.content,
                 commentId: comment.id,
@@ -125,7 +135,9 @@ class CommunityService extends base_service_1.BaseService {
                 relations: ["user"],
             });
             const commentData = comments.map((comment) => __awaiter(this, void 0, void 0, function* () {
-                const avatarUrl = yield (0, s3_2.getObjectSignedUrl)(comment.user.avatar);
+                let avatarUrl = null;
+                if (comment.user.avatar)
+                    avatarUrl = yield (0, s3_2.getObjectSignedUrl)(comment.user.avatar);
                 return {
                     content: comment.content,
                     commentId: comment.id,
@@ -156,9 +168,43 @@ class CommunityService extends base_service_1.BaseService {
             }
         });
     }
-    deletePost(postId) {
+    deletePost(userId, postId) {
         return __awaiter(this, void 0, void 0, function* () {
             yield this.manager.delete(post_model_1.default, { id: postId });
+            const offset = (1 - 1) * 5;
+            const allPosts = yield this.manager.find(post_model_1.default, {
+                relations: { courses: true, owner: true, postReacts: { user: true }, postComments: true },
+                skip: offset,
+                take: 5
+            });
+            const allPostPromises = allPosts.map((post) => __awaiter(this, void 0, void 0, function* () {
+                let imageUrl = null;
+                if (post.image) {
+                    imageUrl = yield (0, s3_2.getObjectSignedUrl)(post.image);
+                }
+                const isLiked = post.postReacts.some(react => react.user.id === userId && react.emotion === Emotion_1.Emotion.LIKE);
+                const courseData = post.courses.map((course) => {
+                    return { courseId: course.id, courseName: course.title };
+                });
+                if (post.owner.avatar) {
+                    post.owner.avatar = yield (0, s3_2.getObjectSignedUrl)(post.owner.avatar);
+                }
+                return {
+                    content: post.content,
+                    postId: post.id,
+                    userId: post.owner.id,
+                    userName: post.owner.name,
+                    numberOfLikes: post.postReacts.filter(react => react.emotion === Emotion_1.Emotion.LIKE).length,
+                    numberOfComments: post.postComments.length,
+                    userAvatar: post.owner.avatar,
+                    imageUrl: imageUrl,
+                    courses: courseData,
+                    isLiked: isLiked,
+                };
+            }));
+            // Resolve all promises
+            const posts = yield Promise.all(allPostPromises);
+            return posts;
         });
     }
 }

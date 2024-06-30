@@ -6,6 +6,7 @@ import {
   Get,
   Post,
   Put,
+  QueryParam,
   Req,
   Res,
   UseBefore,
@@ -77,10 +78,10 @@ export default class CommunityController  {
   }
 
   @Get("/")
-  async getCommunities(@Req() req: Request, @Res() res: Response) {
+  async getCommunities(@QueryParam("page") page :number, @Req() req: Request, @Res() res: Response) {
     try {
       const userId = req.body.currentUserData.id;
-      const result = await this.communityService.getCommunities(parseInt(userId));
+      const result = await this.communityService.getCommunities(parseInt(userId),page);
       return res.send(result);
     } catch (error) {
       console.log(error);
@@ -102,7 +103,8 @@ export default class CommunityController  {
   async deletePost(@Req() req: Request, @Res() res: Response) {
     try {
       const postId = req.params.id;
-      const result = await this.communityService.deletePost(parseInt(postId));
+      const userId = req.body.currentUserData.id;
+      const result = await this.communityService.deletePost(parseInt(userId),parseInt(postId));
       return res.send(result);
     } catch (error) {
       return res.status(400).send(error);
