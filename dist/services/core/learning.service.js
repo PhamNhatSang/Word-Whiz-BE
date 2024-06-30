@@ -40,6 +40,12 @@ class LearningService extends base_service_1.BaseService {
                 learning.course = course;
                 learn = yield this.manager.getRepository(learning_model_1.default).save(learning);
             }
+            else {
+                if (learn.isDone) {
+                    learn.isDone = false;
+                    yield this.manager.getRepository(learning_model_1.default).update(learn.id, { isDone: false });
+                }
+            }
             const myLearning = Object.assign(Object.assign({}, learn), { courseId: courseId, userId: userId, courseName: learn.course.title, words: learn.course.words });
             delete myLearning.course;
             delete myLearning.user;
@@ -48,9 +54,18 @@ class LearningService extends base_service_1.BaseService {
     }
     updateLearning(learnId, lastWordIndex) {
         return __awaiter(this, void 0, void 0, function* () {
-            yield this.manager
-                .getRepository(learning_model_1.default)
-                .update(learnId, { lastWordIndex: lastWordIndex });
+            const learn = yield this.manager.findOne(learning_model_1.default, {
+                where: { id: learnId },
+                relations: { course: { words: true } },
+            });
+            if (lastWordIndex === learn.course.words.length) {
+                learn.isDone = true;
+                learn.lastWordIndex = 0;
+            }
+            else {
+                learn.lastWordIndex = lastWordIndex;
+            }
+            yield this.manager.getRepository(learning_model_1.default).save(learn);
         });
     }
     updateTestItem(testItemId, userAnswer) {

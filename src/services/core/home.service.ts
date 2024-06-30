@@ -131,7 +131,9 @@ export default class HomeService extends BaseService {
         "learning",
         "learning.user.id = :learnerId",
         { learnerId: userId }
-      )
+      ).where("learning.isDone = :isDone",{
+        isDone: false,
+      })
       .groupBy("course.id, owner.id, learning.lastWordIndex")
       .getRawMany();
 

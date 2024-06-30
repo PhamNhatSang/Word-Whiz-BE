@@ -25,6 +25,11 @@ export default class LearningService extends BaseService {
       learning.user = user;
       learning.course = course;
       learn = await this.manager.getRepository(Learning).save(learning);
+    }else{
+      if(learn.isDone){
+          learn.isDone = false;
+          await this.manager.getRepository(Learning).update(learn.id,{isDone:false});
+      }
     }
 
     const myLearning = {
@@ -41,9 +46,18 @@ export default class LearningService extends BaseService {
   }
 
   async updateLearning(learnId: number, lastWordIndex: number): Promise<void> {
-    await this.manager
-      .getRepository(Learning)
-      .update(learnId, { lastWordIndex: lastWordIndex });
+    const learn = await this.manager.findOne(Learning, {
+      where: { id: learnId },
+      relations:{course:{words:true}},
+    });
+
+    if (lastWordIndex === learn.course.words.length) {
+       learn.isDone = true;
+       learn.lastWordIndex = 0;
+    }else{
+      learn.lastWordIndex = lastWordIndex;
+    }
+    await this.manager.getRepository(Learning).save(learn);
   }
   async updateTestItem(testItemId: number, userAnswer: string): Promise<void> {
     await this.manager

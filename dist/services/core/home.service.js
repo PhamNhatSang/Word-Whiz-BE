@@ -123,7 +123,9 @@ class HomeService extends base_service_1.BaseService {
             ])
                 .innerJoin("course.owner", "owner")
                 .leftJoin("course.words", "word")
-                .innerJoin("course.learnings", "learning", "learning.user.id = :learnerId", { learnerId: userId })
+                .innerJoin("course.learnings", "learning", "learning.user.id = :learnerId", { learnerId: userId }).where("learning.isDone = :isDone", {
+                isDone: false,
+            })
                 .groupBy("course.id, owner.id, learning.lastWordIndex")
                 .getRawMany();
             const coursePromises = course.map((course) => __awaiter(this, void 0, void 0, function* () {
