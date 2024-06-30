@@ -90,8 +90,11 @@ export default class CommunityService extends BaseService {
     const courseData = postData.courses.map((course) => {
       return { courseId: course.id, courseName: course.title };
     });
+    
 
-    const avatarUrl =  await getObjectSignedUrl(user.avatar);
+    let avatarUrl=null
+    if(user.avatar)
+     avatarUrl =  await getObjectSignedUrl(user.avatar);
     return {
         content: postData.content,
       postId: postData.id,

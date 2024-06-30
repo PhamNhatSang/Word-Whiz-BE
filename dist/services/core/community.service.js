@@ -94,7 +94,9 @@ class CommunityService extends base_service_1.BaseService {
             const courseData = postData.courses.map((course) => {
                 return { courseId: course.id, courseName: course.title };
             });
-            const avatarUrl = yield (0, s3_2.getObjectSignedUrl)(user.avatar);
+            let avatarUrl = null;
+            if (user.avatar)
+                avatarUrl = yield (0, s3_2.getObjectSignedUrl)(user.avatar);
             return {
                 content: postData.content,
                 postId: postData.id,
