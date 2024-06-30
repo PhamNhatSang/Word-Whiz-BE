@@ -63,6 +63,7 @@ class LearningService extends base_service_1.BaseService {
                 learn.lastWordIndex = 0;
             }
             else {
+                learn.isDone = false;
                 learn.lastWordIndex = lastWordIndex;
             }
             yield this.manager.getRepository(learning_model_1.default).save(learn);

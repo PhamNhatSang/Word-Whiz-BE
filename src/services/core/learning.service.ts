@@ -55,6 +55,7 @@ export default class LearningService extends BaseService {
        learn.isDone = true;
        learn.lastWordIndex = 0;
     }else{
+      learn.isDone = false;
       learn.lastWordIndex = lastWordIndex;
     }
     await this.manager.getRepository(Learning).save(learn);
