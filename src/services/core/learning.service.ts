@@ -51,7 +51,7 @@ export default class LearningService extends BaseService {
       relations:{course:{words:true}},
     });
 
-    if (lastWordIndex === learn.course.words.length) {
+    if (lastWordIndex === learn.course.words.length-1) {
        learn.isDone = true;
        learn.lastWordIndex = 0;
     }else{
