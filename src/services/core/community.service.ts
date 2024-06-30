@@ -111,7 +111,7 @@ export default class CommunityService extends BaseService {
 
   async createComment(userId: number, postId: number, content: string) {
     const user = await this.manager.findOne(User, { where: { id: userId } });
-    const post = await this.manager.findOne(Post, { where: { id: postId } });
+    const post = await this.manager.findOne(Post, { where: { id: postId } ,relations: {postComments:true}});
     const comment = new Comment();
     comment.user = user;
     comment.content = content;
@@ -121,11 +121,14 @@ export default class CommunityService extends BaseService {
     if(user.avatar)
      avatarUrl =  await getObjectSignedUrl(user.avatar);
     return {
+      comment:{
       content: comment.content,
       commentId: comment.id,
       userId: comment.user.id,
       userAvatar: avatarUrl,
       userName: comment.user.name,
+      },
+      numberOfComments: post.postComments.length+1,
     };
   }
 
@@ -154,17 +157,30 @@ export default class CommunityService extends BaseService {
 
   async reactPost(userId: number,isLiked:boolean, postId: number) {
     const user = await this.manager.findOne(User, { where: { id: userId } });
-    const post = await this.manager.findOne(Post, { where: { id: postId } });
+    const post = await this.manager.findOne(Post, { where: { id: postId },relations: ["postReacts"]});
     const react = await this.manager.findOne(React, { where: { user: {id:userId}, post: {id:postId} } });
+
+    let numberOfLikes = post.postReacts.filter(react => react.emotion === Emotion.LIKE).length;
     if (react) {
-       console.log(react);
       react.emotion = isLiked ? Emotion.LIKE : Emotion.NONE;
       await this.manager.save(react);
+      if(isLiked){
+        numberOfLikes++;
+      }else{
+        numberOfLikes--;
+      }
     } else {
       const react = new React();
       react.user = user;
       react.post = post;
       await this.manager.save(react);
+      numberOfLikes++;
+    }
+    
+
+    return {
+      numberOfLikes: numberOfLikes,
+    
     }
 
   }

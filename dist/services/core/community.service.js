@@ -114,7 +114,7 @@ class CommunityService extends base_service_1.BaseService {
     createComment(userId, postId, content) {
         return __awaiter(this, void 0, void 0, function* () {
             const user = yield this.manager.findOne(user_model_1.default, { where: { id: userId } });
-            const post = yield this.manager.findOne(post_model_1.default, { where: { id: postId } });
+            const post = yield this.manager.findOne(post_model_1.default, { where: { id: postId }, relations: { postComments: true } });
             const comment = new comment_model_1.default();
             comment.user = user;
             comment.content = content;
@@ -124,11 +124,14 @@ class CommunityService extends base_service_1.BaseService {
             if (user.avatar)
                 avatarUrl = yield (0, s3_2.getObjectSignedUrl)(user.avatar);
             return {
-                content: comment.content,
-                commentId: comment.id,
-                userId: comment.user.id,
-                userAvatar: avatarUrl,
-                userName: comment.user.name,
+                comment: {
+                    content: comment.content,
+                    commentId: comment.id,
+                    userId: comment.user.id,
+                    userAvatar: avatarUrl,
+                    userName: comment.user.name,
+                },
+                numberOfComments: post.postComments.length + 1,
             };
         });
     }
@@ -157,19 +160,29 @@ class CommunityService extends base_service_1.BaseService {
     reactPost(userId, isLiked, postId) {
         return __awaiter(this, void 0, void 0, function* () {
             const user = yield this.manager.findOne(user_model_1.default, { where: { id: userId } });
-            const post = yield this.manager.findOne(post_model_1.default, { where: { id: postId } });
+            const post = yield this.manager.findOne(post_model_1.default, { where: { id: postId }, relations: ["postReacts"] });
             const react = yield this.manager.findOne(react_model_1.default, { where: { user: { id: userId }, post: { id: postId } } });
+            let numberOfLikes = post.postReacts.filter(react => react.emotion === Emotion_1.Emotion.LIKE).length;
             if (react) {
-                console.log(react);
                 react.emotion = isLiked ? Emotion_1.Emotion.LIKE : Emotion_1.Emotion.NONE;
                 yield this.manager.save(react);
+                if (isLiked) {
+                    numberOfLikes++;
+                }
+                else {
+                    numberOfLikes--;
+                }
             }
             else {
                 const react = new react_model_1.default();
                 react.user = user;
                 react.post = post;
                 yield this.manager.save(react);
+                numberOfLikes++;
             }
+            return {
+                numberOfLikes: numberOfLikes,
+            };
         });
     }
     deletePost(userId, postId) {
