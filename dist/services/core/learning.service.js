@@ -343,7 +343,7 @@ class LearningService extends base_service_1.BaseService {
                 delete itemData.word;
                 return itemData;
             });
-            return { testName: testName, listTestItem: listTestItem.sort((a, b) => a.id - b.id) };
+            return { testName: testName, isDone: test.isDone, listTestItem: listTestItem.sort((a, b) => a.id - b.id) };
         });
     }
     getResultDetail(testId) {

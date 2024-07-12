@@ -362,7 +362,7 @@ export default class LearningService extends BaseService {
       return itemData;
     });
 
-    return {testName:testName,listTestItem:listTestItem.sort((a, b) => a.id - b.id)}
+    return {testName:testName,isDone:test.isDone,listTestItem:listTestItem.sort((a, b) => a.id - b.id)}
   }
 
   async getResultDetail(testId: number) {
