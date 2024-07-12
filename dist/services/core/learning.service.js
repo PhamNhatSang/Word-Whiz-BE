@@ -332,7 +332,7 @@ class LearningService extends base_service_1.BaseService {
         return __awaiter(this, void 0, void 0, function* () {
             const test = yield this.manager.findOne(test_model_1.default, {
                 where: { id: testId },
-                relations: { testItems: { word: true } },
+                relations: { testItems: { word: true }, course: true },
             });
             let testName = test.course.title;
             if (test.testGroup) {

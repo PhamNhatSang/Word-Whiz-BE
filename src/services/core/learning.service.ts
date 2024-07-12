@@ -348,7 +348,7 @@ export default class LearningService extends BaseService {
   async getTestDetail(testId: number) {
     const test = await this.manager.findOne(Test, {
       where: { id: testId },
-      relations: { testItems: { word: true } },
+      relations: { testItems: { word: true },course:true },
     });
 
     let testName=test.course.title;
