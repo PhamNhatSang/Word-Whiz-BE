@@ -334,12 +334,16 @@ class LearningService extends base_service_1.BaseService {
                 where: { id: testId },
                 relations: { testItems: { word: true } },
             });
+            let testName = test.course.title;
+            if (test.testGroup) {
+                testName = test.testGroup.testName;
+            }
             const listTestItem = test.testItems.map((item) => {
                 const itemData = Object.assign(Object.assign({}, item), { question: item.word.term });
                 delete itemData.word;
                 return itemData;
             });
-            return listTestItem.sort((a, b) => a.id - b.id);
+            return { testName: testName, listTestItem: listTestItem.sort((a, b) => a.id - b.id) };
         });
     }
     getResultDetail(testId) {
