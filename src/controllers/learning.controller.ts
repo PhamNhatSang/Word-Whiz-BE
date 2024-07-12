@@ -119,8 +119,8 @@ export default class LearningController {
     @Get("/test/group/results/:id")
     async getTestResults(@Req() req: Request, @Res() res: Response) {
         try {
-            const groupId = req.params.id;
-            const result = await this.learningService.getAllResultTestInGroup(parseInt(groupId));
+            const testGroupId = req.params.id;
+            const result = await this.learningService.getAllResultTestInGroup(parseInt(testGroupId));
             return res.send(result);
         } catch (error) {
             console.log(error);

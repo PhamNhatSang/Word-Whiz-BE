@@ -140,8 +140,8 @@ let LearningController = class LearningController {
     getTestResults(req, res) {
         return __awaiter(this, void 0, void 0, function* () {
             try {
-                const groupId = req.params.id;
-                const result = yield this.learningService.getAllResultTestInGroup(parseInt(groupId));
+                const testGroupId = req.params.id;
+                const result = yield this.learningService.getAllResultTestInGroup(parseInt(testGroupId));
                 return res.send(result);
             }
             catch (error) {

@@ -276,10 +276,10 @@ class LearningService extends base_service_1.BaseService {
             });
         });
     }
-    getAllResultTestInGroup(groupId) {
+    getAllResultTestInGroup(testGroupId) {
         return __awaiter(this, void 0, void 0, function* () {
             const testGroups = yield this.manager.find(testGroup_model_1.default, {
-                where: { group: { id: groupId } },
+                where: { id: testGroupId },
                 relations: { tests: { testItems: { word: true }, user: true } },
             });
             const tests = testGroups.map((testGroup) => testGroup.tests
