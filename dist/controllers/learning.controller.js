@@ -167,7 +167,6 @@ let LearningController = class LearningController {
     getTestResultDetail(req, res) {
         return __awaiter(this, void 0, void 0, function* () {
             try {
-                console.log("dsadsadsadsadsa");
                 const testId = req.params.id;
                 const result = yield this.learningService.getResultDetail(parseInt(testId));
                 return res.send(result);

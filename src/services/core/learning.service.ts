@@ -369,9 +369,12 @@ export default class LearningService extends BaseService {
 
     const test = await this.manager.findOne(Test, {
       where: { id: testId },
-      relations: { testItems: { word: true } },
+      relations: { testItems: { word: true },course:true },
     });
-
+   let testName=test.course.title;
+    if(test.testGroup){
+      testName=test.testGroup.testName;
+    }
     const numberOfCorrectAnswer = test.testItems.filter((item) => item.user_answer === item.word.definition).length;
     const numberOfWrong = test.testItems.length - numberOfCorrectAnswer;
     const percentage = parseFloat(((numberOfCorrectAnswer / test.testItems.length) * 100).toFixed(2));
@@ -382,6 +385,7 @@ export default class LearningService extends BaseService {
     });
 
     return {
+      testName:testName,
       overall: {
         numberOfCorrectAnswer,
         numberOfWrong,

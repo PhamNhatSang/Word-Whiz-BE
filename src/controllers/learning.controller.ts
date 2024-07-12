@@ -144,7 +144,6 @@ export default class LearningController {
     @Get("/result/:id")
     async getTestResultDetail(@Req() req: Request, @Res() res: Response) {
         try {
-            console.log("dsadsadsadsadsa");
             const testId = req.params.id;
             const result = await this.learningService.getResultDetail(parseInt(testId));
             return res.send(result);
