@@ -291,7 +291,8 @@ export default class LearningService extends BaseService {
 
   async getAllResultTestInGroup(groupId: number) {
     const testGroups = await this.manager.find(TestGroup, {
-      where: { group: { id: groupId } ,tests:true},
+      where: { group: { id: groupId } },
+      relations: { tests: { testItems: { word: true }, user: true } },
     });
     const tests = testGroups.map((testGroup) => testGroup.tests
       .map((test) => {

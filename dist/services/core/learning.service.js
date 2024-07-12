@@ -279,7 +279,8 @@ class LearningService extends base_service_1.BaseService {
     getAllResultTestInGroup(groupId) {
         return __awaiter(this, void 0, void 0, function* () {
             const testGroups = yield this.manager.find(testGroup_model_1.default, {
-                where: { group: { id: groupId }, tests: true },
+                where: { group: { id: groupId } },
+                relations: { tests: { testItems: { word: true }, user: true } },
             });
             const tests = testGroups.map((testGroup) => testGroup.tests
                 .map((test) => {
