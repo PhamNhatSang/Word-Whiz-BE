@@ -18,12 +18,17 @@ const testItem_model_1 = __importDefault(require("./testItem.model"));
 const typeorm_1 = require("typeorm");
 const user_model_1 = __importDefault(require("./user.model"));
 const course_model_1 = __importDefault(require("./course.model"));
+const testGroup_model_1 = __importDefault(require("./testGroup.model"));
 let Test = class Test extends baseModel_1.BaseModel {
 };
 __decorate([
     (0, typeorm_1.Column)({ type: "int", name: 'score', default: 0 }),
     __metadata("design:type", Number)
 ], Test.prototype, "score", void 0);
+__decorate([
+    (0, typeorm_1.ManyToOne)(() => testGroup_model_1.default, (testGroup) => testGroup.tests, { nullable: true, onDelete: 'CASCADE', onUpdate: 'CASCADE' }),
+    __metadata("design:type", testGroup_model_1.default)
+], Test.prototype, "testGroup", void 0);
 __decorate([
     (0, typeorm_1.Column)({ type: "boolean", default: false, name: 'is_done' }),
     __metadata("design:type", Boolean)

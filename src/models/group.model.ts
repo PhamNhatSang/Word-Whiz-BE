@@ -5,6 +5,8 @@ import User from "./user.model";
 import { Entity, Column, ManyToOne, OneToMany, ManyToMany, JoinTable, BeforeInsert } from "typeorm";
 import Course from "./course.model";
 import { join } from "path";
+import Test from "./test.model";
+import TestGroup from "./testGroup.model";
 
 @Entity()
 export default class Group extends BaseModel {
@@ -35,6 +37,9 @@ export default class Group extends BaseModel {
   })
   students: User[];
 
+  @OneToMany(()=>TestGroup,(testGroup)=>testGroup.group,{nullable:true,cascade:true})
+  testGroups:TestGroup[];
+  
   @ManyToMany(() => Course, (cousre) => cousre.addedGroups,{nullable:true,cascade:true})
   @JoinTable({
     name: "group_courses",
@@ -48,6 +53,8 @@ export default class Group extends BaseModel {
     },
   })
   courses: Course[];
+
+
 
 
   

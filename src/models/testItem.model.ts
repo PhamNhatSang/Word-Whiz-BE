@@ -22,7 +22,8 @@ export default class TestItem extends BaseModel {
 
   @Column({ type: "text" })
   option_4: string;
-
+  
+  
  
 
   @Column({ type: "text" ,name:'user_answer',nullable:true,default:''})

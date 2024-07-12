@@ -57,9 +57,132 @@ let LearningController = class LearningController {
     startTest(req, res) {
         return __awaiter(this, void 0, void 0, function* () {
             try {
+                console.log('dsadsa');
                 const userId = req.body.currentUserData.id;
                 const courseId = req.params.id;
                 const result = yield this.learningService.createTest(parseInt(userId), parseInt(courseId));
+                return res.send(result);
+            }
+            catch (error) {
+                console.log(error);
+                return res.status(400).send(error);
+            }
+        });
+    }
+    getTest(req, res) {
+        return __awaiter(this, void 0, void 0, function* () {
+            try {
+                const testId = req.params.id;
+                const result = yield this.learningService.getTestDetail(parseInt(testId));
+                return res.send(result);
+            }
+            catch (error) {
+                console.log(error);
+                return res.status(400).send(error);
+            }
+        });
+    }
+    createDefaultTest(req, res) {
+        return __awaiter(this, void 0, void 0, function* () {
+            try {
+                console.log('dsadsa');
+                const { groupId, courseId, testName } = req.body;
+                const result = yield this.learningService.createGroupTestDefault(parseInt(groupId), parseInt(courseId), testName);
+                return res.send(result);
+            }
+            catch (error) {
+                console.log(error);
+                return res.status(400).send(error);
+            }
+        });
+    }
+    getTestByGroup(req, res) {
+        return __awaiter(this, void 0, void 0, function* () {
+            try {
+                const groupId = req.params.id;
+                const userId = req.body.currentUserData.id;
+                const result = yield this.learningService.getTestByGroupId(parseInt(groupId), parseInt(userId));
+                return res.send(result);
+            }
+            catch (error) {
+                console.log(error);
+                return res.status(400).send(error);
+            }
+        });
+    }
+    getTests(req, res) {
+        return __awaiter(this, void 0, void 0, function* () {
+            try {
+                const groupId = req.params.id;
+                const result = yield this.learningService.getTestForTeacher(parseInt(groupId));
+                return res.send(result);
+            }
+            catch (error) {
+                console.log(error);
+                return res.status(400).send(error);
+            }
+        });
+    }
+    createTestEddting(req, res) {
+        return __awaiter(this, void 0, void 0, function* () {
+            try {
+                const { groupId, courseId, testName } = req.body;
+                const testItems = req.body.testItems;
+                const result = yield this.learningService.createTestForGroup(parseInt(groupId), parseInt(courseId), testName, testItems);
+                return res.send(result);
+            }
+            catch (error) {
+                console.log(error);
+                return res.status(400).send(error);
+            }
+        });
+    }
+    getTestResults(req, res) {
+        return __awaiter(this, void 0, void 0, function* () {
+            try {
+                const groupId = req.params.id;
+                const result = yield this.learningService.getAllResultTestInGroup(parseInt(groupId));
+                return res.send(result);
+            }
+            catch (error) {
+                console.log(error);
+                return res.status(400).send(error);
+            }
+        });
+    }
+    getTestResultsForUser(req, res) {
+        return __awaiter(this, void 0, void 0, function* () {
+            try {
+                const userId = req.body.currentUserData.id;
+                console.log("dsadsadsadsadsa");
+                const result = yield this.learningService.getAllResult(parseInt(userId));
+                return res.send(result);
+            }
+            catch (error) {
+                console.log(error);
+                return res.status(400).send(error);
+            }
+        });
+    }
+    getTestResultDetail(req, res) {
+        return __awaiter(this, void 0, void 0, function* () {
+            try {
+                console.log("dsadsadsadsadsa");
+                const testId = req.params.id;
+                const result = yield this.learningService.getResultDetail(parseInt(testId));
+                return res.send(result);
+            }
+            catch (error) {
+                console.log(error);
+                return res.status(400).send(error);
+            }
+        });
+    }
+    createTestItem(req, res) {
+        return __awaiter(this, void 0, void 0, function* () {
+            try {
+                const courseId = req.params.id;
+                const result = yield this.learningService.createTestItemByTeacher(parseInt(courseId));
                 return res.send(result);
             }
             catch (error) {
@@ -124,6 +247,78 @@ __decorate([
     __metadata("design:paramtypes", [Object, Object]),
     __metadata("design:returntype", Promise)
 ], LearningController.prototype, "startTest", null);
+__decorate([
+    (0, routing_controllers_1.Get)("/test/:id"),
+    __param(0, (0, routing_controllers_1.Req)()),
+    __param(1, (0, routing_controllers_1.Res)()),
+    __metadata("design:type", Function),
+    __metadata("design:paramtypes", [Object, Object]),
+    __metadata("design:returntype", Promise)
+], LearningController.prototype, "getTest", null);
+__decorate([
+    (0, routing_controllers_1.Post)("/test-create/default"),
+    __param(0, (0, routing_controllers_1.Req)()),
+    __param(1, (0, routing_controllers_1.Res)()),
+    __metadata("design:type", Function),
+    __metadata("design:paramtypes", [Object, Object]),
+    __metadata("design:returntype", Promise)
+], LearningController.prototype, "createDefaultTest", null);
+__decorate([
+    (0, routing_controllers_1.Get)("/test-group/:id"),
+    __param(0, (0, routing_controllers_1.Req)()),
+    __param(1, (0, routing_controllers_1.Res)()),
+    __metadata("design:type", Function),
+    __metadata("design:paramtypes", [Object, Object]),
+    __metadata("design:returntype", Promise)
+], LearningController.prototype, "getTestByGroup", null);
+__decorate([
+    (0, routing_controllers_1.Get)("/tests/:id"),
+    __param(0, (0, routing_controllers_1.Req)()),
+    __param(1, (0, routing_controllers_1.Res)()),
+    __metadata("design:type", Function),
+    __metadata("design:paramtypes", [Object, Object]),
+    __metadata("design:returntype", Promise)
+], LearningController.prototype, "getTests", null);
+__decorate([
+    (0, routing_controllers_1.Post)("/test-create/edting"),
+    __param(0, (0, routing_controllers_1.Req)()),
+    __param(1, (0, routing_controllers_1.Res)()),
+    __metadata("design:type", Function),
+    __metadata("design:paramtypes", [Object, Object]),
+    __metadata("design:returntype", Promise)
+], LearningController.prototype, "createTestEddting", null);
+__decorate([
+    (0, routing_controllers_1.Get)("/test/group/results/:id"),
+    __param(0, (0, routing_controllers_1.Req)()),
+    __param(1, (0, routing_controllers_1.Res)()),
+    __metadata("design:type", Function),
+    __metadata("design:paramtypes", [Object, Object]),
+    __metadata("design:returntype", Promise)
+], LearningController.prototype, "getTestResults", null);
+__decorate([
+    (0, routing_controllers_1.Get)("/results/"),
+    __param(0, (0, routing_controllers_1.Req)()),
+    __param(1, (0, routing_controllers_1.Res)()),
+    __metadata("design:type", Function),
+    __metadata("design:paramtypes", [Object, Object]),
+    __metadata("design:returntype", Promise)
+], LearningController.prototype, "getTestResultsForUser", null);
+__decorate([
+    (0, routing_controllers_1.Get)("/result/:id"),
+    __param(0, (0, routing_controllers_1.Req)()),
+    __param(1, (0, routing_controllers_1.Res)()),
+    __metadata("design:type", Function),
+    __metadata("design:paramtypes", [Object, Object]),
+    __metadata("design:returntype", Promise)
+], LearningController.prototype, "getTestResultDetail", null);
+__decorate([
+    (0, routing_controllers_1.Post)("/testItem/:id"),
+    __param(0, (0, routing_controllers_1.Req)()),
+    __param(1, (0, routing_controllers_1.Res)()),
+    __metadata("design:type", Function),
+    __metadata("design:paramtypes", [Object, Object]),
+    __metadata("design:returntype", Promise)
+], LearningController.prototype, "createTestItem", null);
 __decorate([
     (0, routing_controllers_1.Put)("/test/:id"),
     __param(0, (0, routing_controllers_1.Req)()),

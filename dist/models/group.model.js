@@ -17,6 +17,7 @@ const baseModel_1 = require("./baseModel");
 const user_model_1 = __importDefault(require("./user.model"));
 const typeorm_1 = require("typeorm");
 const course_model_1 = __importDefault(require("./course.model"));
+const testGroup_model_1 = __importDefault(require("./testGroup.model"));
 let Group = class Group extends baseModel_1.BaseModel {
 };
 __decorate([
@@ -50,6 +51,10 @@ __decorate([
     }),
     __metadata("design:type", Array)
 ], Group.prototype, "students", void 0);
+__decorate([
+    (0, typeorm_1.OneToMany)(() => testGroup_model_1.default, (testGroup) => testGroup.group, { nullable: true, cascade: true }),
+    __metadata("design:type", Array)
+], Group.prototype, "testGroups", void 0);
 __decorate([
     (0, typeorm_1.ManyToMany)(() => course_model_1.default, (cousre) => cousre.addedGroups, { nullable: true, cascade: true }),
     (0, typeorm_1.JoinTable)({

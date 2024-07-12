@@ -9,21 +9,21 @@ var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, ge
     });
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.Migration1719579133924 = void 0;
-class Migration1719579133924 {
+exports.Migration1720798677313 = void 0;
+class Migration1720798677313 {
     constructor() {
-        this.name = 'Migration1719579133924';
+        this.name = 'Migration1720798677313';
     }
     up(queryRunner) {
         return __awaiter(this, void 0, void 0, function* () {
-            yield queryRunner.query(`ALTER TABLE "course" ALTER COLUMN "language" SET NOT NULL`);
+            yield queryRunner.query(`ALTER TABLE "test_group" RENAME COLUMN "group_name" TO "testName"`);
         });
     }
     down(queryRunner) {
         return __awaiter(this, void 0, void 0, function* () {
-            yield queryRunner.query(`ALTER TABLE "course" ALTER COLUMN "language" DROP NOT NULL`);
+            yield queryRunner.query(`ALTER TABLE "test_group" RENAME COLUMN "testName" TO "group_name"`);
         });
     }
 }
-exports.Migration1719579133924 = Migration1719579133924;
-//# sourceMappingURL=1719579133924-migration.js.map
+exports.Migration1720798677313 = Migration1720798677313;
+//# sourceMappingURL=1720798677313-migration.js.map

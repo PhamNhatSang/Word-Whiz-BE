@@ -19,6 +19,8 @@ const course_model_1 = __importDefault(require("../../models/course.model"));
 const test_model_1 = __importDefault(require("../../models/test.model"));
 const shuffle_1 = require("../../utils/shuffle");
 const testItem_model_1 = __importDefault(require("../../models/testItem.model"));
+const group_model_1 = __importDefault(require("../../models/group.model"));
+const testGroup_model_1 = __importDefault(require("../../models/testGroup.model"));
 class LearningService extends base_service_1.BaseService {
     constructor() {
         super();
@@ -43,7 +45,9 @@ class LearningService extends base_service_1.BaseService {
             else {
                 if (learn.isDone) {
                     learn.isDone = false;
-                    yield this.manager.getRepository(learning_model_1.default).update(learn.id, { isDone: false });
+                    yield this.manager
+                        .getRepository(learning_model_1.default)
+                        .update(learn.id, { isDone: false });
                 }
             }
             const myLearning = Object.assign(Object.assign({}, learn), { courseId: courseId, userId: userId, courseName: learn.course.title, words: learn.course.words });
@@ -79,7 +83,12 @@ class LearningService extends base_service_1.BaseService {
     createTest(userId, courseId) {
         return __awaiter(this, void 0, void 0, function* () {
             let test = yield this.manager.findOne(test_model_1.default, {
-                where: { user: { id: userId }, course: { id: courseId }, isDone: false },
+                where: {
+                    user: { id: userId },
+                    course: { id: courseId },
+                    isDone: false,
+                    testGroup: null,
+                },
                 relations: { testItems: { word: true }, course: true },
             });
             if (!test) {
@@ -128,6 +137,236 @@ class LearningService extends base_service_1.BaseService {
             return testData;
         });
     }
+    createGroupTestDefault(groupId, courseId, testName) {
+        return __awaiter(this, void 0, void 0, function* () {
+            const groups = yield this.manager.findOne(group_model_1.default, {
+                where: { id: groupId },
+                relations: ["students"],
+            });
+            const listUser = groups.students;
+            const course = yield this.manager.findOne(course_model_1.default, {
+                where: { id: courseId },
+                relations: ["words"],
+            });
+            const listWord = course.words;
+            const listTestItem = course.words.map((word) => {
+                const testItem = new testItem_model_1.default();
+                const otherDefinitions = listWord
+                    .filter((td) => td.term !== word.term)
+                    .map((td) => td.definition);
+                const shuffledDefinitions = (0, shuffle_1.shuffleArray)(otherDefinitions);
+                const options = [
+                    shuffledDefinitions[0] || "",
+                    shuffledDefinitions[1] || "",
+                    shuffledDefinitions[2] || "",
+                    word.definition,
+                ];
+                const shuffledOptions = (0, shuffle_1.shuffleArray)(options);
+                testItem.word = word;
+                testItem.option_1 = shuffledOptions[0];
+                testItem.option_2 = shuffledOptions[1];
+                testItem.option_3 = shuffledOptions[2];
+                testItem.option_4 = shuffledOptions[3];
+                return testItem;
+            });
+            const testCreate = new test_model_1.default();
+            testCreate.course = course;
+            testCreate.testItems = listTestItem;
+            const testPromise = listUser.map((user) => __awaiter(this, void 0, void 0, function* () {
+                testCreate.user = user;
+                const test = yield this.manager.getRepository(test_model_1.default).save(testCreate);
+                return test;
+            }));
+            const testData = yield Promise.all(testPromise);
+            const testGroup = new testGroup_model_1.default();
+            testGroup.group = groups;
+            testGroup.tests = testData;
+            testGroup.testName = testName;
+            yield this.manager.getRepository(testGroup_model_1.default).save(testGroup);
+            return {
+                testGroupId: testGroup.id,
+                testName: testName,
+                courseId: course.id,
+            };
+        });
+    }
+    createTestForGroup(groupId, courseId, testName, testItems) {
+        return __awaiter(this, void 0, void 0, function* () {
+            const groups = yield this.manager.findOne(group_model_1.default, {
+                where: { id: groupId },
+                relations: ["students"],
+            });
+            const listUser = groups.students;
+            const course = yield this.manager.findOne(course_model_1.default, {
+                where: { id: courseId },
+                relations: ["words"],
+            });
+            const testCreate = new test_model_1.default();
+            testCreate.course = course;
+            testCreate.testItems = testItems;
+            const testPromise = listUser.map((user) => __awaiter(this, void 0, void 0, function* () {
+                testCreate.user = user;
+                const test = yield this.manager.getRepository(test_model_1.default).save(testCreate);
+                return test;
+            }));
+            const testGroup = new testGroup_model_1.default();
+            testGroup.group = groups;
+            testGroup.testName = testName;
+            const testData = yield Promise.all(testPromise);
+            testGroup.tests = testData;
+            yield this.manager.getRepository(testGroup_model_1.default).save(testGroup);
+            return {
+                testGroupId: testGroup.id,
+                testName: testName,
+                courseId: course.id,
+            };
+        });
+    }
+    createTestItemByTeacher(courseId) {
+        return __awaiter(this, void 0, void 0, function* () {
+            const course = yield this.manager.findOne(course_model_1.default, {
+                where: { id: courseId },
+                relations: ["words"],
+            });
+            const listTestItem = course.words.map((word) => {
+                const testItem = new testItem_model_1.default();
+                const options = ["", "", "", word.definition];
+                const shuffledOptions = (0, shuffle_1.shuffleArray)(options);
+                testItem.word = word;
+                testItem.option_1 = shuffledOptions[0];
+                testItem.option_2 = shuffledOptions[1];
+                testItem.option_3 = shuffledOptions[2];
+                testItem.option_4 = shuffledOptions[3];
+                return testItem;
+            });
+            return listTestItem;
+        });
+    }
+    getTestByGroupId(groupId, studentId) {
+        return __awaiter(this, void 0, void 0, function* () {
+            const testGroups = yield this.manager.find(testGroup_model_1.default, {
+                where: { group: { id: groupId } },
+                relations: { tests: { user: true } },
+            });
+            const listTest = testGroups.map((test) => (test.tests.map((item) => {
+                if (item.user.id === studentId) {
+                    return {
+                        testId: item.id,
+                        testName: test.testName,
+                        isDone: item.isDone,
+                    };
+                }
+            }))).flat();
+            return listTest;
+        });
+    }
+    getTestForTeacher(groupId) {
+        return __awaiter(this, void 0, void 0, function* () {
+            const testGroups = yield this.manager.find(testGroup_model_1.default, {
+                where: { group: { id: groupId } },
+                relations: ["tests"],
+            });
+            return testGroups.map((testGroup) => {
+                return {
+                    testGroupId: testGroup.id,
+                    testName: testGroup.testName,
+                    numberOfDone: testGroup.tests.filter((test) => test.isDone).length,
+                    numberOfStudents: testGroup.tests.length,
+                };
+            });
+        });
+    }
+    getAllResultTestInGroup(groupId) {
+        return __awaiter(this, void 0, void 0, function* () {
+            const testGroups = yield this.manager.find(testGroup_model_1.default, {
+                where: { group: { id: groupId }, tests: true },
+            });
+            const tests = testGroups.map((testGroup) => testGroup.tests
+                .map((test) => {
+                if (test.isDone === true) {
+                    const numberOfCorrectAnswer = test.testItems.filter((item) => item.user_answer === item.word.definition).length;
+                    const numberOfWrong = test.testItems.length - numberOfCorrectAnswer;
+                    const percentage = parseFloat(((numberOfCorrectAnswer / test.testItems.length) * 100).toFixed(2));
+                    return {
+                        testId: test.id,
+                        testName: testGroup.testName,
+                        score: test.score,
+                        studentName: test.user.name,
+                        studentEmail: test.user.email,
+                        numberOfCorrectAnswer,
+                        numberOfWrong,
+                        percentage,
+                    };
+                }
+            })).flat();
+            return tests;
+        });
+    }
+    getAllResult(userId) {
+        return __awaiter(this, void 0, void 0, function* () {
+            const tests = yield this.manager.find(test_model_1.default, {
+                where: { user: { id: userId } },
+                relations: { testItems: { word: true }, course: true, testGroup: true },
+            });
+            const listTest = tests.map((test) => {
+                const numberOfCorrectAnswer = test.testItems.filter((item) => item.user_answer === item.word.definition).length;
+                const numberOfWrong = test.testItems.length - numberOfCorrectAnswer;
+                const percentage = parseFloat(((numberOfCorrectAnswer / test.testItems.length) * 100).toFixed(2));
+                let testName = test.course.title;
+                if (test.testGroup) {
+                    testName = test.testGroup.testName;
+                }
+                return {
+                    testId: test.id,
+                    testName: testName,
+                    score: test.score,
+                    numberOfCorrectAnswer,
+                    numberOfWrong,
+                    percentage,
+                };
+            });
+            return listTest;
+        });
+    }
+    getTestDetail(testId) {
+        return __awaiter(this, void 0, void 0, function* () {
+            const test = yield this.manager.findOne(test_model_1.default, {
+                where: { id: testId },
+                relations: { testItems: { word: true } },
+            });
+            const listTestItem = test.testItems.map((item) => {
+                const itemData = Object.assign(Object.assign({}, item), { question: item.word.term });
+                delete itemData.word;
+                return itemData;
+            });
+            return listTestItem.sort((a, b) => a.id - b.id);
+        });
+    }
+    getResultDetail(testId) {
+        return __awaiter(this, void 0, void 0, function* () {
+            const test = yield this.manager.findOne(test_model_1.default, {
+                where: { id: testId },
+                relations: { testItems: { word: true } },
+            });
+            const numberOfCorrectAnswer = test.testItems.filter((item) => item.user_answer === item.word.definition).length;
+            const numberOfWrong = test.testItems.length - numberOfCorrectAnswer;
+            const percentage = parseFloat(((numberOfCorrectAnswer / test.testItems.length) * 100).toFixed(2));
+            const listTestItem = test.testItems.map((item) => {
+                const itemData = Object.assign(Object.assign({}, item), { question: item.word.term, correct_answer: item.word.definition });
+                delete itemData.word;
+                return itemData;
+            });
+            return {
+                overall: {
+                    numberOfCorrectAnswer,
+                    numberOfWrong,
+                    percentage,
+                    score: test.score,
+                },
+                listTestItems: listTestItem.sort((a, b) => a.id - b.id),
+            };
+        });
+    }
     submitTest(testId) {
         return __awaiter(this, void 0, void 0, function* () {
             const test = yield this.manager.findOne(test_model_1.default, {
@@ -158,7 +397,7 @@ class LearningService extends base_service_1.BaseService {
                     percentage,
                     score: scorePass,
                 },
-                listTestItems: listTestItem.sort((a, b) => a.id - b.id)
+                listTestItems: listTestItem.sort((a, b) => a.id - b.id),
             };
         });
     }
