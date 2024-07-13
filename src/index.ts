@@ -30,8 +30,7 @@ useExpressServer(app,{
 
 app.listen(port, async () => {
   await database.initialize()
-  await database.query('delete from test where id=55 or id=54')
-  await database.query('delete from test_group where id=3')
+  
   return console.log(`Server is listening on ${port}`)
 })
 

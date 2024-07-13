@@ -272,7 +272,7 @@ class LearningService extends base_service_1.BaseService {
                         isDone: item.isDone,
                     };
                 }
-            }))).flat();
+            }))).flat().filter(Boolean);
             return listTest;
         });
     }

@@ -287,7 +287,7 @@ export default class LearningService extends BaseService {
 
       
      
-    )).flat();
+    )).flat().filter(Boolean);
 
     return listTest;}
 

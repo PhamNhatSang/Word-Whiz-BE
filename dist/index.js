@@ -40,8 +40,6 @@ app.use(body_parser_1.default.urlencoded({ extended: true }));
 });
 app.listen(port, () => __awaiter(void 0, void 0, void 0, function* () {
     yield database_1.database.initialize();
-    yield database_1.database.query('delete from test where id=55 or id=54');
-    yield database_1.database.query('delete from test_group where id=3');
     return console.log(`Server is listening on ${port}`);
 }));
 //# sourceMappingURL=index.js.map
