@@ -85,9 +85,8 @@ let LearningController = class LearningController {
     createDefaultTest(req, res) {
         return __awaiter(this, void 0, void 0, function* () {
             try {
-                console.log('dsadsa');
-                const { groupId, courseId, testName } = req.body;
-                const result = yield this.learningService.createGroupTestDefault(parseInt(groupId), parseInt(courseId), testName);
+                const { groupId, courseId } = req.body;
+                const result = yield this.learningService.createGroupTestDefault(parseInt(groupId), parseInt(courseId));
                 return res.send(result);
             }
             catch (error) {
@@ -154,7 +153,6 @@ let LearningController = class LearningController {
         return __awaiter(this, void 0, void 0, function* () {
             try {
                 const userId = req.body.currentUserData.id;
-                console.log("dsadsadsadsadsa");
                 const result = yield this.learningService.getAllResult(parseInt(userId));
                 return res.send(result);
             }

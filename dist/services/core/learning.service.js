@@ -137,7 +137,7 @@ class LearningService extends base_service_1.BaseService {
             return testData;
         });
     }
-    createGroupTestDefault(groupId, courseId, testName) {
+    createGroupTestDefault(groupId, courseId) {
         return __awaiter(this, void 0, void 0, function* () {
             const groups = yield this.manager.findOne(group_model_1.default, {
                 where: { id: groupId },
@@ -181,11 +181,11 @@ class LearningService extends base_service_1.BaseService {
             const testGroup = new testGroup_model_1.default();
             testGroup.group = groups;
             testGroup.tests = testData;
-            testGroup.testName = testName;
+            testGroup.testName = "Test for" + course.title;
             yield this.manager.getRepository(testGroup_model_1.default).save(testGroup);
             return {
                 testGroupId: testGroup.id,
-                testName: testName,
+                testName: "Test for" + course.title,
                 courseId: course.id,
             };
         });

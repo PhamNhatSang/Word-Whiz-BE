@@ -134,7 +134,6 @@ export default class LearningService extends BaseService {
   async createGroupTestDefault(
     groupId: number,
     courseId: number,
-    testName: string
   ) {
     const groups = await this.manager.findOne(Group, {
       where: { id: groupId },
@@ -181,12 +180,12 @@ export default class LearningService extends BaseService {
     const testGroup = new TestGroup();
     testGroup.group=groups;
     testGroup.tests=testData;
-    testGroup.testName=testName;
+    testGroup.testName="Test for"+course.title;
     await this.manager.getRepository(TestGroup).save(testGroup);
 
     return {
       testGroupId: testGroup.id,
-      testName: testName,
+      testName: "Test for"+course.title,
       courseId: course.id,
     };
   }

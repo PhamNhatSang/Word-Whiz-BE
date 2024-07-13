@@ -68,9 +68,8 @@ export default class LearningController {
     @Post("/test-create/default")
     async createDefaultTest(@Req() req: Request, @Res() res: Response) {
         try {
-            console.log('dsadsa')
-            const {groupId,courseId,testName} = req.body
-            const result = await this.learningService.createGroupTestDefault(parseInt(groupId),parseInt(courseId),testName);
+            const {groupId,courseId} = req.body
+            const result = await this.learningService.createGroupTestDefault(parseInt(groupId),parseInt(courseId));
             return res.send(result);
         } catch (error) {
             console.log(error);
@@ -132,7 +131,6 @@ export default class LearningController {
     async getTestResultsForUser(@Req() req: Request, @Res() res: Response) {
         try {
             const  userId = req.body.currentUserData.id;
-            console.log("dsadsadsadsadsa");
             const result = await this.learningService.getAllResult(parseInt(userId));
             return res.send(result);
         } catch (error) {
