@@ -310,8 +310,10 @@ export default class LearningService extends BaseService {
           percentage,
         };
       }
+      return null
       })
-    ).flat();
+    ).flat()
+    .filter(Boolean);
   
     return tests;
   }

@@ -299,7 +299,9 @@ class LearningService extends base_service_1.BaseService {
                         percentage,
                     };
                 }
-            })).flat();
+                return null;
+            })).flat()
+                .filter(Boolean);
             return tests;
         });
     }
