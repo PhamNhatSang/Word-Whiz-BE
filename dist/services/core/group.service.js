@@ -20,6 +20,9 @@ const ExistData_1 = __importDefault(require("../../exceptions/ExistData"));
 const course_model_1 = __importDefault(require("../../models/course.model"));
 const s3_1 = require("../../s3");
 const shuffle_1 = require("../../utils/shuffle");
+const testGroup_model_1 = __importDefault(require("../../models/testGroup.model"));
+const test_model_1 = __importDefault(require("../../models/test.model"));
+const testItem_model_1 = __importDefault(require("../../models/testItem.model"));
 class GroupService extends base_service_1.BaseService {
     constructor() {
         super();
@@ -175,6 +178,46 @@ class GroupService extends base_service_1.BaseService {
                     student.avatar = yield (0, s3_1.getObjectSignedUrl)(student.avatar);
                 return { student_email: student.email, student_name: student.name, student_avatar: student.avatar };
             }));
+            const testGroups = yield this.manager.find(testGroup_model_1.default, {
+                where: { group: { id: groupId } },
+                relations: ["tests"],
+            });
+            for (const testGroup of testGroups) {
+                for (const student of userToAdd) {
+                    if (testGroup.tests.length === 1 && testGroup.tests[0].user == null) {
+                        testGroup.tests[0].user = student;
+                        try {
+                            yield this.manager.getRepository(testGroup_model_1.default).save(testGroup);
+                        }
+                        catch (error) {
+                            console.error('Error saving testGroup:', error);
+                        }
+                    }
+                    else {
+                        const test = new test_model_1.default();
+                        const newTestItems = testGroup.tests[0].testItems.map((testItem) => {
+                            const newTestItemData = new testItem_model_1.default();
+                            newTestItemData.option_1 = testItem.option_1;
+                            newTestItemData.option_2 = testItem.option_2;
+                            newTestItemData.option_3 = testItem.option_3;
+                            newTestItemData.option_4 = testItem.option_4;
+                            newTestItemData.user_answer = "";
+                            newTestItemData.word = testItem.word;
+                            return newTestItemData;
+                        });
+                        test.testItems = newTestItems;
+                        test.user = student;
+                        test.course = testGroup.tests[0].course;
+                        test.testGroup = testGroup;
+                        try {
+                            yield this.manager.getRepository(test_model_1.default).save(test);
+                        }
+                        catch (error) {
+                            console.error('Error saving test:', error);
+                        }
+                    }
+                }
+            }
             const userDataReturn = yield Promise.all(userDataToAdd);
             return userDataReturn;
         });

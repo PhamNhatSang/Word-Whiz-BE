@@ -169,14 +169,21 @@ export default class LearningService extends BaseService {
     const testCreate = new Test();
     testCreate.course = course;
     testCreate.testItems = listTestItem;
-
+    let testData = []
+    if(listUser.length===0){
+       const test = await this.manager.getRepository(Test).save(testCreate);
+       testData.push(test);
+    
+    }else{
     const testPromise = listUser.map(async (user) => {
       testCreate.user = user;
       const test = await this.manager.getRepository(Test).save(testCreate);
       return test;
     });
+    testData= await Promise.all(testPromise);
+  }
 
-    const testData= await Promise.all(testPromise);
+     
     const testGroup = new TestGroup();
     testGroup.group=groups;
     testGroup.tests=testData;
@@ -208,15 +215,22 @@ export default class LearningService extends BaseService {
     const testCreate = new Test();
     testCreate.course = course;
     testCreate.testItems = testItems;
+    let testData = []
+    if(listUser.length===0){
+       const test = await this.manager.getRepository(Test).save(testCreate);
+       testData.push(test);
+    
+    }else{
     const testPromise = listUser.map(async (user) => {
       testCreate.user = user;
       const test = await this.manager.getRepository(Test).save(testCreate);
       return test;
     });
+    testData= await Promise.all(testPromise);
+  }
     const testGroup = new TestGroup()
     testGroup.group=groups;
     testGroup.testName=testName;
-    const testData=await Promise.all(testPromise);
     testGroup.tests=testData;
     await this.manager.getRepository(TestGroup).save(testGroup);
 
@@ -277,14 +291,20 @@ export default class LearningService extends BaseService {
   async getTestForTeacher(groupId: number) {
    const testGroups = await this.manager.find(TestGroup, {
       where: { group: { id: groupId }},
-      relations:["tests"],
+      relations:{tests:{user:true},group:{students:true}}
     });
+  const group = await this.manager.findOne(Group, {
+    where: { id: groupId },
+    relations: ["students"],
+  });
+    const numberOfDone = testGroups.map((testGroup) => testGroup.tests.filter((test) => (test.isDone&&  testGroup.group.students.includes(test.user))) .length);
+    const numberOfStudents = group.students.length;
     return testGroups.map((testGroup) => {
       return {
         testGroupId: testGroup.id,
         testName: testGroup.testName,
-        numberOfDone: testGroup.tests.filter((test) => test.isDone).length,
-        numberOfStudents: testGroup.tests.length,
+        numberOfDone: numberOfDone,
+        numberOfStudents: numberOfStudents,
   }})
   }
 
@@ -299,6 +319,7 @@ export default class LearningService extends BaseService {
         const numberOfCorrectAnswer = test.testItems.filter((item) => item.user_answer === item.word.definition).length;
         const numberOfWrong = test.testItems.length - numberOfCorrectAnswer;
         const percentage = parseFloat(((numberOfCorrectAnswer / test.testItems.length) * 100).toFixed(2));
+        const isStudentInGroup=testGroup.group.students.includes(test.user);
         return {
           testId: test.id,
           testName: testGroup.testName,
@@ -307,6 +328,7 @@ export default class LearningService extends BaseService {
           studentEmail: test.user.email,
           numberOfCorrectAnswer,
           numberOfWrong,
+          status:isStudentInGroup,
           percentage,
         };
       }

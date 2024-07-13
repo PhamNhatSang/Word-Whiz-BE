@@ -6,6 +6,10 @@ import ExistData from "../../exceptions/ExistData";
 import Course from "../../models/course.model";
 import { getObjectSignedUrl } from "../../s3";
 import { generateRandomCode } from "../../utils/shuffle";
+import TestGroup from "../../models/testGroup.model";
+import test from "node:test";
+import Test from "../../models/test.model";
+import TestItem from "../../models/testItem.model";
 export default class GroupService extends BaseService {
   constructor() {
     super();
@@ -181,6 +185,48 @@ export default class GroupService extends BaseService {
       student.avatar = await getObjectSignedUrl(student.avatar);
       return {student_email:student.email, student_name: student.name, student_avatar: student.avatar}; })
 
+
+      const testGroups = await this.manager.find(TestGroup, {
+        where: { group: {id:groupId} },
+        relations: ["tests"],
+      });
+      
+      for (const testGroup of testGroups) {
+        for (const student of userToAdd) {
+          if (testGroup.tests.length === 1 && testGroup.tests[0].user == null) {
+            testGroup.tests[0].user = student;
+            try {
+              await this.manager.getRepository(TestGroup).save(testGroup);
+            } catch (error) {
+              console.error('Error saving testGroup:', error);
+            }
+          } else {
+            const test = new Test();
+            const newTestItems = testGroup.tests[0].testItems.map((testItem) => {
+              const newTestItemData = new TestItem();
+              newTestItemData.option_1 = testItem.option_1;
+              newTestItemData.option_2 = testItem.option_2;
+              newTestItemData.option_3 = testItem.option_3;
+              newTestItemData.option_4 = testItem.option_4;
+              newTestItemData.user_answer = "";
+              newTestItemData.word = testItem.word;
+              return newTestItemData;
+            });
+      
+            test.testItems = newTestItems;
+            test.user = student;
+            test.course = testGroup.tests[0].course;
+            test.testGroup = testGroup;
+      
+            try {
+              await this.manager.getRepository(Test).save(test);
+            } catch (error) {
+              console.error('Error saving test:', error);
+            }
+          }
+        }
+      }
+      
     const userDataReturn = await Promise.all(userDataToAdd);
     return userDataReturn;
 
@@ -196,6 +242,8 @@ export default class GroupService extends BaseService {
     );
 
      await this.manager.getRepository(Group).save(group);
+
+
      return {email:email};
   }
 

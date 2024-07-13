@@ -172,12 +172,19 @@ class LearningService extends base_service_1.BaseService {
             const testCreate = new test_model_1.default();
             testCreate.course = course;
             testCreate.testItems = listTestItem;
-            const testPromise = listUser.map((user) => __awaiter(this, void 0, void 0, function* () {
-                testCreate.user = user;
+            let testData = [];
+            if (listUser.length === 0) {
                 const test = yield this.manager.getRepository(test_model_1.default).save(testCreate);
-                return test;
-            }));
-            const testData = yield Promise.all(testPromise);
+                testData.push(test);
+            }
+            else {
+                const testPromise = listUser.map((user) => __awaiter(this, void 0, void 0, function* () {
+                    testCreate.user = user;
+                    const test = yield this.manager.getRepository(test_model_1.default).save(testCreate);
+                    return test;
+                }));
+                testData = yield Promise.all(testPromise);
+            }
             const testGroup = new testGroup_model_1.default();
             testGroup.group = groups;
             testGroup.tests = testData;
@@ -204,15 +211,22 @@ class LearningService extends base_service_1.BaseService {
             const testCreate = new test_model_1.default();
             testCreate.course = course;
             testCreate.testItems = testItems;
-            const testPromise = listUser.map((user) => __awaiter(this, void 0, void 0, function* () {
-                testCreate.user = user;
+            let testData = [];
+            if (listUser.length === 0) {
                 const test = yield this.manager.getRepository(test_model_1.default).save(testCreate);
-                return test;
-            }));
+                testData.push(test);
+            }
+            else {
+                const testPromise = listUser.map((user) => __awaiter(this, void 0, void 0, function* () {
+                    testCreate.user = user;
+                    const test = yield this.manager.getRepository(test_model_1.default).save(testCreate);
+                    return test;
+                }));
+                testData = yield Promise.all(testPromise);
+            }
             const testGroup = new testGroup_model_1.default();
             testGroup.group = groups;
             testGroup.testName = testName;
-            const testData = yield Promise.all(testPromise);
             testGroup.tests = testData;
             yield this.manager.getRepository(testGroup_model_1.default).save(testGroup);
             return {
@@ -264,14 +278,20 @@ class LearningService extends base_service_1.BaseService {
         return __awaiter(this, void 0, void 0, function* () {
             const testGroups = yield this.manager.find(testGroup_model_1.default, {
                 where: { group: { id: groupId } },
-                relations: ["tests"],
+                relations: { tests: { user: true }, group: { students: true } }
             });
+            const group = yield this.manager.findOne(group_model_1.default, {
+                where: { id: groupId },
+                relations: ["students"],
+            });
+            const numberOfDone = testGroups.map((testGroup) => testGroup.tests.filter((test) => (test.isDone && testGroup.group.students.includes(test.user))).length);
+            const numberOfStudents = group.students.length;
             return testGroups.map((testGroup) => {
                 return {
                     testGroupId: testGroup.id,
                     testName: testGroup.testName,
-                    numberOfDone: testGroup.tests.filter((test) => test.isDone).length,
-                    numberOfStudents: testGroup.tests.length,
+                    numberOfDone: numberOfDone,
+                    numberOfStudents: numberOfStudents,
                 };
             });
         });
@@ -288,6 +308,7 @@ class LearningService extends base_service_1.BaseService {
                     const numberOfCorrectAnswer = test.testItems.filter((item) => item.user_answer === item.word.definition).length;
                     const numberOfWrong = test.testItems.length - numberOfCorrectAnswer;
                     const percentage = parseFloat(((numberOfCorrectAnswer / test.testItems.length) * 100).toFixed(2));
+                    const isStudentInGroup = testGroup.group.students.includes(test.user);
                     return {
                         testId: test.id,
                         testName: testGroup.testName,
@@ -296,6 +317,7 @@ class LearningService extends base_service_1.BaseService {
                         studentEmail: test.user.email,
                         numberOfCorrectAnswer,
                         numberOfWrong,
+                        status: isStudentInGroup,
                         percentage,
                     };
                 }
