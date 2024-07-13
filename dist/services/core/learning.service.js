@@ -230,9 +230,9 @@ class LearningService extends base_service_1.BaseService {
             testGroup.group = groups;
             testGroup.testName = testName;
             testGroup.tests = testData;
-            yield this.manager.getRepository(testGroup_model_1.default).save(testGroup);
+            const testGroupData = yield this.manager.getRepository(testGroup_model_1.default).save(testGroup);
             return {
-                testGroupId: testGroup.id,
+                testGroupId: testGroupData.id,
                 testName: testName,
                 courseId: course.id,
             };

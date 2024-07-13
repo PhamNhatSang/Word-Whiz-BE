@@ -235,10 +235,10 @@ export default class LearningService extends BaseService {
     testGroup.group=groups;
     testGroup.testName=testName;
     testGroup.tests=testData;
-    await this.manager.getRepository(TestGroup).save(testGroup);
+    const testGroupData = await this.manager.getRepository(TestGroup).save(testGroup);
 
     return {
-      testGroupId: testGroup.id,
+      testGroupId: testGroupData.id,
       testName: testName,
       courseId: course.id,
     };
