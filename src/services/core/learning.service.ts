@@ -297,13 +297,13 @@ export default class LearningService extends BaseService {
     where: { id: groupId },
     relations: ["students"],
   });
-  const numberOfDone = testGroups.reduce((total, testGroup) => 
-    total + testGroup.tests.filter(test =>
-      test.isDone &&
-      testGroup.group.students.some(student => student.id === test.user.id)
-    ).length, 0
-  );    const numberOfStudents = group.students.length;
+  
+
+  
+    const numberOfStudents = group.students.length;
     return testGroups.map((testGroup) => {
+
+      const numberOfDone = testGroup.tests.filter((test) => test.isDone === true).length;
       return {
         testGroupId: testGroup.id,
         testName: testGroup.testName,
