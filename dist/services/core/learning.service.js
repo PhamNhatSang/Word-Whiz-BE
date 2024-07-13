@@ -21,6 +21,8 @@ const shuffle_1 = require("../../utils/shuffle");
 const testItem_model_1 = __importDefault(require("../../models/testItem.model"));
 const group_model_1 = __importDefault(require("../../models/group.model"));
 const testGroup_model_1 = __importDefault(require("../../models/testGroup.model"));
+const feedback_model_1 = __importDefault(require("../../models/feedback.model"));
+const s3_1 = require("../../s3");
 class LearningService extends base_service_1.BaseService {
     constructor() {
         super();
@@ -399,6 +401,43 @@ class LearningService extends base_service_1.BaseService {
                 },
                 listTestItems: listTestItem.sort((a, b) => a.id - b.id),
             };
+        });
+    }
+    feedbackTest(testId, groupId, content, userFbId) {
+        return __awaiter(this, void 0, void 0, function* () {
+            const testGroup = yield this.manager.findOne(testGroup_model_1.default, {
+                where: { id: groupId },
+                relations: { tests: { user: true } },
+            });
+            const userFb = yield this.manager.findOne(user_model_1.default, {
+                where: { id: userFbId },
+            });
+            const test = testGroup.tests.find((test) => test.id === testId);
+            const feedback = new feedback_model_1.default();
+            feedback.user = userFb;
+            feedback.content = content;
+            feedback.test = test;
+            yield this.manager.getRepository(feedback_model_1.default).save(feedback);
+        });
+    }
+    getFeedbackTest(testId) {
+        return __awaiter(this, void 0, void 0, function* () {
+            const feedbacks = yield this.manager.find(feedback_model_1.default, {
+                where: { test: { id: testId } },
+                relations: { user: true },
+            });
+            const listFeedbackPromise = feedbacks.map((feedback) => __awaiter(this, void 0, void 0, function* () {
+                if (feedback.user.avatar) {
+                    feedback.user.avatar = yield (0, s3_1.getObjectSignedUrl)(feedback.user.avatar);
+                }
+                return {
+                    feedbackId: feedback.id,
+                    userName: feedback.user.name,
+                    userAvatar: feedback.user.avatar,
+                    content: feedback.content,
+                };
+            }));
+            return yield Promise.all(listFeedbackPromise);
         });
     }
     submitTest(testId) {

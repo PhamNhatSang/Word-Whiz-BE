@@ -175,6 +175,33 @@ let LearningController = class LearningController {
             }
         });
     }
+    createFeedback(req, res) {
+        return __awaiter(this, void 0, void 0, function* () {
+            try {
+                const userId = req.body.currentUserData.id;
+                const { testId, groupId, content } = req.body;
+                const result = yield this.learningService.feedbackTest(parseInt(testId), parseInt(groupId), content, parseInt(userId));
+                return res.send(result);
+            }
+            catch (error) {
+                console.log(error);
+                return res.status(400).send(error);
+            }
+        });
+    }
+    getFeedback(req, res) {
+        return __awaiter(this, void 0, void 0, function* () {
+            try {
+                const testId = req.params.id;
+                const result = yield this.learningService.getFeedbackTest(parseInt(testId));
+                return res.send(result);
+            }
+            catch (error) {
+                console.log(error);
+                return res.status(400).send(error);
+            }
+        });
+    }
     createTestItem(req, res) {
         return __awaiter(this, void 0, void 0, function* () {
             try {
@@ -308,6 +335,22 @@ __decorate([
     __metadata("design:paramtypes", [Object, Object]),
     __metadata("design:returntype", Promise)
 ], LearningController.prototype, "getTestResultDetail", null);
+__decorate([
+    (0, routing_controllers_1.Post)("/feedback"),
+    __param(0, (0, routing_controllers_1.Req)()),
+    __param(1, (0, routing_controllers_1.Res)()),
+    __metadata("design:type", Function),
+    __metadata("design:paramtypes", [Object, Object]),
+    __metadata("design:returntype", Promise)
+], LearningController.prototype, "createFeedback", null);
+__decorate([
+    (0, routing_controllers_1.Get)("/feedback/:id"),
+    __param(0, (0, routing_controllers_1.Req)()),
+    __param(1, (0, routing_controllers_1.Res)()),
+    __metadata("design:type", Function),
+    __metadata("design:paramtypes", [Object, Object]),
+    __metadata("design:returntype", Promise)
+], LearningController.prototype, "getFeedback", null);
 __decorate([
     (0, routing_controllers_1.Post)("/testItem/:id"),
     __param(0, (0, routing_controllers_1.Req)()),

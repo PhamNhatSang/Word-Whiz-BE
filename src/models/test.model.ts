@@ -6,6 +6,7 @@ import User from "./user.model";
 import Course from "./course.model";
 import Group from "./group.model";
 import TestGroup from "./testGroup.model";
+import FeedBack from "./feedback.model";
 @Entity()
 export default class Test extends BaseModel {
   
@@ -27,4 +28,7 @@ export default class Test extends BaseModel {
   
   @OneToMany(() => TestItem, (testItem) => testItem.test, { nullable: true,cascade:true })
   testItems: TestItem[];
+
+  @OneToMany(()=>FeedBack,(feedback)=>feedback.test,{nullable:true,cascade:true})
+  feedbacks:FeedBack[]
 }

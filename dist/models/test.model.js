@@ -19,6 +19,7 @@ const typeorm_1 = require("typeorm");
 const user_model_1 = __importDefault(require("./user.model"));
 const course_model_1 = __importDefault(require("./course.model"));
 const testGroup_model_1 = __importDefault(require("./testGroup.model"));
+const feedback_model_1 = __importDefault(require("./feedback.model"));
 let Test = class Test extends baseModel_1.BaseModel {
 };
 __decorate([
@@ -45,6 +46,10 @@ __decorate([
     (0, typeorm_1.OneToMany)(() => testItem_model_1.default, (testItem) => testItem.test, { nullable: true, cascade: true }),
     __metadata("design:type", Array)
 ], Test.prototype, "testItems", void 0);
+__decorate([
+    (0, typeorm_1.OneToMany)(() => feedback_model_1.default, (feedback) => feedback.test, { nullable: true, cascade: true }),
+    __metadata("design:type", Array)
+], Test.prototype, "feedbacks", void 0);
 Test = __decorate([
     (0, typeorm_1.Entity)()
 ], Test);

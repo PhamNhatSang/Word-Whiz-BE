@@ -8,6 +8,9 @@ import { shuffleArray } from "../../utils/shuffle";
 import TestItem from "../../models/testItem.model";
 import Group from "../../models/group.model";
 import TestGroup from "../../models/testGroup.model";
+import FeedBack from '../../models/feedback.model';
+import { getObjectSignedUrl } from "../../s3";
+
 export default class LearningService extends BaseService {
   constructor() {
     super();
@@ -422,6 +425,48 @@ export default class LearningService extends BaseService {
       },
       listTestItems: listTestItem.sort((a, b) => a.id - b.id),
     };
+    }
+
+    async feedbackTest(testId: number,groupId:number, content: string,userFbId:number) {
+      const testGroup = await this.manager.findOne(TestGroup, {
+
+        where: { id: groupId },
+        relations: { tests: { user: true } },
+      });
+      const userFb = await this.manager.findOne(User, {
+        where: { id: userFbId },
+      });
+      const test = testGroup.tests.find((test) => test.id === testId);
+      const feedback = new FeedBack();
+      feedback.user = userFb;
+      feedback.content = content;
+      feedback.test = test;
+      await this.manager.getRepository(FeedBack).save(feedback);
+    }
+
+    async getFeedbackTest(testId: number) {
+
+      const feedbacks = await this.manager.find(FeedBack, {
+        where: { test: { id: testId } },
+        relations: { user: true },
+      });
+
+      
+      const listFeedbackPromise = feedbacks.map(async(feedback) => {
+        if(feedback.user.avatar){
+          feedback.user.avatar =  await getObjectSignedUrl(feedback.user.avatar);
+        }
+        return {
+          feedbackId: feedback.id,
+          userName: feedback.user.name,
+          userAvatar: feedback.user.avatar,
+          content: feedback.content,
+        };
+      });
+
+
+      return await Promise.all(listFeedbackPromise);
+
     }
 
 

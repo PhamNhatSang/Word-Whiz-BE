@@ -26,6 +26,7 @@ const react_model_1 = __importDefault(require("./react.model"));
 const class_validator_1 = require("class-validator");
 const test_model_1 = __importDefault(require("./test.model"));
 const learning_model_1 = __importDefault(require("./learning.model"));
+const feedback_model_1 = __importDefault(require("./feedback.model"));
 let User = class User extends baseModel_1.BaseModel {
 };
 __decorate([
@@ -93,6 +94,10 @@ __decorate([
     (0, typeorm_1.OneToMany)(() => learning_model_1.default, (learning) => learning.user, { nullable: true, cascade: true }),
     __metadata("design:type", Array)
 ], User.prototype, "learnings", void 0);
+__decorate([
+    (0, typeorm_1.OneToMany)(() => (feedback_model_1.default), (feedback) => feedback.user, { nullable: true, cascade: true }),
+    __metadata("design:type", Array)
+], User.prototype, "feedbacks", void 0);
 User = __decorate([
     (0, typeorm_1.Entity)()
 ], User);

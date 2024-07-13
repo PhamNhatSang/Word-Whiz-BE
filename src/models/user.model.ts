@@ -14,6 +14,7 @@ import React from "./react.model";
 import { IsEmail } from "class-validator";
 import Test from "./test.model";
 import Learning from "./learning.model";
+import FeedBack from "./feedback.model";
 @Entity()
 export default class User extends BaseModel {
   @Column({nullable:true})
@@ -64,6 +65,9 @@ export default class User extends BaseModel {
   
   @OneToMany(() => Learning, (learning) => learning.user, { nullable: true,cascade:true})
   learnings: Learning[];
+
+  @OneToMany(()=>(FeedBack),(feedback)=>feedback.user,{nullable:true,cascade:true})
+  feedbacks:FeedBack[]
 
   
 }

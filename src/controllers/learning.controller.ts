@@ -151,6 +151,32 @@ export default class LearningController {
         }
     }
 
+    @Post("/feedback")
+    async createFeedback(@Req() req: Request, @Res() res: Response) {
+        try {
+            const userId = req.body.currentUserData.id;
+            const {testId,groupId,content} = req.body
+            const result = await this.learningService.feedbackTest(parseInt(testId),parseInt(groupId),content,parseInt(userId));
+            return res.send(result);
+        } catch (error) {
+            console.log(error);
+            return res.status(400).send(error);
+        }
+    }
+
+    @Get("/feedback/:id")
+    async getFeedback(@Req() req: Request, @Res() res: Response) {
+        try {
+            const testId = req.params.id;
+            const result = await this.learningService.getFeedbackTest(parseInt(testId));
+            return res.send(result);
+        } catch (error) {
+            console.log(error);
+            return res.status(400).send(error);
+        }
+    }
+
+
 
 
 
