@@ -188,12 +188,12 @@ export default class GroupService extends BaseService {
 
       const testGroups = await this.manager.find(TestGroup, {
         where: { group: {id:groupId} },
-        relations: ["tests"],
+        relations: {tests:{user:true, testItems:true, course:true}},
       });
       
       for (const testGroup of testGroups) {
         for (const student of userToAdd) {
-          if (testGroup.tests.length === 1 && testGroup.tests[0].user == null) {
+          if (testGroup.tests.length === 1 && testGroup.tests[0].user === null) {
             testGroup.tests[0].user = student;
             try {
               await this.manager.getRepository(TestGroup).save(testGroup);
@@ -201,6 +201,7 @@ export default class GroupService extends BaseService {
               console.error('Error saving testGroup:', error);
             }
           } else {
+            console.log('Creating new test for student:');
             const test = new Test();
             const newTestItems = testGroup.tests[0].testItems.map((testItem) => {
               const newTestItemData = new TestItem();
@@ -212,6 +213,8 @@ export default class GroupService extends BaseService {
               newTestItemData.word = testItem.word;
               return newTestItemData;
             });
+
+
       
             test.testItems = newTestItems;
             test.user = student;

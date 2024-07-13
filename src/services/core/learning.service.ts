@@ -297,8 +297,12 @@ export default class LearningService extends BaseService {
     where: { id: groupId },
     relations: ["students"],
   });
-    const numberOfDone = testGroups.map((testGroup) => testGroup.tests.filter((test) => (test.isDone&&  testGroup.group.students.includes(test.user))) .length);
-    const numberOfStudents = group.students.length;
+  const numberOfDone = testGroups.reduce((total, testGroup) => 
+    total + testGroup.tests.filter(test =>
+      test.isDone &&
+      testGroup.group.students.some(student => student.id === test.user.id)
+    ).length, 0
+  );    const numberOfStudents = group.students.length;
     return testGroups.map((testGroup) => {
       return {
         testGroupId: testGroup.id,
@@ -311,7 +315,7 @@ export default class LearningService extends BaseService {
   async getAllResultTestInGroup(testGroupId: number) {
     const testGroups = await this.manager.find(TestGroup, {
       where: { id: testGroupId },
-      relations: { tests: { testItems: { word: true }, user: true } },
+      relations: { tests: { testItems: { word: true }, user: true }, group: { students: true } },
     });
     const tests = testGroups.map((testGroup) => testGroup.tests
       .map((test) => {
@@ -319,7 +323,7 @@ export default class LearningService extends BaseService {
         const numberOfCorrectAnswer = test.testItems.filter((item) => item.user_answer === item.word.definition).length;
         const numberOfWrong = test.testItems.length - numberOfCorrectAnswer;
         const percentage = parseFloat(((numberOfCorrectAnswer / test.testItems.length) * 100).toFixed(2));
-        const isStudentInGroup=testGroup.group.students.includes(test.user);
+        const isStudentInGroup=testGroup.group.students.some((student)=>student.id===test.user.id);
         return {
           testId: test.id,
           testName: testGroup.testName,

@@ -180,11 +180,11 @@ class GroupService extends base_service_1.BaseService {
             }));
             const testGroups = yield this.manager.find(testGroup_model_1.default, {
                 where: { group: { id: groupId } },
-                relations: ["tests"],
+                relations: { tests: { user: true, testItems: true, course: true } },
             });
             for (const testGroup of testGroups) {
                 for (const student of userToAdd) {
-                    if (testGroup.tests.length === 1 && testGroup.tests[0].user == null) {
+                    if (testGroup.tests.length === 1 && testGroup.tests[0].user === null) {
                         testGroup.tests[0].user = student;
                         try {
                             yield this.manager.getRepository(testGroup_model_1.default).save(testGroup);
@@ -194,6 +194,7 @@ class GroupService extends base_service_1.BaseService {
                         }
                     }
                     else {
+                        console.log('Creating new test for student:');
                         const test = new test_model_1.default();
                         const newTestItems = testGroup.tests[0].testItems.map((testItem) => {
                             const newTestItemData = new testItem_model_1.default();
