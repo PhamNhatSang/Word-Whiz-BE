@@ -185,7 +185,7 @@ export default class LearningService extends BaseService {
 
     return {
       testGroupId: testGroup.id,
-      testName: "Test for"+course.title,
+      testName: "Test for "+course.title,
       courseId: course.id,
     };
   }

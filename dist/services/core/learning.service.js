@@ -185,7 +185,7 @@ class LearningService extends base_service_1.BaseService {
             yield this.manager.getRepository(testGroup_model_1.default).save(testGroup);
             return {
                 testGroupId: testGroup.id,
-                testName: "Test for" + course.title,
+                testName: "Test for " + course.title,
                 courseId: course.id,
             };
         });
