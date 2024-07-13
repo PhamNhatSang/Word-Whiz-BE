@@ -171,16 +171,19 @@ class LearningService extends base_service_1.BaseService {
                 testItem.option_4 = shuffledOptions[3];
                 return testItem;
             });
-            const testCreate = new test_model_1.default();
-            testCreate.course = course;
-            testCreate.testItems = listTestItem;
             let testData = [];
             if (listUser.length === 0) {
+                const testCreate = new test_model_1.default();
+                testCreate.course = course;
+                testCreate.testItems = listTestItem;
                 const test = yield this.manager.getRepository(test_model_1.default).save(testCreate);
                 testData.push(test);
             }
             else {
                 const testPromise = listUser.map((user) => __awaiter(this, void 0, void 0, function* () {
+                    const testCreate = new test_model_1.default();
+                    testCreate.course = course;
+                    testCreate.testItems = listTestItem;
                     testCreate.user = user;
                     const test = yield this.manager.getRepository(test_model_1.default).save(testCreate);
                     return test;
@@ -210,16 +213,19 @@ class LearningService extends base_service_1.BaseService {
                 where: { id: courseId },
                 relations: ["words"],
             });
-            const testCreate = new test_model_1.default();
-            testCreate.course = course;
-            testCreate.testItems = testItems;
             let testData = [];
             if (listUser.length === 0) {
+                const testCreate = new test_model_1.default();
+                testCreate.course = course;
+                testCreate.testItems = testItems;
                 const test = yield this.manager.getRepository(test_model_1.default).save(testCreate);
                 testData.push(test);
             }
             else {
                 const testPromise = listUser.map((user) => __awaiter(this, void 0, void 0, function* () {
+                    const testCreate = new test_model_1.default();
+                    testCreate.course = course;
+                    testCreate.testItems = testItems;
                     testCreate.user = user;
                     const test = yield this.manager.getRepository(test_model_1.default).save(testCreate);
                     return test;

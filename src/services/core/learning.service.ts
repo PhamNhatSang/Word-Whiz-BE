@@ -169,16 +169,20 @@ export default class LearningService extends BaseService {
       testItem.option_4 = shuffledOptions[3];
       return testItem;
     });
-    const testCreate = new Test();
-    testCreate.course = course;
-    testCreate.testItems = listTestItem;
+    
     let testData = []
     if(listUser.length===0){
+      const testCreate = new Test();
+    testCreate.course = course;
+    testCreate.testItems = listTestItem;
        const test = await this.manager.getRepository(Test).save(testCreate);
        testData.push(test);
     
     }else{
     const testPromise = listUser.map(async (user) => {
+      const testCreate = new Test();
+    testCreate.course = course;
+    testCreate.testItems = listTestItem;
       testCreate.user = user;
       const test = await this.manager.getRepository(Test).save(testCreate);
       return test;
@@ -215,16 +219,20 @@ export default class LearningService extends BaseService {
       where: { id: courseId },
       relations: ["words"],
     });
-    const testCreate = new Test();
-    testCreate.course = course;
-    testCreate.testItems = testItems;
+    
     let testData = []
     if(listUser.length===0){
+      const testCreate = new Test();
+    testCreate.course = course;
+    testCreate.testItems = testItems;
        const test = await this.manager.getRepository(Test).save(testCreate);
        testData.push(test);
     
     }else{
     const testPromise = listUser.map(async (user) => {
+      const testCreate = new Test();
+    testCreate.course = course;
+    testCreate.testItems = testItems;
       testCreate.user = user;
       const test = await this.manager.getRepository(Test).save(testCreate);
       return test;
