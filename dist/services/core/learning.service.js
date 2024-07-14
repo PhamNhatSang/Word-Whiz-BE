@@ -385,10 +385,11 @@ class LearningService extends base_service_1.BaseService {
         return __awaiter(this, void 0, void 0, function* () {
             const test = yield this.manager.findOne(test_model_1.default, {
                 where: { id: testId },
-                relations: { testItems: { word: true }, course: true, testGroup: { group: true } },
+                relations: { testItems: { word: true }, course: true, testGroup: { group: true }, user: true },
             });
             let testName = test.course.title;
             let groupId = null;
+            const userId = test.user.id;
             if (test.testGroup) {
                 testName = test.testGroup.testName;
                 groupId = test.testGroup.group.id;
@@ -403,6 +404,7 @@ class LearningService extends base_service_1.BaseService {
             });
             return {
                 testName: testName,
+                userId: userId,
                 groupId: groupId,
                 overall: {
                     numberOfCorrectAnswer,

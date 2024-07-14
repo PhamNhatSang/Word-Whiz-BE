@@ -409,10 +409,11 @@ export default class LearningService extends BaseService {
 
     const test = await this.manager.findOne(Test, {
       where: { id: testId },
-      relations: { testItems: { word: true },course:true,testGroup:{group:true} },
+      relations: { testItems: { word: true },course:true,testGroup:{group:true} ,user:true},
     });
    let testName=test.course.title;
    let groupId=null;
+   const userId=test.user.id;
     if(test.testGroup){
       testName=test.testGroup.testName;
       groupId=test.testGroup.group.id
@@ -428,6 +429,7 @@ export default class LearningService extends BaseService {
 
     return {
       testName:testName,
+      userId:userId,
       groupId:groupId,
       overall: {
         numberOfCorrectAnswer,
