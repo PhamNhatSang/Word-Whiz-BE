@@ -328,6 +328,7 @@ export default class LearningService extends BaseService {
       where: { id: testGroupId },
       relations: { tests: { testItems: { word: true }, user: true }, group: { students: true } },
     });
+    const testName = testGroups[0].testName;
     const tests = testGroups.map((testGroup) => testGroup.tests
       .map((test) => {
         if(test.isDone===true){
@@ -352,7 +353,7 @@ export default class LearningService extends BaseService {
     ).flat()
     .filter(Boolean);
   
-    return tests;
+    return {testName,tests};
   }
 
   async getAllResult(userId:number){

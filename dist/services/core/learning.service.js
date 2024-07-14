@@ -311,6 +311,7 @@ class LearningService extends base_service_1.BaseService {
                 where: { id: testGroupId },
                 relations: { tests: { testItems: { word: true }, user: true }, group: { students: true } },
             });
+            const testName = testGroups[0].testName;
             const tests = testGroups.map((testGroup) => testGroup.tests
                 .map((test) => {
                 if (test.isDone === true) {
@@ -333,7 +334,7 @@ class LearningService extends base_service_1.BaseService {
                 return null;
             })).flat()
                 .filter(Boolean);
-            return tests;
+            return { testName, tests };
         });
     }
     getAllResult(userId) {
