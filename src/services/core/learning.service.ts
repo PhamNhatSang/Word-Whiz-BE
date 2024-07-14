@@ -446,9 +446,9 @@ export default class LearningService extends BaseService {
       const userFb = await this.manager.findOne(User, {
         where: { id: userFbId },
       });
-      const test = testGroup.map((testGroup) => testGroup.tests
-      .find((test) => test.id === testId)).filter(Boolean)[0]
-      
+     const test = await this.manager.findOne(Test, {
+        where: { id: testId },
+      });
       const feedback = new FeedBack();
       feedback.user = userFb;
       feedback.content = content;
