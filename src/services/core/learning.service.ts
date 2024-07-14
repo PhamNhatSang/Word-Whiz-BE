@@ -443,6 +443,8 @@ export default class LearningService extends BaseService {
         where: { id: groupId },
         relations: { tests: { user: true } },
       });
+
+      
       const userFb = await this.manager.findOne(User, {
         where: { id: userFbId },
       });
