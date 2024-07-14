@@ -436,15 +436,16 @@ export default class LearningService extends BaseService {
     }
 
     async feedbackTest(testId: number,groupId:number, content: string,userFbId:number) {
-      const testGroup = await this.manager.findOne(TestGroup, {
-
+      const testGroup = await this.manager.find(TestGroup, {
         where: { id: groupId },
         relations: { tests: { user: true } },
       });
       const userFb = await this.manager.findOne(User, {
         where: { id: userFbId },
       });
-      const test = testGroup.tests.find((test) => test.id === testId);
+      const test = testGroup.map((testGroup) => testGroup.tests
+      .find((test) => test.id === testId)).filter(Boolean)[0]
+      
       const feedback = new FeedBack();
       feedback.user = userFb;
       feedback.content = content;

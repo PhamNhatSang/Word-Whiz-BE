@@ -411,14 +411,15 @@ class LearningService extends base_service_1.BaseService {
     }
     feedbackTest(testId, groupId, content, userFbId) {
         return __awaiter(this, void 0, void 0, function* () {
-            const testGroup = yield this.manager.findOne(testGroup_model_1.default, {
+            const testGroup = yield this.manager.find(testGroup_model_1.default, {
                 where: { id: groupId },
                 relations: { tests: { user: true } },
             });
             const userFb = yield this.manager.findOne(user_model_1.default, {
                 where: { id: userFbId },
             });
-            const test = testGroup.tests.find((test) => test.id === testId);
+            const test = testGroup.map((testGroup) => testGroup.tests
+                .find((test) => test.id === testId)).filter(Boolean)[0];
             const feedback = new feedback_model_1.default();
             feedback.user = userFb;
             feedback.content = content;
