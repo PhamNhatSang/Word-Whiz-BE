@@ -472,6 +472,7 @@ export default class LearningService extends BaseService {
         }
         return {
           feedbackId: feedback.id,
+          createdAt:feedback?.createdAt,
           userName: feedback.user.name,
           userAvatar: feedback.user.avatar,
           content: feedback.content,

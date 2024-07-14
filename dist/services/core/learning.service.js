@@ -443,6 +443,7 @@ class LearningService extends base_service_1.BaseService {
                 }
                 return {
                     feedbackId: feedback.id,
+                    createdAt: feedback === null || feedback === void 0 ? void 0 : feedback.createdAt,
                     userName: feedback.user.name,
                     userAvatar: feedback.user.avatar,
                     content: feedback.content,
