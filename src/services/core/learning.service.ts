@@ -408,11 +408,13 @@ export default class LearningService extends BaseService {
 
     const test = await this.manager.findOne(Test, {
       where: { id: testId },
-      relations: { testItems: { word: true },course:true },
+      relations: { testItems: { word: true },course:true,testGroup:{group:true} },
     });
    let testName=test.course.title;
+   let groupId=null;
     if(test.testGroup){
       testName=test.testGroup.testName;
+      groupId=test.testGroup.group.id
     }
     const numberOfCorrectAnswer = test.testItems.filter((item) => item.user_answer === item.word.definition).length;
     const numberOfWrong = test.testItems.length - numberOfCorrectAnswer;
@@ -425,6 +427,7 @@ export default class LearningService extends BaseService {
 
     return {
       testName:testName,
+      groupId:groupId,
       overall: {
         numberOfCorrectAnswer,
         numberOfWrong,
