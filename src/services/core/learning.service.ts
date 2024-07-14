@@ -10,7 +10,7 @@ import Group from "../../models/group.model";
 import TestGroup from "../../models/testGroup.model";
 import FeedBack from '../../models/feedback.model';
 import { getObjectSignedUrl } from "../../s3";
-
+import moment from 'moment';
 export default class LearningService extends BaseService {
   constructor() {
     super();
@@ -472,7 +472,8 @@ export default class LearningService extends BaseService {
         }
         return {
           feedbackId: feedback.id,
-          createdAt:feedback?.createdAt,
+          createdAt:moment(feedback?.createdAt).format('YYYY-MM-DD hh:mm:ss A')
+          ,
           userName: feedback.user.name,
           userAvatar: feedback.user.avatar,
           content: feedback.content,

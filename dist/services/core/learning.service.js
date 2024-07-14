@@ -23,6 +23,7 @@ const group_model_1 = __importDefault(require("../../models/group.model"));
 const testGroup_model_1 = __importDefault(require("../../models/testGroup.model"));
 const feedback_model_1 = __importDefault(require("../../models/feedback.model"));
 const s3_1 = require("../../s3");
+const moment_1 = __importDefault(require("moment"));
 class LearningService extends base_service_1.BaseService {
     constructor() {
         super();
@@ -443,7 +444,7 @@ class LearningService extends base_service_1.BaseService {
                 }
                 return {
                     feedbackId: feedback.id,
-                    createdAt: feedback === null || feedback === void 0 ? void 0 : feedback.createdAt,
+                    createdAt: (0, moment_1.default)(feedback === null || feedback === void 0 ? void 0 : feedback.createdAt).format('YYYY-MM-DD hh:mm:ss A'),
                     userName: feedback.user.name,
                     userAvatar: feedback.user.avatar,
                     content: feedback.content,
